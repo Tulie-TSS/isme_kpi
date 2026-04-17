@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.vercel/
+*.xlsx
+*.xlsx"
+.DS_Store
+next-env.d.ts
+tsconfig.tsbuildinfo
+0001-remove-.vercel.bak.patch
+test_token_push/

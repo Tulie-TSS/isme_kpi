@@ -6,6 +6,8 @@ import { ManagerQuestion } from '@/lib/types';
 import { AlertTriangle, Users, TrendingDown, ChevronRight, ChevronDown, MessageCircleQuestion, Send, X, Eye, BarChart3, Filter,
   Medal, ArrowUpDown, CircleAlert, Flame, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import { useApp } from '@/lib/context';
+import { useAuth } from '@/lib/auth-context';
 
 function getScoreColor(s: number) { return s >= 85 ? '#047857' : s >= 60 ? '#D97706' : '#DC2626'; }
 function getScoreBg(s: number) { return s >= 85 ? '#D1FAE5' : s >= 60 ? '#FEF3C7' : '#FEE2E2'; }
@@ -61,12 +63,14 @@ function AskQuestionDialog({ toUserId, context, contextType, contextId, managerI
 }
 
 export default function ManagerDashboard() {
+  const { hasAnyRole, currentUserId } = useApp();
   const staffUsers = users.filter(u => u.role === 'staff');
   const allTasks = tasks;
   const doneTasks = allTasks.filter(t => t.status === 'DONE');
   const overdueTasks = getOverdueTasks();
   const blockedTasks = allTasks.filter(t => t.status === 'BLOCKED');
-  const period = 'Kỳ 2 2025-2026';
+  const isLeader = hasAnyRole('institute_leader');
+  const period = 'Kỳ 2 2024-2025';
 
   const [questionDialog, setQuestionDialog] = useState<{ toUserId: string; context: string; contextType: 'kpi' | 'task' | 'course' | 'general'; contextId: string } | null>(null);
   const [questions, setQuestions] = useState<ManagerQuestion[]>([]);
@@ -79,10 +83,10 @@ export default function ManagerDashboard() {
   const [expandedRiskProg, setExpandedRiskProg] = useState<string | null>(null);
 
   useEffect(() => {
-    setQuestions(getQuestionsByManager('u1'));
-    const unsub = subscribeQuestions(() => setQuestions(getQuestionsByManager('u1')));
+    setQuestions(getQuestionsByManager(currentUserId));
+    const unsub = subscribeQuestions(() => setQuestions(getQuestionsByManager(currentUserId)));
     return unsub;
-  }, []);
+  }, [currentUserId]);
 
   // User risk data
   const userRisk = staffUsers.map(u => {
@@ -122,59 +126,59 @@ export default function ManagerDashboard() {
     <div className="animate-fade-in">
       {/* ── Summary Cards ── */}
       <div className="summary-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: 20 }}>
-        <div className="summary-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 20 }}>👥</span>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Tổng task team</div>
-              <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1 }}>{allTasks.length}</div>
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{staffUsers.length} nhân viên · {Math.round(doneTasks.length / allTasks.length * 100)}% done</div>
-        </div>
-        <Link href="/tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <div className="summary-card" style={{ cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = ''; }}>
+          <div className="summary-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 20 }}>✅</span>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 20 }}>👥</span>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Hoàn thành</div>
-                <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: '#10B981' }}>{doneTasks.length}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Tổng task team</div>
+                <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1 }}>{allTasks.length}</div>
               </div>
             </div>
-            <div style={{ fontSize: 12, color: '#10B981' }}>{Math.round(doneTasks.length / allTasks.length * 100)}% tổng task</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{staffUsers.length} nhân viên · {Math.round(doneTasks.length / allTasks.length * 100)}% done</div>
           </div>
-        </Link>
-        <Link href="/tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <div className="summary-card" style={{ cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = ''; }}>
+          <Link href="/tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="summary-card" style={{ cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = ''; }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 20 }}>✅</span>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Hoàn thành</div>
+                  <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: '#10B981' }}>{doneTasks.length}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 12, color: '#10B981' }}>{Math.round(doneTasks.length / allTasks.length * 100)}% tổng task</div>
+            </div>
+          </Link>
+          <Link href="/tasks" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="summary-card" style={{ cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = ''; }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #FEF2F2, #FEE2E2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: 20 }}>🔥</span>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Quá hạn</div>
+                  <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: '#EF4444' }}>{overdueTasks.length}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 12, color: '#EF4444' }}>Cần xử lý ngay →</div>
+            </div>
+          </Link>
+          <div className="summary-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #FEF2F2, #FEE2E2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 20 }}>🔥</span>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 20 }}>💬</span>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Quá hạn</div>
-                <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: '#EF4444' }}>{overdueTasks.length}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Câu hỏi</div>
+                <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: '#F59E0B' }}>{openQs + answeredQs}</div>
               </div>
             </div>
-            <div style={{ fontSize: 12, color: '#EF4444' }}>Cần xử lý ngay →</div>
+            <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{openQs} đang chờ · {answeredQs} đã trả lời</div>
           </div>
-        </Link>
-        <div className="summary-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 20 }}>💬</span>
-            </div>
-            <div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Câu hỏi</div>
-              <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1, color: '#F59E0B' }}>{openQs + answeredQs}</div>
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{openQs} đang chờ · {answeredQs} đã trả lời</div>
         </div>
-      </div>
 
       {/* ── Overdue Alert ── */}
       {overdueTasks.length > 0 && (
@@ -534,7 +538,7 @@ export default function ManagerDashboard() {
         <AskQuestionDialog
           toUserId={questionDialog.toUserId} context={questionDialog.context}
           contextType={questionDialog.contextType} contextId={questionDialog.contextId}
-          managerId="u1" onClose={() => setQuestionDialog(null)}
+          managerId={currentUserId} onClose={() => setQuestionDialog(null)}
         />
       )}
     </div>

@@ -25,16 +25,24 @@ export default function Sidebar() {
   ];
 
   // Manager/Leader/Coordinator_Director can see heatmap
-  if (hasAnyRole('manager', 'institute_leader', 'coordinator_director') || currentRole === 'manager' || currentRole === 'admin') {
-    links.push({ href: '/kpi/heatmap', label: 'KPI Heatmap', icon: BarChart3 });
+  const isLeader = hasAnyRole('institute_leader');
+  
+  // Filter links for Leader: Hide Task management apps
+  let filteredLinks = links;
+  if (isLeader) {
+    filteredLinks = links.filter(l => !['/tasks', '/tasks/matrix', '/tasks/checklist'].includes(l.href));
   }
 
-  links.push({ href: '/review', label: 'Đánh giá', icon: FileText });
-  links.push({ href: '/schedule', label: 'Lịch làm việc', icon: Calendar });
+  if (hasAnyRole('manager', 'institute_leader', 'coordinator_director') || currentRole === 'manager' || currentRole === 'admin') {
+    filteredLinks.push({ href: '/kpi/heatmap', label: 'KPI Heatmap', icon: BarChart3 });
+  }
 
-  // Admin settings
-  if (currentRole === 'admin' || hasAnyRole('manager', 'institute_leader')) {
-    links.push({ href: '/settings', label: 'Cài đặt', icon: Settings });
+  filteredLinks.push({ href: '/review', label: 'Đánh giá', icon: FileText });
+  filteredLinks.push({ href: '/schedule', label: 'Lịch làm việc', icon: Calendar });
+
+  // Admin settings - Hide for institute_leader
+  if ((currentRole === 'admin' || hasAnyRole('manager')) && !isLeader) {
+    filteredLinks.push({ href: '/settings', label: 'Cài đặt', icon: Settings });
   }
 
   return (
@@ -65,7 +73,7 @@ export default function Sidebar() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {links.map((link) => {
+          {filteredLinks.map((link) => {
             const isActive = pathname === link.href;
             const Icon = link.icon;
             return (

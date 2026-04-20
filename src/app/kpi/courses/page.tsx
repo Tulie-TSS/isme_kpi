@@ -328,9 +328,9 @@ export default function KPICoursePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
             <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>Số liệu chuyên cần, học tập, nộp bài theo từng môn · Kỳ 2.2526 </p>
             {coordinator && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--isme-red)', padding: '5px 16px', borderRadius: 20, boxShadow: '0 4px 12px rgba(220,38,38,0.2)' }}>
-                <ShieldCheck size={18} color="white" />
-                <span style={{ fontSize: 14, fontWeight: 900, color: 'white', textTransform: 'uppercase', letterSpacing: '0.025em' }}>Người phụ trách hệ: {coordinator.name}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--gray-100)', padding: '4px 12px', borderRadius: 8 }}>
+                <ShieldCheck size={14} color="var(--gray-500)" />
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-600)' }}>Phụ trách hệ: {coordinator.name}</span>
               </div>
             )}
           </div>

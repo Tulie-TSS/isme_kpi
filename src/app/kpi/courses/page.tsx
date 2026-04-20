@@ -1,22 +1,10 @@
 'use client';
 import { useApp } from '@/lib/context';
-import { courses, programs, getUserById, createCourseEditRequest, getPendingCourseEditForField, getCourseEditRequests, subscribeCourseEditRequests, approveCourseEditRequest, rejectCourseEditRequest } from '@/lib/mock-data';
+import { courses, programs, getUserById, createCourseEditRequest, getPendingCourseEditForField, getCourseEditRequests, subscribeCourseEditRequests, approveCourseEditRequest, rejectCourseEditRequest, semesterData } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField } from '@/lib/types';
 import { useState, useEffect } from 'react';
 import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck } from 'lucide-react';
 
-// Semester data
-let semesterData: Record<string, { attendStart: number; attendTarget: number; passStart: number; submitStart: number; passTargetStart: number; attendEnd: number; submitEnd: number; passEnd: number; attendCompletion: number; passCompletion: number; submitCompletion: number; attendNext: number; attendTargetNext: number; passNext: number; passTargetNext: number }> = {
-  'c1': { attendStart: 95.97, attendTarget: 85, passStart: 84, submitStart: 75, passTargetStart: 75, attendEnd: 95.50, submitEnd: 80.15, passEnd: 81.61, attendCompletion: 112, passCompletion: 107, submitCompletion: 109, attendNext: 95.50, attendTargetNext: 90, passNext: 81.61, passTargetNext: 75 },
-  'c2': { attendStart: 80.10, attendTarget: 85, passStart: 76, submitStart: 75, passTargetStart: 75, attendEnd: 83.10, submitEnd: 70, passEnd: 77.42, attendCompletion: 98, passCompletion: 93, submitCompletion: 103, attendNext: 83.10, attendTargetNext: 85, passNext: 77.42, passTargetNext: 75 },
-  'c3': { attendStart: 94.12, attendTarget: 85, passStart: 85, submitStart: 75, passTargetStart: 75, attendEnd: 95.50, submitEnd: 80.15, passEnd: 83.72, attendCompletion: 112, passCompletion: 107, submitCompletion: 112, attendNext: 95.50, attendTargetNext: 90, passNext: 83.72, passTargetNext: 75 },
-  'c4': { attendStart: 96, attendTarget: 85, passStart: 92, submitStart: 75, passTargetStart: 80, attendEnd: 96, submitEnd: 89.50, passEnd: 91.82, attendCompletion: 113, passCompletion: 119, submitCompletion: 115, attendNext: 96, attendTargetNext: 90, passNext: 91.82, passTargetNext: 80 },
-  'c5': { attendStart: 95.41, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 95.41, submitEnd: 89.50, passEnd: 87.27, attendCompletion: 112, passCompletion: 119, submitCompletion: 109, attendNext: 95.41, attendTargetNext: 90, passNext: 87.27, passTargetNext: 80 },
-  'c6': { attendStart: 97, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 100, submitEnd: 89.50, passEnd: 94.83, attendCompletion: 118, passCompletion: 119, submitCompletion: 119, attendNext: 100, attendTargetNext: 90, passNext: 94.83, passTargetNext: 80 },
-  'c7': { attendStart: 90, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 93, submitEnd: 89.50, passEnd: 87.50, attendCompletion: 109, passCompletion: 119, submitCompletion: 109, attendNext: 93, attendTargetNext: 90, passNext: 87.50, passTargetNext: 80 },
-  'c8': { attendStart: 0, attendTarget: 85, passStart: 0, submitStart: 75, passTargetStart: 80, attendEnd: 99, submitEnd: 80, passEnd: 84, attendCompletion: 0, passCompletion: 0, submitCompletion: 0, attendNext: 99, attendTargetNext: 90, passNext: 84, passTargetNext: 80 },
-  'c9': { attendStart: 0, attendTarget: 85, passStart: 74, submitStart: 75, passTargetStart: 80, attendEnd: 100, submitEnd: 94, passEnd: 82, attendCompletion: 0, passCompletion: 0, submitCompletion: 0, attendNext: 100, attendTargetNext: 90, passNext: 82, passTargetNext: 80 },
-};
 
 function getColor(val: number, target: number) {
   if (val >= target * 1.05) return '#047857';
@@ -101,7 +89,7 @@ function EditCellDialog({ courseId, courseName, field, fieldLabel, currentValue,
 }
 
 // ── Course Approval Panel ──
-function CourseApprovalPanel({ isManager, userId }: { isManager: boolean; userId: string }) {
+function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManager: boolean; userId: string; selectedProgramId: string }) {
   const [reqs, setReqs] = useState<CourseEditRequest[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -112,7 +100,12 @@ function CourseApprovalPanel({ isManager, userId }: { isManager: boolean; userId
     return unsub;
   }, []);
 
-  const filtered = isManager ? reqs : reqs.filter(r => r.userId === userId);
+  const filtered = (isManager ? reqs : reqs.filter(r => r.userId === userId)).filter(r => {
+    if (selectedProgramId === 'all') return true;
+    const course = courses.find(c => c.id === r.courseId);
+    return course?.programId === selectedProgramId;
+  });
+  
   const pendingCount = filtered.filter(r => r.status === 'pending').length;
   if (filtered.length === 0) return null;
 
@@ -335,9 +328,9 @@ export default function KPICoursePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
             <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>Số liệu chuyên cần, học tập, nộp bài theo từng môn · Kỳ 2.2526 </p>
             {coordinator && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(5,150,105,0.1)', padding: '2px 10px', borderRadius: 6, border: '1px solid rgba(5,150,105,0.2)' }}>
-                <ShieldCheck size={14} color="#059669" />
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#059669' }}>Phụ trách hệ: {coordinator.name}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--isme-red)', padding: '5px 16px', borderRadius: 20, boxShadow: '0 4px 12px rgba(220,38,38,0.2)' }}>
+                <ShieldCheck size={18} color="white" />
+                <span style={{ fontSize: 14, fontWeight: 900, color: 'white', textTransform: 'uppercase', letterSpacing: '0.025em' }}>Người phụ trách hệ: {coordinator.name}</span>
               </div>
             )}
           </div>
@@ -362,7 +355,7 @@ export default function KPICoursePage() {
       </div>
 
       {/* Course Edit Approval Panel */}
-      <CourseApprovalPanel isManager={isManager} userId={currentUserId} />
+      <CourseApprovalPanel isManager={isManager} userId={currentUserId} selectedProgramId={selectedProgram} />
 
       {/* Main Table */}
       <div className="card" style={{ padding: 0, overflow: 'auto' }}>

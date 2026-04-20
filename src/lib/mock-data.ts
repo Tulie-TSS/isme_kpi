@@ -1,6 +1,22 @@
 import { User, Program, Course, KPIDefinition, KPISnapshot, ReviewCycle, Review, Notification, TaskTemplate, KPIDetailItem, Task, KPIEditRequest, CourseEditRequest, CourseEditField, ManagerQuestion, UserRole } from './types';
 export { tasks, getTaskChildren, getTaskParent, getTaskAncestors, getTopLevelTasks, calculateTaskProgress } from './mock-tasks';
 
+// ==================== SEMESTER DATA ====================
+export let semesterData: Record<string, { attendStart: number; attendTarget: number; passStart: number; submitStart: number; passTargetStart: number; attendEnd: number; submitEnd: number; passEnd: number; attendCompletion: number; passCompletion: number; submitCompletion: number; attendNext: number; attendTargetNext: number; passNext: number; passTargetNext: number }> = {
+  'c1': { attendStart: 95.97, attendTarget: 85, passStart: 84, submitStart: 75, passTargetStart: 75, attendEnd: 95.50, submitEnd: 80.15, passEnd: 81.61, attendCompletion: 112, passCompletion: 107, submitCompletion: 109, attendNext: 95.50, attendTargetNext: 90, passNext: 81.61, passTargetNext: 75 },
+  'c2': { attendStart: 80.10, attendTarget: 85, passStart: 76, submitStart: 75, passTargetStart: 75, attendEnd: 83.10, submitEnd: 70, passEnd: 77.42, attendCompletion: 98, passCompletion: 93, submitCompletion: 103, attendNext: 83.10, attendTargetNext: 85, passNext: 77.42, passTargetNext: 75 },
+  'c3': { attendStart: 94.12, attendTarget: 85, passStart: 85, submitStart: 75, passTargetStart: 75, attendEnd: 95.50, submitEnd: 80.15, passEnd: 83.72, attendCompletion: 112, passCompletion: 107, submitCompletion: 112, attendNext: 95.50, attendTargetNext: 90, passNext: 83.72, passTargetNext: 75 },
+  'c4': { attendStart: 96, attendTarget: 85, passStart: 92, submitStart: 75, passTargetStart: 80, attendEnd: 96, submitEnd: 89.50, passEnd: 91.82, attendCompletion: 113, passCompletion: 119, submitCompletion: 115, attendNext: 96, attendTargetNext: 90, passNext: 91.82, passTargetNext: 80 },
+  'c5': { attendStart: 95.41, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 95.41, submitEnd: 89.50, passEnd: 87.27, attendCompletion: 112, passCompletion: 119, submitCompletion: 109, attendNext: 95.41, attendTargetNext: 90, passNext: 87.27, passTargetNext: 80 },
+  'c6': { attendStart: 97, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 100, submitEnd: 89.50, passEnd: 94.83, attendCompletion: 118, passCompletion: 119, submitCompletion: 119, attendNext: 100, attendTargetNext: 90, passNext: 94.83, passTargetNext: 80 },
+  'c7': { attendStart: 90, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 93, submitEnd: 89.50, passEnd: 87.50, attendCompletion: 109, passCompletion: 119, submitCompletion: 109, attendNext: 93, attendTargetNext: 90, passNext: 87.50, passTargetNext: 80 },
+  'c8': { attendStart: 0, attendTarget: 85, passStart: 0, submitStart: 75, passTargetStart: 80, attendEnd: 99, submitEnd: 80, passEnd: 84, attendCompletion: 0, passCompletion: 0, submitCompletion: 0, attendNext: 99, attendTargetNext: 90, passNext: 84, passTargetNext: 80 },
+  'c9': { attendStart: 0, attendTarget: 85, passStart: 74, submitStart: 75, passTargetStart: 80, attendEnd: 100, submitEnd: 94, passEnd: 82, attendCompletion: 0, passCompletion: 0, submitCompletion: 0, attendNext: 100, attendTargetNext: 90, passNext: 82, passTargetNext: 80 },
+  'c10': { attendStart: 88, attendTarget: 85, passStart: 82, submitStart: 75, passTargetStart: 80, attendEnd: 88, submitEnd: 75, passEnd: 82, attendCompletion: 103, passCompletion: 102, submitCompletion: 100, attendNext: 90, attendTargetNext: 85, passNext: 85, passTargetNext: 80 },
+  'c11': { attendStart: 92, attendTarget: 85, passStart: 85, submitStart: 75, passTargetStart: 80, attendEnd: 92, submitEnd: 75, passEnd: 85, attendCompletion: 108, passCompletion: 106, submitCompletion: 100, attendNext: 92, attendTargetNext: 85, passNext: 88, passTargetNext: 80 },
+  'c12': { attendStart: 95, attendTarget: 85, passStart: 90, submitStart: 75, passTargetStart: 80, attendEnd: 95, submitEnd: 75, passEnd: 90, attendCompletion: 111, passCompletion: 112, submitCompletion: 100, attendNext: 95, attendTargetNext: 90, passNext: 92, passTargetNext: 85 },
+};
+
 // ==================== USERS ====================
 export const users: User[] = [
   { id: 'u1', name: 'Hồ Hoàng Lan', email: 'lan.hh@isme.edu.vn', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Trưởng Ban Đào tạo đại học' },
@@ -467,16 +483,28 @@ export function rejectKPIEditRequest(requestId: string, reviewerId: string, note
 
 // ==================== COURSE EDIT REQUESTS ====================
 let _courseEditRequests: CourseEditRequest[] = [
-  // Demo: Hương Giang yêu cầu sửa tỷ lệ chuyên cần môn Management of Human Resources
+  // p3: BTEC HND (Hương Giang u9)
   { id: 'cer1', courseId: 'c2', userId: 'u9', field: 'attendanceRate', fieldLabel: 'Management of Human Resources — Tỷ lệ chuyên cần',
     oldValue: 80.10, newValue: 85.50, reason: 'Cập nhật lại số liệu sau khi rà soát danh sách SV vắng có phép. 3 SV đã bổ sung đơn xin phép hợp lệ, tỷ lệ CC tăng từ 80.1% lên 85.5%.',
     status: 'pending', requestedAt: d(-1), reviewedBy: null, reviewedAt: null, reviewNote: '' },
-  // Demo: Hương Giang yêu cầu sửa tỷ lệ pass môn Organisational Behaviour
-  { id: 'cer2', courseId: 'c5', userId: 'u9', field: 'passRate', fieldLabel: 'Organisational Behaviour Mgmt — Tỷ lệ pass',
-    oldValue: 90, newValue: 93, reason: 'GV đã chấm lại 2 bài thi phúc khảo, kết quả 2 SV đạt pass. Cập nhật tỷ lệ pass từ 90% lên 93%.',
+  
+  // p2: Digital Marketing (Bùi Thu Trang u3)
+  { id: 'cer2', courseId: 'c10', userId: 'u3', field: 'passRate', fieldLabel: 'Global Marketing — Tỷ lệ pass',
+    oldValue: 82, newValue: 85, reason: 'Phát hiện sai sót trong việc nhập điểm thành phần cho 3 sinh viên lớp DM2023. Đã hiệu chỉnh.',
     status: 'pending', requestedAt: d(-2), reviewedBy: null, reviewedAt: null, reviewNote: '' },
-  // Demo: Đã duyệt — sửa tỷ lệ nộp bài môn CBE
-  { id: 'cer3', courseId: 'c1', userId: 'u9', field: 'submitRate', fieldLabel: 'Contemporary Business Environment — Nộp bài đúng hạn',
+
+  // p7: BBAE (Nguyễn Minh Tuấn u8)
+  { id: 'cer3', courseId: 'c11', userId: 'u8', field: 'attendanceRate', fieldLabel: 'Strategic Management — Tỷ lệ chuyên cần',
+    oldValue: 92, newValue: 94, reason: '2 sinh viên đi thi Olympic đã có đơn xin vắng có phép được nhà trường phê duyệt.',
+    status: 'pending', requestedAt: d(-1), reviewedBy: null, reviewedAt: null, reviewNote: '' },
+
+  // p1: Năm 1 (Bùi Thị Quỳnh Trang u2)
+  { id: 'cer4', courseId: 'c1', userId: 'u2', field: 'submitRate', fieldLabel: 'The Contemporary Business Environment — Nộp bài đúng hạn',
+    oldValue: 75, newValue: 81, reason: 'Hệ thống LMS ghi nhận thiếu 6 bài nộp đúng hạn do lag mạng. Đã đối soát file log.',
+    status: 'pending', requestedAt: d(-3), reviewedBy: null, reviewedAt: null, reviewNote: '' },
+
+  // Demo: Đã duyệt
+  { id: 'cer5', courseId: 'c1', userId: 'u9', field: 'submitRate', fieldLabel: 'Contemporary Business Environment — Nộp bài đúng hạn',
     oldValue: 75, newValue: 80, reason: 'Phát hiện 5 bài nộp qua email chưa được tính vào hệ thống Moodle. Đã xác nhận với GV và cập nhật.',
     status: 'approved', requestedAt: d(-5), reviewedBy: 'u1', reviewedAt: d(-3), reviewNote: 'Đã kiểm tra email GV, xác nhận 5 bài hợp lệ. Đồng ý cập nhật.' },
 ];

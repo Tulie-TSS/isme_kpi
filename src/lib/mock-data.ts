@@ -17,6 +17,7 @@ export const users: User[] = [
   { id: 'u12', name: 'Lê Thanh', email: 'le.thanh@isneu.org', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Lãnh đạo Viện' },
   { id: 'u13', name: 'Trịnh Giang', email: 'trinh.giang@isneu.org', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Lãnh đạo Viện' },
   { id: 'u14', name: 'Nguyễn Chính', email: 'nguyen.chinh@isneu.org', role: 'admin', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Admin gốc' },
+  { id: 'u15', name: 'Hồ Hoàng Lan (Admin)', email: 'ho.lan@isneu.org', role: 'admin', roles: ['admin'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị viên' },
   { id: 'u0', name: 'Admin System', email: 'admin@isme.edu.vn', role: 'admin', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị hệ thống' },
 ];
 

@@ -1,8 +1,8 @@
 'use client';
 import { useApp } from '@/lib/context';
 import { useAuth } from '@/lib/auth-context';
-import { getUserById, getNotificationsByUser, users } from '@/lib/mock-data';
-import { Bell, Menu, ChevronDown, AlertTriangle, CheckCircle, Info, ArrowUpRight, Clock, X, Filter, LogOut, User as UserIcon } from 'lucide-react';
+import { getUserById, getNotificationsByUser, users, programs } from '@/lib/mock-data';
+import { Bell, Menu, ChevronDown, AlertTriangle, CheckCircle, Info, ArrowUpRight, Clock, X, Filter, LogOut, User as UserIcon, ShieldCheck } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Role, Notification } from '@/lib/types';
@@ -26,7 +26,7 @@ const categoryFilter = [
 ];
 
 export default function Header() {
-  const { currentRole, setCurrentRole, currentUserId, setCurrentUserId, setSidebarOpen } = useApp();
+  const { currentRole, setCurrentRole, currentUserId, setCurrentUserId, setSidebarOpen, selectedProgramId, setSelectedProgramId } = useApp();
   const { user: authUser, logout } = useAuth();
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -69,6 +69,8 @@ export default function Header() {
   const markRead = (id: string) => setReadState(prev => ({ ...prev, [id]: true }));
   const markAllRead = () => { const update: Record<string, boolean> = {}; notifs.forEach(n => { update[n.id] = true; }); setReadState(prev => ({ ...prev, ...update })); };
 
+  const selectedProgram = programs.find(p => p.id === selectedProgramId);
+  const programManager = selectedProgram ? getUserById(selectedProgram.managerId) : null;
   const initials = user ? user.name.split(' ').slice(-2).map(w => w[0]).join('') : '??';
   const avatarColors = ['#9B1B30', '#2563EB', '#7C3AED', '#059669', '#D97706', '#DC2626', '#0891B2', '#4F46E5', '#BE185D', '#65A30D', '#EA580C', '#6D28D9'];
   const colorIndex = currentUserId ? parseInt(currentUserId.replace('u', ''), 10) % avatarColors.length : 0;
@@ -82,14 +84,48 @@ export default function Header() {
   };
 
   return (
-    <header className="header">
+    <header className="header" style={{ height: 'auto', minHeight: 70, padding: '12px 24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         <button className="md:hidden" onClick={() => setSidebarOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
           <Menu size={22} color="var(--gray-600)" />
         </button>
-        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-800)' }}>
-          {currentRole === 'staff' ? 'Việc của tôi' : currentRole === 'manager' ? 'Quản lý đội ngũ' : 'Quản trị hệ thống'}
-        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-800)', margin: 0 }}>
+            {currentRole === 'staff' ? 'Việc của tôi' : currentRole === 'manager' ? 'Quản lý đội ngũ' : 'Quản trị hệ thống'}
+          </h2>
+          {/* Program Filter & Manager for Leadership */}
+          {(currentRole === 'manager' || currentRole === 'admin') && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Filter size={14} color="var(--isme-red)" />
+                <select 
+                  value={selectedProgramId} 
+                  onChange={e => setSelectedProgramId(e.target.value)}
+                  style={{ 
+                    border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, 
+                    color: 'var(--isme-red)', cursor: 'pointer', paddingRight: 20, outline: 'none',
+                    appearance: 'none', WebkitAppearance: 'none'
+                  }}
+                >
+                  <option value="all">Tất cả các hệ đào tạo</option>
+                  {programs.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+                <ChevronDown size={12} color="var(--isme-red)" style={{ position: 'absolute', right: 0, pointerEvents: 'none' }} />
+              </div>
+              
+              {selectedProgramId !== 'all' && programManager && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, borderLeft: '1px solid var(--gray-200)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'rgba(5,150,105,0.1)', padding: '2px 8px', borderRadius: 6 }}>
+                    <ShieldCheck size={12} color="#059669" />
+                    <span style={{ fontSize: 11, fontWeight: 600, color: '#059669' }}>Người phụ trách: {programManager.name}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>

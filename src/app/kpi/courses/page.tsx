@@ -3,7 +3,7 @@ import { useApp } from '@/lib/context';
 import { courses, programs, getUserById, createCourseEditRequest, getPendingCourseEditForField, getCourseEditRequests, subscribeCourseEditRequests, approveCourseEditRequest, rejectCourseEditRequest } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField } from '@/lib/types';
 import { useState, useEffect } from 'react';
-import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings } from 'lucide-react';
+import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck } from 'lucide-react';
 
 // Semester data
 let semesterData: Record<string, { attendStart: number; attendTarget: number; passStart: number; submitStart: number; passTargetStart: number; attendEnd: number; submitEnd: number; passEnd: number; attendCompletion: number; passCompletion: number; submitCompletion: number; attendNext: number; attendTargetNext: number; passNext: number; passTargetNext: number }> = {
@@ -266,12 +266,21 @@ function TargetConfigDialog({ programName, currentData = {}, onClose, onSave }: 
 
 // ── Main page ──
 export default function KPICoursePage() {
-  const { currentRole, currentUserId } = useApp();
-  const [selectedProgram, setSelectedProgram] = useState('p3');
+  const { currentRole, currentUserId, selectedProgramId, setSelectedProgramId } = useApp();
+  const [selectedProgram, setSelectedProgram] = useState(selectedProgramId !== 'all' ? selectedProgramId : 'p3');
   const [editTarget, setEditTarget] = useState<{ courseId: string; courseName: string; field: CourseEditField; fieldLabel: string; value: number } | null>(null);
   const [, forceUpdate] = useState(0);
   const [showConfig, setShowConfig] = useState(false);
+  
+  // Sync with global filter
+  useEffect(() => {
+    if (selectedProgramId !== 'all' && selectedProgramId !== selectedProgram) {
+      setSelectedProgram(selectedProgramId);
+    }
+  }, [selectedProgramId]);
+
   const program = programs.find(p => p.id === selectedProgram);
+  const coordinator = program ? getUserById(program.managerId) : null;
   const programCourses = courses.filter(c => c.programId === selectedProgram);
   const isStaff = currentRole === 'staff';
   const isManager = currentRole === 'manager' || currentRole === 'admin';
@@ -323,7 +332,16 @@ export default function KPICoursePage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
         <div>
           <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Bảng theo dõi KPI Môn học</h1>
-          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>Số liệu chuyên cần, học tập, nộp bài theo từng môn · Kỳ 2.2526 {isStaff && <span style={{ color: '#3B82F6', fontSize: 12 }}>· Bấm ✏️ để sửa số liệu</span>}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+            <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>Số liệu chuyên cần, học tập, nộp bài theo từng môn · Kỳ 2.2526 </p>
+            {coordinator && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(5,150,105,0.1)', padding: '2px 10px', borderRadius: 6, border: '1px solid rgba(5,150,105,0.2)' }}>
+                <ShieldCheck size={14} color="#059669" />
+                <span style={{ fontSize: 12, fontWeight: 700, color: '#059669' }}>Phụ trách hệ: {coordinator.name}</span>
+              </div>
+            )}
+          </div>
+          {isStaff && <div style={{ color: '#3B82F6', fontSize: 12, fontWeight: 500 }}>· Bấm ✏️ để sửa số liệu</div>}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           {isManager && (
@@ -382,15 +400,23 @@ export default function KPICoursePage() {
           </thead>
           <tbody>
             {programCourses.map((c, ci) => {
-              const d = semesterData[c.id];
-              if (!d) return (
-                <tr key={c.id} style={{ background: ci % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
-                  {ci === 0 && <td rowSpan={programCourses.length} style={{ ...tdStyle, fontWeight: 700, color: 'var(--isme-red)', verticalAlign: 'middle', fontSize: 14, background: 'var(--isme-red-50)' }}>{program?.shortName}</td>}
-                  <td style={tdStyle}>{c.cohort}</td><td style={{ ...tdStyle, fontWeight: 500, textAlign: 'left' }}>{c.name}</td>
-                  <td style={tdStyle}>{c.numLecturers}</td><td style={tdStyle}>{c.numStudents}</td>
-                  {Array(17).fill(0).map((_, i) => <td key={i} style={tdStyle}>—</td>)}
-                </tr>
-              );
+              const d = semesterData[c.id] || {
+                attendStart: c.attendanceRate * 100,
+                attendTarget: c.attendanceTarget * 100,
+                passStart: c.passRate * 100,
+                submitStart: c.submitRate * 100,
+                passTargetStart: c.passTarget * 100,
+                attendEnd: c.attendanceRate * 100,
+                submitEnd: c.submitRate * 100,
+                passEnd: c.passRate * 100,
+                attendCompletion: 100,
+                passCompletion: 100,
+                submitCompletion: 100,
+                attendNext: c.attendanceRate * 100,
+                attendTargetNext: c.attendanceTarget * 100,
+                passNext: c.passRate * 100,
+                passTargetNext: c.passTarget * 100
+              };
               return (
                 <tr key={c.id} style={{ background: ci % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
                   {ci === 0 && <td rowSpan={programCourses.length} style={{ ...tdStyle, fontWeight: 700, color: 'var(--isme-red)', verticalAlign: 'middle', fontSize: 13, background: 'var(--isme-red-50)', padding: '16px 12px', whiteSpace: 'normal', minWidth: 80 }}>{program?.name}</td>}

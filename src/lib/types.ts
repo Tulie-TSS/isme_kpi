@@ -33,6 +33,8 @@ export interface Program {
   type: ProgramType;
   status: 'active' | 'archived';
   shortName: string;
+  managerId: string;           // Person in charge
+  secondaryManagerId?: string; // Optional second person in charge (e.g. for BTEC)
 }
 
 export interface Course {

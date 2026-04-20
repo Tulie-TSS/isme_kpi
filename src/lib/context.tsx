@@ -14,6 +14,8 @@ interface AppContextType {
   userRoles: UserRole[];
   hasRole: (role: UserRole) => boolean;
   hasAnyRole: (...roles: UserRole[]) => boolean;
+  selectedProgramId: string | 'all';
+  setSelectedProgramId: (id: string | 'all') => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -23,6 +25,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [currentRole, setCurrentRole] = useState<Role>('staff');
   const [currentUserId, setCurrentUserId] = useState('u9');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedProgramId, setSelectedProgramId] = useState<string | 'all'>('all');
   const [userRoles, setUserRoles] = useState<UserRole[]>([]);
 
   // Sync role and userId from authenticated user
@@ -38,7 +41,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const hasAnyRole = (...roles: UserRole[]): boolean => roles.some(r => userRoles.includes(r));
 
   return (
-    <AppContext.Provider value={{ currentRole, setCurrentRole, currentUserId, setCurrentUserId, sidebarOpen, setSidebarOpen, userRoles, hasRole, hasAnyRole }}>
+    <AppContext.Provider value={{ 
+      currentRole, setCurrentRole, currentUserId, setCurrentUserId, sidebarOpen, setSidebarOpen, 
+      userRoles, hasRole, hasAnyRole, selectedProgramId, setSelectedProgramId 
+    }}>
       {children}
     </AppContext.Provider>
   );

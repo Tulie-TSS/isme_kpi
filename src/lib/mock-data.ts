@@ -23,19 +23,20 @@ export const users: User[] = [
 
 // ==================== PROGRAMS ====================
 export const programs: Program[] = [
-  { id: 'p1', name: 'Năm 1 (Foundation)', type: 'degree', status: 'active', shortName: 'Y1' },
-  { id: 'p2', name: 'Digital Marketing', type: 'degree', status: 'active', shortName: 'DM' },
-  { id: 'p3', name: 'BTEC HND', type: 'certificate', status: 'active', shortName: 'BTEC' },
-  { id: 'p4', name: 'Ngân hàng Tài chính (BScBF)', type: 'degree', status: 'active', shortName: 'NHTC' },
-  { id: 'p5', name: 'Top-up UWE', type: 'degree', status: 'active', shortName: 'UWE' },
-  { id: 'p6', name: 'Top-up CU', type: 'degree', status: 'active', shortName: 'CU' },
-  { id: 'p7', name: 'BBAE', type: 'degree', status: 'active', shortName: 'BBAE' },
-  { id: 'p8', name: 'Andrews', type: 'degree', status: 'active', shortName: 'AU' },
-  { id: 'p9', name: 'Lincoln', type: 'degree', status: 'active', shortName: 'LN' },
+  { id: 'p1', name: 'Năm 1 (Foundation)', type: 'degree', status: 'active', shortName: 'Y1', managerId: 'u2' },
+  { id: 'p2', name: 'Digital Marketing', type: 'degree', status: 'active', shortName: 'DM', managerId: 'u3' },
+  { id: 'p3', name: 'BTEC HND', type: 'certificate', status: 'active', shortName: 'BTEC', managerId: 'u9', secondaryManagerId: 'u4' },
+  { id: 'p4', name: 'Ngân hàng Tài chính (BScBF)', type: 'degree', status: 'active', shortName: 'NHTC', managerId: 'u5' },
+  { id: 'p5', name: 'Top-up UWE', type: 'degree', status: 'active', shortName: 'UWE', managerId: 'u6' },
+  { id: 'p6', name: 'Top-up CU', type: 'degree', status: 'active', shortName: 'CU', managerId: 'u7' },
+  { id: 'p7', name: 'BBAE', type: 'degree', status: 'active', shortName: 'BBAE', managerId: 'u8' },
+  { id: 'p8', name: 'Andrews', type: 'degree', status: 'active', shortName: 'AU', managerId: 'u10' },
+  { id: 'p9', name: 'Lincoln', type: 'degree', status: 'active', shortName: 'LN', managerId: 'u10' },
 ];
 
 // ==================== COURSES (BTEC — Kỳ 2.2526 from Hương Giang) ====================
 export const courses: Course[] = [
+  // p3: BTEC HND
   { id: 'c1', programId: 'p3', name: 'The Contemporary Business Environment', cohort: '20 Fall', numLecturers: 3, numStudents: 87, attendanceRate: 0.960, attendanceTarget: 0.85, passRate: 0.840, passTarget: 0.75, submitRate: 0.750 },
   { id: 'c2', programId: 'p3', name: 'Management of Human Resources', cohort: '20 Fall', numLecturers: 3, numStudents: 87, attendanceRate: 0.801, attendanceTarget: 0.85, passRate: 0.761, passTarget: 0.75, submitRate: 0.750 },
   { id: 'c3', programId: 'p3', name: 'Accounting Principles', cohort: '20 Fall', numLecturers: 3, numStudents: 86, attendanceRate: 0.941, attendanceTarget: 0.85, passRate: 0.854, passTarget: 0.75, submitRate: 0.750 },
@@ -45,6 +46,13 @@ export const courses: Course[] = [
   { id: 'c7', programId: 'p3', name: 'Principles of Operations Management', cohort: '19 Fall', numLecturers: 2, numStudents: 56, attendanceRate: 0.900, attendanceTarget: 0.85, passRate: 0.900, passTarget: 0.80, submitRate: 0.750 },
   { id: 'c8', programId: 'p3', name: 'Innovation and Commercialisation', cohort: '20 Fall', numLecturers: 3, numStudents: 74, attendanceRate: 0, attendanceTarget: 0.85, passRate: 0, passTarget: 0.80, submitRate: 0 },
   { id: 'c9', programId: 'p3', name: 'Business Law', cohort: '20 Fall', numLecturers: 3, numStudents: 67, attendanceRate: 0, attendanceTarget: 0.85, passRate: 0, passTarget: 0.80, submitRate: 0 },
+  
+  // p7: BBAE
+  { id: 'c10', programId: 'p7', name: 'Global Marketing', cohort: 'K15', numLecturers: 1, numStudents: 25, attendanceRate: 0.880, attendanceTarget: 0.85, passRate: 0.820, passTarget: 0.80, submitRate: 0.750 },
+  { id: 'c11', programId: 'p7', name: 'Strategic Management', cohort: 'K15', numLecturers: 1, numStudents: 25, attendanceRate: 0.920, attendanceTarget: 0.85, passRate: 0.850, passTarget: 0.80, submitRate: 0.750 },
+  
+  // p1: Năm 1
+  { id: 'c12', programId: 'p1', name: 'English for Academic Purposes', cohort: '2025', numLecturers: 5, numStudents: 150, attendanceRate: 0.950, attendanceTarget: 0.85, passRate: 0.900, passTarget: 0.80, submitRate: 0.750 },
 ];
 
 // ==================== COORDINATOR PROGRAMME STATS (from Excel) ====================

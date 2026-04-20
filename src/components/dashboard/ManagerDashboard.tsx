@@ -63,11 +63,27 @@ function AskQuestionDialog({ toUserId, context, contextType, contextId, managerI
 }
 
 export default function ManagerDashboard() {
-  const { hasAnyRole, currentUserId } = useApp();
-  const staffUsers = users.filter(u => u.role === 'staff');
-  const allTasks = tasks;
+  const { hasAnyRole, currentUserId, selectedProgramId } = useApp();
+  
+  const filteredPrograms = selectedProgramId === 'all' 
+    ? programs 
+    : programs.filter(p => p.id === selectedProgramId);
+    
+  const filteredTasks = selectedProgramId === 'all' 
+    ? tasks 
+    : tasks.filter(t => t.programId === selectedProgramId);
+
+  const staffUsers = selectedProgramId === 'all'
+    ? users.filter(u => u.role === 'staff')
+    : users.filter(u => {
+        const isPIC = programs.some(p => p.id === selectedProgramId && (p.managerId === u.id || p.secondaryManagerId === u.id));
+        const hasTasks = tasks.some(t => t.programId === selectedProgramId && t.ownerId === u.id);
+        return isPIC || hasTasks;
+      });
+
+  const allTasks = filteredTasks;
   const doneTasks = allTasks.filter(t => t.status === 'DONE');
-  const overdueTasks = getOverdueTasks();
+  const overdueTasks = getOverdueTasks().filter(t => selectedProgramId === 'all' || t.programId === selectedProgramId);
   const blockedTasks = allTasks.filter(t => t.status === 'BLOCKED');
   const isLeader = hasAnyRole('institute_leader');
   const period = 'Kỳ 2 2024-2025';
@@ -96,8 +112,8 @@ export default function ManagerDashboard() {
   }).sort((a, b) => b.rate - a.rate);
 
   // Program risk
-  const programRisk = programs.map(p => {
-    const pTasks = allTasks.filter(t => t.programId === p.id);
+  const programRisk = filteredPrograms.map(p => {
+    const pTasks = tasks.filter(t => t.programId === p.id);
     const pOverdue = overdueTasks.filter(t => t.programId === p.id);
     return { program: p, total: pTasks.length, overdue: pOverdue.length, rate: pTasks.length > 0 ? pOverdue.length / pTasks.length : 0 };
   }).filter(p => p.total > 0).sort((a, b) => b.rate - a.rate);

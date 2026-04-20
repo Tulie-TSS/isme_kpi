@@ -1,13 +1,26 @@
-'use client';
-import { users, kpiSnapshots, kpiDefinitions, calculateOverallKPI } from '@/lib/mock-data';
+import { users, kpiSnapshots, kpiDefinitions, calculateOverallKPI, programs, getUserById } from '@/lib/mock-data';
 import { useState } from 'react';
+import { useApp } from '@/lib/context';
+import { ShieldCheck } from 'lucide-react';
 
 function getScoreColor(s: number) { return s >= 85 ? '#047857' : s >= 60 ? '#D97706' : '#DC2626'; }
 function getScoreBg(s: number) { return s >= 85 ? '#D1FAE5' : s >= 60 ? '#FEF3C7' : '#FEE2E2'; }
 
 export default function HeatmapPage() {
+  const { selectedProgramId } = useApp();
   const period = 'Kỳ 2 2025-2026';
-  const staffUsers = users.filter(u => u.role === 'staff');
+  
+  const staffUsers = selectedProgramId === 'all'
+    ? users.filter(u => u.role === 'staff')
+    : users.filter(u => {
+        const isPIC = programs.some(p => p.id === selectedProgramId && (p.managerId === u.id || p.secondaryManagerId === u.id));
+        const hasTasks = true; // In heatmap we might show PIC regardless of tasks
+        return isPIC;
+      });
+
+  const selectedProgram = programs.find(p => p.id === selectedProgramId);
+  const coordinator = selectedProgram ? getUserById(selectedProgram.managerId) : null;
+  
   const [selectedCell, setSelectedCell] = useState<{ userId: string; kpiId: string } | null>(null);
 
   const selectedSnap = selectedCell
@@ -20,7 +33,15 @@ export default function HeatmapPage() {
     <div className="animate-fade-in">
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>KPI Heatmap</h1>
-        <p style={{ fontSize: 14, color: 'var(--gray-500)' }}>{period} · Click vào ô để xem chi tiết</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>{period} · Click vào ô để xem chi tiết</p>
+          {coordinator && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(5,150,105,0.1)', padding: '2px 10px', borderRadius: 6, border: '1px solid rgba(5,150,105,0.2)' }}>
+              <ShieldCheck size={14} color="#059669" />
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#059669' }}>Phụ trách hệ: {coordinator.name}</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Legend */}

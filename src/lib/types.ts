@@ -12,7 +12,8 @@ export type UserRole =
   | 'operation'              // Điều phối / Operation staff
   | 'coordinator_director'   // Chủ nhiệm CT đồng thời là điều phối
   | 'manager'                // Quản lý
-  | 'institute_leader';      // Lãnh đạo viện đào tạo
+  | 'institute_leader'       // Lãnh đạo viện đào tạo
+  | 'admin';                 // Quản trị viên
 
 export interface User {
   id: string;

@@ -1,3 +1,4 @@
+'use client';
 import { users, kpiSnapshots, kpiDefinitions, calculateOverallKPI, programs, getUserById } from '@/lib/mock-data';
 import { useState } from 'react';
 import { useApp } from '@/lib/context';

@@ -392,6 +392,7 @@ export function getUserRoleLabel(role: UserRole): string {
     coordinator_director: 'CN CT & Điều phối',
     manager: 'Quản lý',
     institute_leader: 'Lãnh đạo Viện',
+    admin: 'Quản trị viên',
   };
   return labels[role] || role;
 }

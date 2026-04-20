@@ -18,8 +18,6 @@ export default function Sidebar() {
   const links: NavLink[] = [
     { href: '/', label: 'Tổng quan', icon: LayoutDashboard },
     { href: '/tasks', label: 'Task', icon: ClipboardList },
-    { href: '/tasks/matrix', label: 'Ma trận Task', icon: Grid3X3 },
-    { href: '/tasks/checklist', label: 'Checklist CV', icon: CheckSquare },
     { href: '/kpi', label: 'KPI Công việc', icon: BarChart3 },
     { href: '/kpi/courses', label: 'KPI Môn học', icon: Table2 },
   ];
@@ -27,10 +25,9 @@ export default function Sidebar() {
   // Manager/Leader/Coordinator_Director can see heatmap
   const isLeader = hasAnyRole('institute_leader');
   
-  // Filter links for Leader: Hide Task management apps
   let filteredLinks = links;
   if (isLeader) {
-    filteredLinks = links.filter(l => !['/tasks', '/tasks/matrix', '/tasks/checklist'].includes(l.href));
+    filteredLinks = links.filter(l => !['/tasks'].includes(l.href));
   }
 
   if (hasAnyRole('manager', 'institute_leader', 'admin') || currentRole === 'manager' || currentRole === 'admin') {

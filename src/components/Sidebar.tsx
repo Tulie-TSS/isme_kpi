@@ -33,7 +33,7 @@ export default function Sidebar() {
     filteredLinks = links.filter(l => !['/tasks', '/tasks/matrix', '/tasks/checklist'].includes(l.href));
   }
 
-  if (hasAnyRole('manager', 'institute_leader', 'coordinator_director') || currentRole === 'manager' || currentRole === 'admin') {
+  if (hasAnyRole('manager', 'institute_leader', 'admin') || currentRole === 'manager' || currentRole === 'admin') {
     filteredLinks.push({ href: '/kpi/heatmap', label: 'KPI Heatmap', icon: BarChart3 });
   }
 

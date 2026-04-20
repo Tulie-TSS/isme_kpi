@@ -2,14 +2,34 @@
 import { users, kpiSnapshots, kpiDefinitions, calculateOverallKPI, programs, getUserById } from '@/lib/mock-data';
 import { useState } from 'react';
 import { useApp } from '@/lib/context';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ShieldAlert } from 'lucide-react';
 
 function getScoreColor(s: number) { return s >= 85 ? '#047857' : s >= 60 ? '#D97706' : '#DC2626'; }
 function getScoreBg(s: number) { return s >= 85 ? '#D1FAE5' : s >= 60 ? '#FEF3C7' : '#FEE2E2'; }
 
 export default function HeatmapPage() {
-  const { selectedProgramId } = useApp();
+  const { selectedProgramId, hasAnyRole } = useApp();
   const period = 'Kỳ 2 2025-2026';
+
+  const isAuthorized = hasAnyRole('manager', 'institute_leader', 'admin');
+
+  if (!isAuthorized) {
+    return (
+      <div className="flex-center" style={{ minHeight: '60vh', flexDirection: 'column', textAlign: 'center' }}>
+        <div style={{ background: 'var(--isme-red-50)', padding: 32, borderRadius: 24, maxWidth: 480 }}>
+          <ShieldAlert size={64} color="var(--isme-red)" style={{ marginBottom: 16 }} />
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: 'var(--gray-900)', marginBottom: 12 }}>Truy cập bị hạn chế</h2>
+          <p style={{ fontSize: 16, color: 'var(--gray-600)', lineHeight: 1.6 }}>
+            Báo cáo tổng hợp KPI (Heatmap) chứa dữ liệu bảo mật giữa các nhân sự. 
+            Chỉ **Quản lý** hoặc **Lãnh đạo Viện** mới có quyền xem bảng tổng hợp này.
+          </p>
+          <p style={{ fontSize: 14, color: 'var(--gray-400)', marginTop: 20 }}>
+            Nếu bạn là chủ nhiệm chương trình, vui lòng theo dõi KPI cá nhân tại Dashboard hoặc mục "KPI Môn học".
+          </p>
+        </div>
+      </div>
+    );
+  }
   
   const staffUsers = selectedProgramId === 'all'
     ? users.filter(u => u.role === 'staff')

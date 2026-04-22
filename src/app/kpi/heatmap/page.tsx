@@ -40,39 +40,31 @@ export default function HeatmapPage() {
   }
   
   const staffUsers = users.filter(u => u.role === 'staff');
-  const [selectedCell, setSelectedCell] = useState<{ userId: string; groupId: string } | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{ userId: string; kpiId: string } | null>(null);
 
+  // We show all Operations KPIs + Overall scores for other 4 groups
+  const opsDefs = kpiDefinitions.filter(d => d.groupId === 'operations');
+  
   const getGroupScore = (userId: string, groupId: string) => {
-    const group = kpiGroups.find(g => g.id === groupId);
-    if (!group) return 0;
-
-    if (groupId === 'operations' || groupId === 'academic_support') {
-      const groupDefs = kpiDefinitions.filter(d => d.groupId === groupId);
-      const groupSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && groupDefs.some(d => d.id === s.kpiDefinitionId));
-      if (groupSnaps.length === 0) return 0;
-      const avg = groupSnaps.reduce((acc, s) => acc + s.score, 0) / groupSnaps.length;
-      return Math.round(avg);
+    if (groupId === 'academic_support') {
+      const defs = kpiDefinitions.filter(d => d.groupId === groupId);
+      const snaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && defs.some(d => d.id === s.kpiDefinitionId));
+      if (snaps.length === 0) return 0;
+      return Math.round(snaps.reduce((acc, s) => acc + s.score, 0) / snaps.length);
     }
-
     if (groupId === 'student_results') {
-      // Mock calculation for heatmap
-      const userCourses = courses; // In real app filter by user
+      const userCourses = courses; 
       if (userCourses.length === 0) return 100;
-      const avg = userCourses.reduce((acc, c) => acc + ((c.attendanceRate / c.attendanceTarget + c.passRate / c.passTarget) / 2), 0) / userCourses.length;
-      return Math.round(avg * 100);
+      return Math.round(userCourses.reduce((acc, c) => acc + ((c.attendanceRate / c.attendanceTarget + c.passRate / c.passTarget) / 2), 0) / userCourses.length * 100);
     }
-
     if (groupId === 'other_activities') {
       const rec = otherActivityRecords.find(r => r.userId === userId && r.period === period);
-      if (!rec) return 0;
-      return [rec.admission, rec.studyAbroad, rec.exchange, rec.otherInstitute].filter(Boolean).length * 25;
+      return rec ? [rec.admission, rec.studyAbroad, rec.exchange, rec.otherInstitute].filter(Boolean).length * 25 : 0;
     }
-
     if (groupId === 'labor_discipline') {
       const rec = laborDisciplineRecords.find(r => r.userId === userId && r.period === period);
       return rec?.score || 0;
     }
-
     return 0;
   };
 
@@ -80,8 +72,8 @@ export default function HeatmapPage() {
     <div className="animate-fade-in">
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Bảng Tổng hợp KPI Nhân sự</h1>
-          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>{period} · So sánh hiệu suất giữa các phòng ban/cá nhân</p>
+          <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>KPI Heatmap</h1>
+          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>{period} · Click vào ô để xem chi tiết</p>
         </div>
         <div style={{ display: 'flex', gap: 16, fontSize: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#D1FAE5' }} /> ≥85 Tốt</div>
@@ -90,21 +82,30 @@ export default function HeatmapPage() {
         </div>
       </div>
 
-      <div className="card" style={{ overflowX: 'auto', padding: 0, border: '1px solid var(--gray-200)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="card" style={{ overflowX: 'auto', padding: 20, border: '1px solid var(--gray-200)' }}>
+        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '4px 8px', tableLayout: 'fixed' }}>
           <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '2px solid var(--gray-200)' }}>
-              <th style={{ textAlign: 'left', padding: '16px 20px', fontSize: 12, fontWeight: 700, minWidth: 200, position: 'sticky', left: 0, background: '#F8FAFC', zIndex: 10 }}>
-                NHÂN VIÊN
+            <tr>
+              <th style={{ textAlign: 'left', padding: '0 12px', fontSize: 12, color: 'var(--gray-500)', fontWeight: 600, width: 220, position: 'sticky', left: 0, background: 'white', zIndex: 10 }}>
+                Nhân viên
               </th>
-              {kpiGroups.map(g => (
-                <th key={g.id} style={{ textAlign: 'center', padding: '12px', fontSize: 11, fontWeight: 700, borderLeft: '1px solid var(--gray-100)' }}>
-                  <div style={{ color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{g.name}</div>
-                  <div style={{ fontSize: 13, color: 'var(--isme-red)' }}>{g.weight}%</div>
+              {opsDefs.map(d => (
+                <th key={d.id} style={{ textAlign: 'center', verticalAlign: 'bottom', padding: '0 4px', fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, width: 85 }}>
+                  <div style={{ marginBottom: 4, lineHeight: 1.2 }}>{d.name}</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 400 }}>{d.weight}%</div>
                 </th>
               ))}
-              <th style={{ textAlign: 'center', padding: '12px', fontSize: 12, fontWeight: 800, background: '#F1F5F9', borderLeft: '2px solid var(--gray-200)' }}>
-                KPI TỔNG
+              {/* Summary columns for other categories */}
+              <th style={{ textAlign: 'center', verticalAlign: 'bottom', padding: '0 4px', fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, width: 85 }}>
+                <div style={{ marginBottom: 4 }}>Hỗ trợ HT</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 400 }}>20%</div>
+              </th>
+              <th style={{ textAlign: 'center', verticalAlign: 'bottom', padding: '0 4px', fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, width: 85 }}>
+                <div style={{ marginBottom: 4 }}>Kết quả SV</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 400 }}>10%</div>
+              </th>
+              <th style={{ textAlign: 'center', verticalAlign: 'bottom', padding: '0 4px', fontSize: 11, color: 'var(--gray-800)', fontWeight: 800, width: 85 }}>
+                Tổng
               </th>
             </tr>
           </thead>
@@ -112,51 +113,51 @@ export default function HeatmapPage() {
             {staffUsers.map(u => {
               const overall = calculateOverallKPI(u.id, period);
               return (
-                <tr key={u.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                  <td style={{ padding: '12px 20px', position: 'sticky', left: 0, background: 'white', zIndex: 5, borderRight: '1px solid var(--gray-100)' }}>
-                    <div style={{ fontWeight: 700, color: 'var(--gray-800)' }}>{u.name}</div>
+                <tr key={u.id}>
+                  <td style={{ padding: '8px 12px', position: 'sticky', left: 0, background: 'white', zIndex: 5 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-800)' }}>{u.name}</div>
                     <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{u.position}</div>
                   </td>
-                  {kpiGroups.map(g => {
-                    const score = getGroupScore(u.id, g.id);
+                  {opsDefs.map(d => {
+                    const snap = kpiSnapshots.find(s => s.userId === u.id && s.kpiDefinitionId === d.id && s.period === period);
+                    const score = snap ? snap.score : 0;
                     return (
-                      <td key={g.id} style={{ padding: 4 }}>
+                      <td key={d.id} style={{ padding: 0 }}>
                         <div
                           style={{
-                            height: 40,
+                            height: 48,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderRadius: 6,
+                            borderRadius: 8,
                             fontSize: 14,
                             fontWeight: 700,
                             background: getScoreBg(score),
                             color: getScoreColor(score),
                             cursor: 'pointer',
-                            transition: 'transform 0.1s'
+                            margin: '0 auto',
+                            width: '100%',
+                            maxWidth: 76
                           }}
-                          onClick={() => setSelectedCell({ userId: u.id, groupId: g.id })}
-                          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                           {score}
                         </div>
                       </td>
                     );
                   })}
-                  <td style={{ padding: 4, background: '#F8FAFC' }}>
-                    <div style={{
-                      height: 40,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 6,
-                      fontSize: 16,
-                      fontWeight: 900,
-                      background: getScoreBg(overall),
-                      color: getScoreColor(overall),
-                      border: '1px solid currentColor'
-                    }}>
+                  {/* Category scores */}
+                  <td style={{ padding: 0 }}>
+                    <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 14, fontWeight: 700, background: getScoreBg(getGroupScore(u.id, 'academic_support')), color: getScoreColor(getGroupScore(u.id, 'academic_support')), width: '100%', maxWidth: 76, margin: '0 auto' }}>
+                      {getGroupScore(u.id, 'academic_support')}
+                    </div>
+                  </td>
+                  <td style={{ padding: 0 }}>
+                    <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 14, fontWeight: 700, background: getScoreBg(getGroupScore(u.id, 'student_results')), color: getScoreColor(getGroupScore(u.id, 'student_results')), width: '100%', maxWidth: 76, margin: '0 auto' }}>
+                      {getGroupScore(u.id, 'student_results')}
+                    </div>
+                  </td>
+                  <td style={{ padding: 0 }}>
+                    <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 16, fontWeight: 900, background: getScoreBg(overall), color: getScoreColor(overall), border: '1px solid currentColor', width: '100%', maxWidth: 76, margin: '0 auto' }}>
                       {overall}
                     </div>
                   </td>
@@ -166,60 +167,6 @@ export default function HeatmapPage() {
           </tbody>
         </table>
       </div>
-
-      {/* Detail Analysis Section */}
-      {selectedCell && (
-        <div className="card animate-fade-in" style={{ marginTop: 24, border: '1px solid var(--gray-200)', background: 'var(--gray-50)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-            <div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)' }}>
-                Chi tiết: {kpiGroups.find(g => g.id === selectedCell.groupId)?.name}
-              </div>
-              <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>
-                Nhân sự: {users.find(u => u.id === selectedCell.userId)?.name}
-              </div>
-            </div>
-            <button 
-              onClick={() => setSelectedCell(null)}
-              style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid var(--gray-300)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
-            > Đóng </button>
-          </div>
-
-          <div style={{ background: 'white', borderRadius: 12, border: '1px solid var(--gray-200)', overflow: 'hidden' }}>
-            {selectedCell.groupId === 'operations' || selectedCell.groupId === 'academic_support' ? (
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead style={{ background: '#F8FAFC' }}>
-                  <tr>
-                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: 12 }}>Chỉ tiêu</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12 }}>Kế hoạch</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12 }}>Thực hiện</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12 }}>Điểm</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {kpiSnapshots
-                    .filter(s => s.userId === selectedCell.userId && s.period === period && kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === selectedCell.groupId)
-                    .map(snap => {
-                      const def = kpiDefinitions.find(d => d.id === snap.kpiDefinitionId);
-                      return (
-                        <tr key={snap.id} style={{ borderBottom: '1px solid var(--gray-50)' }}>
-                          <td style={{ padding: '12px 20px', fontSize: 13, fontWeight: 600 }}>{def?.name}</td>
-                          <td style={{ padding: '12px 20px', textAlign: 'center', fontSize: 13 }}>{snap.targetValue}</td>
-                          <td style={{ padding: '12px 20px', textAlign: 'center', fontSize: 13 }}>{snap.actualValue}</td>
-                          <td style={{ padding: '12px 20px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(snap.score) }}>{snap.score}</td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            ) : (
-              <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>
-                Xem chi tiết tại bảng KPI cá nhân của nhân sự này.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

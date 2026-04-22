@@ -1,7 +1,4 @@
 export type Role = 'staff' | 'manager' | 'admin';
-export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'BLOCKED';
-export type TaskCategory = 'kpi' | 'adhoc';
-export type TaskFrequency = 'yearly' | 'quarterly' | 'monthly' | 'weekly' | 'once';
 export type ProgramType = 'degree' | 'certificate' | 'short_course' | 'event';
 export type ReviewStatus = 'open' | 'in_review' | 'closed';
 export type AlertSeverity = 'info' | 'warning' | 'critical';
@@ -37,6 +34,7 @@ export interface Program {
   secondaryManagerId?: string; // Optional second person in charge (e.g. for BTEC)
 }
 
+// Matching Image 2 columns
 export interface Course {
   id: string;
   programId: string;
@@ -44,59 +42,33 @@ export interface Course {
   cohort: string;
   numLecturers: number;
   numStudents: number;
-  attendanceRate: number;
-  attendanceTarget: number;
-  passRate: number;
-  passTarget: number;
-  submitRate: number;
+  // Kỷ luật
+  attendanceRate: number;      // Tỉ lệ đi học trung bình
+  attendanceTarget: number;    // Mục tiêu kỷ luật
+  // Học tập
+  passRate: number;            // Tỉ lệ pass trung bình
+  submitRate: number;          // Tỉ lệ nộp bài lần đầu đúng hạn
+  passTarget: number;          // Mục tiêu học tập
 }
 
-export interface TaskTemplate {
-  id: string;
+export type KPIGroupId = 'operations' | 'academic_support' | 'student_results' | 'other_activities' | 'labor_discipline';
+
+export interface KPIGroup {
+  id: KPIGroupId;
   name: string;
-  phase: Phase;
-  defaultDurationDays: number;
-  requiresEvidence: boolean;
-  evidenceDescription?: string;
-}
-
-export interface Task {
-  id: string;
-  templateId: string | null;
-  parentId: string | null;
-  category: TaskCategory;
-  frequency: TaskFrequency;
-  kpiDefinitionId: string | null;
-  title: string;
-  description: string;
-  ownerId: string;
-  programId: string;
-  dueDate: string;
-  status: TaskStatus;
-  progress: number;
-  evidenceUrl: string | null;
-  issueFlag: boolean;
-  issueNote: string;
-  completedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  requiresEvidence: boolean;
-  courseName?: string;
-  priority?: 'low' | 'medium' | 'high';
-  tags?: string[];
-  subtasks?: { id: string; title: string; completed: boolean }[];
-  comments?: { id: string; userId: string; content: string; createdAt: string }[];
+  weight: number;             // Total weight of this group (e.g. 50, 20, 10, 10, 10)
 }
 
 export interface KPIDefinition {
   id: string;
+  groupId: KPIGroupId;
+  stt: number;                // Sequence number from Image 1 (1-10)
   name: string;
   shortName: string;
   description: string;
-  formulaType: string;
-  weight: number;
-  thresholds: { excellent: number; good: number; warning: number; critical: number };
+  criteria: string;           // Tiêu chí column in Image 1
   unit: string;
+  weightInGroup?: number;     // Weight within the group if applicable
 }
 
 export interface KPISnapshot {
@@ -105,9 +77,31 @@ export interface KPISnapshot {
   kpiDefinitionId: string;
   period: string;
   score: number;
-  rawNumerator: number;
-  rawDenominator: number;
+  targetValue: number;        // Số lượng được giao
+  actualValue: number;        // Số lượng hoàn thành
+  managerScore?: number;      // Đánh giá của line manager
+  leaderScore?: number;       // Đánh giá của trưởng ban
   calculatedAt: string;
+}
+
+// For Groups with complex sub-structures
+export interface OtherActivityRecord {
+  userId: string;
+  period: string;
+  admission: boolean;         // Tuyển sinh (25%)
+  studyAbroad: boolean;      // Hỗ trợ du học (25%)
+  exchange: boolean;          // Hỗ trợ exchange (25%)
+  otherInstitute: boolean;    // Các hđ khác của Viện (25%)
+  updatedAt: string;
+}
+
+export interface LaborDisciplineRecord {
+  userId: string;
+  period: string;
+  score: number;              // 0-100
+  note: string;
+  updatedBy: string;          // Manager ID
+  updatedAt: string;
 }
 
 // KPI detail items for drill-down (e.g. 7 courses for "6/7" score)
@@ -117,7 +111,6 @@ export interface KPIDetailItem {
   label: string;        // e.g. "Business Strategy"
   achieved: boolean;
   note: string;
-  relatedTaskId?: string;
 }
 
 export interface ReviewCycle {
@@ -141,7 +134,7 @@ export interface Review {
   reviewedAt: string | null;
 }
 
-export type NotificationType = 'overdue' | 'reminder' | 'kpi_warning' | 'review' | 'system' | 'assignment' | 'completion' | 'escalation';
+export type NotificationType = 'kpi_warning' | 'review' | 'system' | 'escalation';
 export type NotificationPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface Notification {
@@ -154,10 +147,9 @@ export interface Notification {
   severity: AlertSeverity;
   read: boolean;
   createdAt: string;
-  taskId?: string;
   actionUrl?: string;
   actionLabel?: string;
-  category: 'task' | 'kpi' | 'review' | 'system';
+  category: 'kpi' | 'review' | 'system';
 }
 
 // ==================== KPI EDIT REQUEST ====================
@@ -171,12 +163,10 @@ export interface KPIEditRequest {
   period: string;
   // Old values
   oldScore: number;
-  oldNumerator: number;
-  oldDenominator: number;
+  oldActualValue: number;
   // New values
   newScore: number;
-  newNumerator: number;
-  newDenominator: number;
+  newActualValue: number;
   // Workflow
   reason: string;             // required reason for the edit
   status: KPIEditStatus;
@@ -215,8 +205,8 @@ export interface ManagerQuestion {
   subject: string;            // question subject
   question: string;           // full question text
   context: string;            // context: KPI name, metric, score, etc.
-  contextType: 'kpi' | 'task' | 'course' | 'general';
-  contextId: string;          // reference ID (kpi def id, task id, course id)
+  contextType: 'kpi' | 'course' | 'general';
+  contextId: string;          // reference ID (kpi def id, course id)
   status: QuestionStatus;
   createdAt: string;
   answer: string;             // staff's answer
@@ -224,3 +214,4 @@ export interface ManagerQuestion {
   managerReply: string;       // manager's follow-up reply
   repliedAt: string | null;
 }
+

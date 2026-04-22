@@ -49,3 +49,4 @@ next-env.d.ts
 /*.patch
 /*~
 .DS_Store
+.git_old

@@ -17,7 +17,6 @@ export default function Sidebar() {
   // Build links based on multi-role permissions
   const links: NavLink[] = [
     { href: '/', label: 'Tổng quan', icon: LayoutDashboard },
-    { href: '/tasks', label: 'Task', icon: ClipboardList },
     { href: '/kpi', label: 'KPI Công việc', icon: BarChart3 },
     { href: '/kpi/courses', label: 'KPI Môn học', icon: Table2 },
   ];
@@ -25,10 +24,7 @@ export default function Sidebar() {
   // Manager/Leader/Coordinator_Director can see heatmap
   const isLeader = hasAnyRole('institute_leader');
   
-  let filteredLinks = links;
-  if (isLeader) {
-    filteredLinks = links.filter(l => !['/tasks'].includes(l.href));
-  }
+  let filteredLinks = [...links];
 
   if (hasAnyRole('manager', 'institute_leader', 'admin') || currentRole === 'manager' || currentRole === 'admin') {
     filteredLinks.push({ href: '/kpi/heatmap', label: 'KPI Heatmap', icon: BarChart3 });

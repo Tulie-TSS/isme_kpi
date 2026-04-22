@@ -19,7 +19,6 @@ const priorityConfig = {
 
 const categoryFilter = [
   { key: 'all', label: 'Tất cả' },
-  { key: 'task', label: 'Công việc' },
   { key: 'kpi', label: 'KPI' },
   { key: 'review', label: 'Đánh giá' },
   { key: 'system', label: 'Hệ thống' },
@@ -197,11 +196,7 @@ export default function Header() {
                       <ArrowUpRight size={16} /> {selectedNotif.actionLabel || 'Xem chi tiết'}
                     </button>
                   )}
-                  {selectedNotif.taskId && (
-                    <button onClick={() => { router.push(`/tasks/${selectedNotif.taskId}`); setShowNotif(false); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
-                      Mở task liên quan
-                    </button>
-                  )}
+
                 </div>
               ) : (
                 <div style={{ flex: 1, overflowY: 'auto' }}>

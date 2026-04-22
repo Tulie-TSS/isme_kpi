@@ -1,15 +1,26 @@
 'use client';
-import { users, kpiSnapshots, kpiDefinitions, calculateOverallKPI, programs, getUserById } from '@/lib/mock-data';
+import { 
+  users, 
+  kpiSnapshots, 
+  kpiDefinitions, 
+  calculateOverallKPI, 
+  programs, 
+  getUserById, 
+  kpiGroups,
+  otherActivityRecords,
+  laborDisciplineRecords,
+  courses
+} from '@/lib/mock-data';
 import { useState } from 'react';
 import { useApp } from '@/lib/context';
-import { ShieldCheck, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Target, Users as UsersIcon, Award, BookOpen, ShieldCheck as LaborIcon } from 'lucide-react';
 
 function getScoreColor(s: number) { return s >= 85 ? '#047857' : s >= 60 ? '#D97706' : '#DC2626'; }
 function getScoreBg(s: number) { return s >= 85 ? '#D1FAE5' : s >= 60 ? '#FEF3C7' : '#FEE2E2'; }
 
 export default function HeatmapPage() {
   const { selectedProgramId, hasAnyRole } = useApp();
-  const period = 'Kỳ 2 2025-2026';
+  const period = 'Kỳ 2 2024-2025';
 
   const isAuthorized = hasAnyRole('manager', 'institute_leader', 'admin');
 
@@ -23,70 +34,77 @@ export default function HeatmapPage() {
             Báo cáo tổng hợp KPI (Heatmap) chứa dữ liệu bảo mật giữa các nhân sự. 
             Chỉ **Quản lý** hoặc **Lãnh đạo Viện** mới có quyền xem bảng tổng hợp này.
           </p>
-          <p style={{ fontSize: 14, color: 'var(--gray-400)', marginTop: 20 }}>
-            Nếu bạn là chủ nhiệm chương trình, vui lòng theo dõi KPI cá nhân tại Dashboard hoặc mục "KPI Môn học".
-          </p>
         </div>
       </div>
     );
   }
   
-  const staffUsers = selectedProgramId === 'all'
-    ? users.filter(u => u.role === 'staff')
-    : users.filter(u => {
-        const isPIC = programs.some(p => p.id === selectedProgramId && (p.managerId === u.id || p.secondaryManagerId === u.id));
-        const hasTasks = true; // In heatmap we might show PIC regardless of tasks
-        return isPIC;
-      });
+  const staffUsers = users.filter(u => u.role === 'staff');
+  const [selectedCell, setSelectedCell] = useState<{ userId: string; groupId: string } | null>(null);
 
-  const selectedProgram = programs.find(p => p.id === selectedProgramId);
-  const coordinator = selectedProgram ? getUserById(selectedProgram.managerId) : null;
-  
-  const [selectedCell, setSelectedCell] = useState<{ userId: string; kpiId: string } | null>(null);
+  const getGroupScore = (userId: string, groupId: string) => {
+    const group = kpiGroups.find(g => g.id === groupId);
+    if (!group) return 0;
 
-  const selectedSnap = selectedCell
-    ? kpiSnapshots.find(s => s.userId === selectedCell.userId && s.kpiDefinitionId === selectedCell.kpiId && s.period === period)
-    : null;
-  const selectedDef = selectedCell ? kpiDefinitions.find(k => k.id === selectedCell.kpiId) : null;
-  const selectedUser = selectedCell ? users.find(u => u.id === selectedCell.userId) : null;
+    if (groupId === 'operations' || groupId === 'academic_support') {
+      const groupDefs = kpiDefinitions.filter(d => d.groupId === groupId);
+      const groupSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && groupDefs.some(d => d.id === s.kpiDefinitionId));
+      if (groupSnaps.length === 0) return 0;
+      const avg = groupSnaps.reduce((acc, s) => acc + s.score, 0) / groupSnaps.length;
+      return Math.round(avg);
+    }
+
+    if (groupId === 'student_results') {
+      // Mock calculation for heatmap
+      const userCourses = courses; // In real app filter by user
+      if (userCourses.length === 0) return 100;
+      const avg = userCourses.reduce((acc, c) => acc + ((c.attendanceRate / c.attendanceTarget + c.passRate / c.passTarget) / 2), 0) / userCourses.length;
+      return Math.round(avg * 100);
+    }
+
+    if (groupId === 'other_activities') {
+      const rec = otherActivityRecords.find(r => r.userId === userId && r.period === period);
+      if (!rec) return 0;
+      return [rec.admission, rec.studyAbroad, rec.exchange, rec.otherInstitute].filter(Boolean).length * 25;
+    }
+
+    if (groupId === 'labor_discipline') {
+      const rec = laborDisciplineRecords.find(r => r.userId === userId && r.period === period);
+      return rec?.score || 0;
+    }
+
+    return 0;
+  };
 
   return (
     <div className="animate-fade-in">
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>KPI Heatmap</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>{period} · Click vào ô để xem chi tiết</p>
-          {coordinator && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(5,150,105,0.1)', padding: '2px 10px', borderRadius: 6, border: '1px solid rgba(5,150,105,0.2)' }}>
-              <ShieldCheck size={14} color="#059669" />
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#059669' }}>Phụ trách hệ: {coordinator.name}</span>
-            </div>
-          )}
+      <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div>
+          <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Bảng Tổng hợp KPI Nhân sự</h1>
+          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>{period} · So sánh hiệu suất giữa các phòng ban/cá nhân</p>
+        </div>
+        <div style={{ display: 'flex', gap: 16, fontSize: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#D1FAE5' }} /> ≥85 Tốt</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#FEF3C7' }} /> 60–84 Cần cải thiện</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#FEE2E2' }} /> &lt;60 Cảnh báo</div>
         </div>
       </div>
 
-      {/* Legend */}
-      <div style={{ display: 'flex', gap: 16, marginBottom: 20, fontSize: 12 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 16, height: 16, borderRadius: 4, background: '#D1FAE5' }} /> ≥85 Tốt</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 16, height: 16, borderRadius: 4, background: '#FEF3C7' }} /> 60–84 Cần cải thiện</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 16, height: 16, borderRadius: 4, background: '#FEE2E2' }} /> &lt;60 Cảnh báo</div>
-      </div>
-
-      <div className="card" style={{ overflowX: 'auto', padding: 20 }}>
-        <table style={{ borderCollapse: 'separate', borderSpacing: 4, width: '100%' }}>
+      <div className="card" style={{ overflowX: 'auto', padding: 0, border: '1px solid var(--gray-200)' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr>
-              <th style={{ textAlign: 'left', padding: '8px 12px', fontSize: 12, color: 'var(--gray-500)', fontWeight: 600, minWidth: 180, position: 'sticky', left: 0, background: 'white', zIndex: 1 }}>
-                Nhân viên
+            <tr style={{ background: '#F8FAFC', borderBottom: '2px solid var(--gray-200)' }}>
+              <th style={{ textAlign: 'left', padding: '16px 20px', fontSize: 12, fontWeight: 700, minWidth: 200, position: 'sticky', left: 0, background: '#F8FAFC', zIndex: 10 }}>
+                NHÂN VIÊN
               </th>
-              {kpiDefinitions.map(k => (
-                <th key={k.id} style={{ textAlign: 'center', padding: '6px 4px', fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, minWidth: 68 }}>
-                  <div>{k.shortName}</div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 400 }}>{k.weight}%</div>
+              {kpiGroups.map(g => (
+                <th key={g.id} style={{ textAlign: 'center', padding: '12px', fontSize: 11, fontWeight: 700, borderLeft: '1px solid var(--gray-100)' }}>
+                  <div style={{ color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{g.name}</div>
+                  <div style={{ fontSize: 13, color: 'var(--isme-red)' }}>{g.weight}%</div>
                 </th>
               ))}
-              <th style={{ textAlign: 'center', padding: '8px', fontSize: 13, color: 'var(--gray-800)', fontWeight: 700, minWidth: 68 }}>
-                Tổng
+              <th style={{ textAlign: 'center', padding: '12px', fontSize: 12, fontWeight: 800, background: '#F1F5F9', borderLeft: '2px solid var(--gray-200)' }}>
+                KPI TỔNG
               </th>
             </tr>
           </thead>
@@ -94,34 +112,51 @@ export default function HeatmapPage() {
             {staffUsers.map(u => {
               const overall = calculateOverallKPI(u.id, period);
               return (
-                <tr key={u.id}>
-                  <td style={{ padding: '8px 12px', fontSize: 13, fontWeight: 500, position: 'sticky', left: 0, background: 'white', zIndex: 1 }}>
-                    <div style={{ fontWeight: 600 }}>{u.name}</div>
+                <tr key={u.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
+                  <td style={{ padding: '12px 20px', position: 'sticky', left: 0, background: 'white', zIndex: 5, borderRight: '1px solid var(--gray-100)' }}>
+                    <div style={{ fontWeight: 700, color: 'var(--gray-800)' }}>{u.name}</div>
                     <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{u.position}</div>
                   </td>
-                  {kpiDefinitions.map(k => {
-                    const snap = kpiSnapshots.find(s => s.userId === u.id && s.kpiDefinitionId === k.id && s.period === period);
-                    const score = snap ? Math.min(snap.score, 100) : 0;
-                    const isSelected = selectedCell?.userId === u.id && selectedCell?.kpiId === k.id;
+                  {kpiGroups.map(g => {
+                    const score = getGroupScore(u.id, g.id);
                     return (
-                      <td key={k.id} style={{ padding: 2 }}>
+                      <td key={g.id} style={{ padding: 4 }}>
                         <div
-                          className="heatmap-cell"
-                          onClick={() => setSelectedCell({ userId: u.id, kpiId: k.id })}
                           style={{
+                            height: 40,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 6,
+                            fontSize: 14,
+                            fontWeight: 700,
                             background: getScoreBg(score),
                             color: getScoreColor(score),
-                            outline: isSelected ? '2px solid var(--isme-red)' : 'none',
-                            outlineOffset: 1,
+                            cursor: 'pointer',
+                            transition: 'transform 0.1s'
                           }}
+                          onClick={() => setSelectedCell({ userId: u.id, groupId: g.id })}
+                          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
                           {score}
                         </div>
                       </td>
                     );
                   })}
-                  <td style={{ padding: 2 }}>
-                    <div className="heatmap-cell" style={{ background: getScoreBg(overall), color: getScoreColor(overall), fontWeight: 800, width: 64 }}>
+                  <td style={{ padding: 4, background: '#F8FAFC' }}>
+                    <div style={{
+                      height: 40,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 6,
+                      fontSize: 16,
+                      fontWeight: 900,
+                      background: getScoreBg(overall),
+                      color: getScoreColor(overall),
+                      border: '1px solid currentColor'
+                    }}>
                       {overall}
                     </div>
                   </td>
@@ -132,30 +167,56 @@ export default function HeatmapPage() {
         </table>
       </div>
 
-      {/* Detail panel */}
-      {selectedSnap && selectedDef && selectedUser && (
-        <div className="card animate-fade-in" style={{ marginTop: 16, border: '2px solid var(--isme-red-200)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+      {/* Detail Analysis Section */}
+      {selectedCell && (
+        <div className="card animate-fade-in" style={{ marginTop: 24, border: '1px solid var(--gray-200)', background: 'var(--gray-50)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 700 }}>{selectedUser.name}</div>
-              <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>{selectedDef.name}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)' }}>
+                Chi tiết: {kpiGroups.find(g => g.id === selectedCell.groupId)?.name}
+              </div>
+              <div style={{ fontSize: 14, color: 'var(--gray-500)' }}>
+                Nhân sự: {users.find(u => u.id === selectedCell.userId)?.name}
+              </div>
             </div>
-            <div style={{ fontSize: 32, fontWeight: 800, color: getScoreColor(selectedSnap.score) }}>{selectedSnap.score}</div>
+            <button 
+              onClick={() => setSelectedCell(null)}
+              style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid var(--gray-300)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+            > Đóng </button>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 12 }}>{selectedDef.description}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
-            <div style={{ padding: '12px 16px', background: 'var(--gray-50)', borderRadius: 10, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Hoàn thành</div>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>{selectedSnap.rawNumerator}/{selectedSnap.rawDenominator}</div>
-            </div>
-            <div style={{ padding: '12px 16px', background: 'var(--gray-50)', borderRadius: 10, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Trọng số</div>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>{selectedDef.weight}%</div>
-            </div>
-            <div style={{ padding: '12px 16px', background: 'var(--gray-50)', borderRadius: 10, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Đơn vị</div>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>{selectedDef.unit}</div>
-            </div>
+
+          <div style={{ background: 'white', borderRadius: 12, border: '1px solid var(--gray-200)', overflow: 'hidden' }}>
+            {selectedCell.groupId === 'operations' || selectedCell.groupId === 'academic_support' ? (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead style={{ background: '#F8FAFC' }}>
+                  <tr>
+                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: 12 }}>Chỉ tiêu</th>
+                    <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12 }}>Kế hoạch</th>
+                    <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12 }}>Thực hiện</th>
+                    <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12 }}>Điểm</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {kpiSnapshots
+                    .filter(s => s.userId === selectedCell.userId && s.period === period && kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === selectedCell.groupId)
+                    .map(snap => {
+                      const def = kpiDefinitions.find(d => d.id === snap.kpiDefinitionId);
+                      return (
+                        <tr key={snap.id} style={{ borderBottom: '1px solid var(--gray-50)' }}>
+                          <td style={{ padding: '12px 20px', fontSize: 13, fontWeight: 600 }}>{def?.name}</td>
+                          <td style={{ padding: '12px 20px', textAlign: 'center', fontSize: 13 }}>{snap.targetValue}</td>
+                          <td style={{ padding: '12px 20px', textAlign: 'center', fontSize: 13 }}>{snap.actualValue}</td>
+                          <td style={{ padding: '12px 20px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(snap.score) }}>{snap.score}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            ) : (
+              <div style={{ padding: 40, textAlign: 'center', color: 'var(--gray-500)' }}>
+                Xem chi tiết tại bảng KPI cá nhân của nhân sự này.
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -12,6 +12,9 @@ export const kpiGroups: KPIGroup[] = [
 // ==================== USERS ====================
 export const users: User[] = [
   { id: 'u1', name: 'Hồ Hoàng Lan', email: 'lan.hh@isme.edu.vn', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Trưởng Ban Đào tạo đại học' },
+  { id: 'u14', name: 'Nguyễn Chính', email: 'nguyen.chinh@isneu.org', role: 'admin', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Admin gốc' },
+  { id: 'u15', name: 'Hồ Hoàng Lan (Admin)', email: 'ho.lan@isneu.org', role: 'admin', roles: ['admin'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị viên' },
+  { id: 'u0', name: 'Admin System', email: 'admin@isme.edu.vn', role: 'admin', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị hệ thống' },
   { id: 'u8', name: 'Nguyễn Minh Tuấn', email: 'nguyen.tuan@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CN CT BBAE' },
   { id: 'u9', name: 'Đoàn Thu Hương Giang', email: 'doan.giang@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CN CT BTEC' },
 ];

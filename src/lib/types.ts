@@ -68,6 +68,7 @@ export interface KPIDefinition {
   description: string;
   criteria: string;           // Tiêu chí column in Image 1
   unit: string;
+  weight?: number;
   weightInGroup?: number;     // Weight within the group if applicable
 }
 
@@ -82,6 +83,8 @@ export interface KPISnapshot {
   managerScore?: number;      // Đánh giá của line manager
   leaderScore?: number;       // Đánh giá của trưởng ban
   calculatedAt: string;
+  rawNumerator?: number;
+  rawDenominator?: number;
 }
 
 // For Groups with complex sub-structures
@@ -164,9 +167,13 @@ export interface KPIEditRequest {
   // Old values
   oldScore: number;
   oldActualValue: number;
+  oldNumerator?: number;
+  oldDenominator?: number;
   // New values
   newScore: number;
   newActualValue: number;
+  newNumerator?: number;
+  newDenominator?: number;
   // Workflow
   reason: string;             // required reason for the edit
   status: KPIEditStatus;

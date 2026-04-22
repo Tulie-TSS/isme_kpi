@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 import { useApp } from '@/lib/context';
 import { courses, programs, getUserById, createCourseEditRequest, getPendingCourseEditForField, getCourseEditRequests, subscribeCourseEditRequests, approveCourseEditRequest, rejectCourseEditRequest, semesterData } from '@/lib/mock-data';

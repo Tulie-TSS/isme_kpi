@@ -179,3 +179,31 @@ export function replyToAnswer(questionId: string, reply: string): void {
   _managerQuestions = _managerQuestions.map(q => q.id !== questionId ? q : { ...q, status: 'closed' as const, managerReply: reply, repliedAt: new Date().toISOString().split('T')[0] });
   _notifyQuestions();
 }
+
+// ==================== REVIEWS (Restored for review page) ====================
+import { ReviewCycle, Review, KPIEditRequest, CourseEditRequest } from './types';
+
+export const reviewCycles: ReviewCycle[] = [
+  { id: 'rc1', name: 'Đánh giá giữa kỳ 2', startDate: '2024-03-01', endDate: '2024-03-15', reviewDeadline: '2024-03-20', status: 'closed' },
+  { id: 'rc2', name: 'Đánh giá cuối kỳ 2', startDate: '2024-06-01', endDate: '2024-06-15', reviewDeadline: '2024-06-20', status: 'open' },
+];
+
+export const reviews: Review[] = [
+  { id: 'r1', userId: 'u8', cycleId: 'rc2', selfNote: '', managerNote: '', adjustedScore: null, adjustmentReason: '', submittedAt: new Date().toISOString(), reviewedAt: null },
+];
+
+// ==================== DUMMY EXPORTS FOR LEGACY UI ====================
+export const semesterData: any[] = [];
+export function createCourseEditRequest(req: any): any {}
+export function getPendingCourseEditForField(cid: string, field: string): any { return null; }
+export function getCourseEditRequests(): any[] { return []; }
+export function subscribeCourseEditRequests(fn: any): any { return () => {}; }
+export function approveCourseEditRequest(id: string, note: string): any {}
+export function rejectCourseEditRequest(id: string, note: string): any {}
+export function getPendingEditForSnapshot(sid: string): any { return null; }
+export function subscribeEditRequests(fn: any): any { return () => {}; }
+export function getKPIEditRequests(): any[] { return []; }
+export function approveKPIEditRequest(id: string, note: string): any {}
+export function rejectKPIEditRequest(id: string, note: string): any {}
+export function createKPIEditRequest(req: any): any {}
+

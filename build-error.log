@@ -1,0 +1,39 @@
+.next/dev/types/validator.ts(114,39): error TS2307: Cannot find module '../../../src/app/tasks/[id]/page.js' or its corresponding type declarations.
+.next/dev/types/validator.ts(123,39): error TS2307: Cannot find module '../../../src/app/tasks/checklist/page.js' or its corresponding type declarations.
+.next/dev/types/validator.ts(132,39): error TS2307: Cannot find module '../../../src/app/tasks/matrix/page.js' or its corresponding type declarations.
+.next/dev/types/validator.ts(141,39): error TS2307: Cannot find module '../../../src/app/tasks/page.js' or its corresponding type declarations.
+src/app/kpi/courses/page.tsx(3,42): error TS2305: Module '"@/lib/mock-data"' has no exported member 'createCourseEditRequest'.
+src/app/kpi/courses/page.tsx(3,67): error TS2305: Module '"@/lib/mock-data"' has no exported member 'getPendingCourseEditForField'.
+src/app/kpi/courses/page.tsx(3,97): error TS2305: Module '"@/lib/mock-data"' has no exported member 'getCourseEditRequests'.
+src/app/kpi/courses/page.tsx(3,120): error TS2305: Module '"@/lib/mock-data"' has no exported member 'subscribeCourseEditRequests'.
+src/app/kpi/courses/page.tsx(3,149): error TS2305: Module '"@/lib/mock-data"' has no exported member 'approveCourseEditRequest'.
+src/app/kpi/courses/page.tsx(3,175): error TS2305: Module '"@/lib/mock-data"' has no exported member 'rejectCourseEditRequest'.
+src/app/kpi/courses/page.tsx(3,200): error TS2305: Module '"@/lib/mock-data"' has no exported member 'semesterData'.
+src/app/kpi/heatmap/page.tsx(95,95): error TS2339: Property 'weight' does not exist on type 'KPIDefinition'.
+src/app/kpi/page.tsx(10,3): error TS2305: Module '"@/lib/mock-data"' has no exported member 'getPendingEditForSnapshot'.
+src/app/kpi/page.tsx(11,3): error TS2305: Module '"@/lib/mock-data"' has no exported member 'subscribeEditRequests'.
+src/app/review/page.tsx(4,3): error TS2305: Module '"@/lib/mock-data"' has no exported member 'reviewCycles'.
+src/app/review/page.tsx(5,3): error TS2305: Module '"@/lib/mock-data"' has no exported member 'reviews'.
+src/app/review/page.tsx(38,38): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/app/review/page.tsx(43,37): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/app/review/page.tsx(60,27): error TS7006: Parameter 'rc' implicitly has an 'any' type.
+src/app/review/page.tsx(94,100): error TS7006: Parameter 'r' implicitly has an 'any' type.
+src/app/settings/page.tsx(103,103): error TS2339: Property 'weight' does not exist on type 'KPIDefinition'.
+src/components/kpi/KPIApprovalPanel.tsx(4,10): error TS2305: Module '"@/lib/mock-data"' has no exported member 'getKPIEditRequests'.
+src/components/kpi/KPIApprovalPanel.tsx(4,59): error TS2305: Module '"@/lib/mock-data"' has no exported member 'approveKPIEditRequest'.
+src/components/kpi/KPIApprovalPanel.tsx(4,82): error TS2305: Module '"@/lib/mock-data"' has no exported member 'rejectKPIEditRequest'.
+src/components/kpi/KPIApprovalPanel.tsx(4,104): error TS2305: Module '"@/lib/mock-data"' has no exported member 'subscribeEditRequests'.
+src/components/kpi/KPIApprovalPanel.tsx(125,69): error TS2339: Property 'oldNumerator' does not exist on type 'KPIEditRequest'.
+src/components/kpi/KPIApprovalPanel.tsx(125,88): error TS2339: Property 'oldDenominator' does not exist on type 'KPIEditRequest'.
+src/components/kpi/KPIApprovalPanel.tsx(127,103): error TS2339: Property 'newNumerator' does not exist on type 'KPIEditRequest'.
+src/components/kpi/KPIApprovalPanel.tsx(127,122): error TS2339: Property 'newDenominator' does not exist on type 'KPIEditRequest'.
+src/components/kpi/KPIEditDialog.tsx(4,10): error TS2305: Module '"@/lib/mock-data"' has no exported member 'createKPIEditRequest'.
+src/components/kpi/KPIEditDialog.tsx(4,32): error TS2305: Module '"@/lib/mock-data"' has no exported member 'getPendingEditForSnapshot'.
+src/components/kpi/KPIEditDialog.tsx(15,61): error TS2339: Property 'rawNumerator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(16,65): error TS2339: Property 'rawDenominator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(23,48): error TS2339: Property 'rawNumerator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(23,92): error TS2339: Property 'rawDenominator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(45,30): error TS2339: Property 'rawNumerator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(46,32): error TS2339: Property 'rawDenominator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(124,102): error TS2339: Property 'rawNumerator' does not exist on type 'KPISnapshot'.
+src/components/kpi/KPIEditDialog.tsx(124,126): error TS2339: Property 'rawDenominator' does not exist on type 'KPISnapshot'.

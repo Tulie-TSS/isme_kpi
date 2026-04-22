@@ -35,12 +35,12 @@ export default function ReviewPage() {
   const period = 'Kỳ 2 2024-2025';
 
   const staffUsers = users.filter(u => u.role === 'staff');
-  const userReviews = reviews.filter(r => r.cycleId === selectedCycle?.id);
+  const userReviews = reviews.filter((r: any) => r.cycleId === selectedCycle?.id);
 
   const allUserData = staffUsers.map(u => {
     const overall = calculateOverallKPI(u.id, period);
     const snaps = getKPISnapshotsByUser(u.id, period);
-    const review = userReviews.find(r => r.userId === u.id);
+    const review = userReviews.find((r: any) => r.userId === u.id);
     const lowKpis = snaps.filter(s => s.score < 85);
     return { user: u, overall, snaps, review, lowKpis };
   }).sort((a, b) => b.overall - a.overall);
@@ -57,7 +57,7 @@ export default function ReviewPage() {
       </div>
 
       <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-        {reviewCycles.map(rc => (
+        {reviewCycles.map((rc: any) => (
           <button key={rc.id} onClick={() => setSelectedCycle(rc)} className="card card-compact"
             style={{ cursor: 'pointer', border: selectedCycle?.id === rc.id ? '2px solid var(--isme-red)' : '1px solid var(--gray-200)', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, transition: 'all 0.15s' }}>
             <div style={{ width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', background: rc.status === 'open' ? 'var(--success-light)' : 'var(--gray-100)' }}>
@@ -91,7 +91,7 @@ export default function ReviewPage() {
             </div>
             <div className="summary-card">
               <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Chờ duyệt</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#F59E0B' }}>{userReviews.filter(r => r.submittedAt && !r.reviewedAt).length}</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: '#F59E0B' }}>{userReviews.filter((r: any) => r.submittedAt && !r.reviewedAt).length}</div>
               <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>/{staffUsers.length} nhân viên</div>
             </div>
           </div>

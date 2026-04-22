@@ -50,3 +50,4 @@ next-env.d.ts
 /*~
 .DS_Store
 .git_old
+.env*.local

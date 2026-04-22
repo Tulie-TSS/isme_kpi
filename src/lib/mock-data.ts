@@ -1,4 +1,4 @@
-import { User, Program, Course, KPIDefinition, KPISnapshot, KPIGroup, OtherActivityRecord, LaborDisciplineRecord, Notification, ManagerQuestion, UserRole } from './types';
+import { User, Program, Course, KPIDefinition, KPISnapshot, KPIGroup, OtherActivityRecord, LaborDisciplineRecord, Notification, ManagerQuestion, UserRole, ReviewCycle, Review, KPIEditRequest, CourseEditRequest } from './types';
 
 // ==================== KPI GROUPS ====================
 export const kpiGroups: KPIGroup[] = [
@@ -181,7 +181,6 @@ export function replyToAnswer(questionId: string, reply: string): void {
 }
 
 // ==================== REVIEWS (Restored for review page) ====================
-import { ReviewCycle, Review, KPIEditRequest, CourseEditRequest } from './types';
 
 export const reviewCycles: ReviewCycle[] = [
   { id: 'rc1', name: 'Đánh giá giữa kỳ 2', startDate: '2024-03-01', endDate: '2024-03-15', reviewDeadline: '2024-03-20', status: 'closed' },

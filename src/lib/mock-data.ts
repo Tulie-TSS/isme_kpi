@@ -13,8 +13,24 @@ export const kpiGroups: KPIGroup[] = [
 // ==================== USERS ====================
 export const users: User[] = [
   { id: 'u1', name: 'Hồ Hoàng Lan', email: 'lan.hh@isme.edu.vn', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Trưởng Ban Đào tạo đại học' },
+  { id: 'u14', name: 'Nguyễn Chính', email: 'nguyen.chinh@isneu.org', role: 'manager', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Phó Ban Đào tạo đại học' },
+  { id: 'u0', name: 'Admin System', email: 'admin@isme.edu.vn', role: 'admin', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị hệ thống' },
+  
+  // Leaders
+  { id: 'u20', name: 'Lê Thanh', email: 'le.thanh@isneu.org', role: 'manager', roles: ['institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Lãnh đạo Viện' },
+  { id: 'u21', name: 'Trịnh Giang', email: 'trinh.giang@isneu.org', role: 'manager', roles: ['institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Lãnh đạo Viện' },
+
+  // Coordinators
   { id: 'u8', name: 'Nguyễn Minh Tuấn', email: 'nguyen.tuan@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CN CT BBAE' },
   { id: 'u9', name: 'Đoàn Thu Hương Giang', email: 'doan.giang@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CN CT BTEC' },
+  { id: 'u2', name: 'Vũ Minh Nhật', email: 'vu.nhat@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u3', name: 'Phạm Gia Linh', email: 'pham.gialinh@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u4', name: 'Trần Thị Bích Ngọc', email: 'tran.ngoc@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u5', name: 'Trần Hương Thảo', email: 'tran.thao@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u6', name: 'Nguyễn Giang Khánh Huyền', email: 'nguyen.huyen@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u7', name: 'Đào Ngọc Diệp', email: 'dao.diep@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u10', name: 'Bùi Thu Trang', email: 'bui.thutrang@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
+  { id: 'u11', name: 'Bùi Thị Quỳnh Trang', email: 'bui.trang@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
 ];
 
 // ==================== PROGRAMS ====================
@@ -57,26 +73,41 @@ const d = (offset: number) => {
 
 // ==================== KPI SNAPSHOTS ====================
 export const kpiSnapshots: KPISnapshot[] = [
-  { id: 'ks1', userId: 'u8', kpiDefinitionId: 'op1', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 17, actualValue: 17, rawNumerator: 17, rawDenominator: 17, calculatedAt: d(0) },
-  { id: 'ks2', userId: 'u8', kpiDefinitionId: 'op2', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 41, actualValue: 41, rawNumerator: 41, rawDenominator: 41, calculatedAt: d(0) },
-  { id: 'ks3', userId: 'u8', kpiDefinitionId: 'op3', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 27, actualValue: 27, rawNumerator: 27, rawDenominator: 27, calculatedAt: d(0) },
-  { id: 'ks4', userId: 'u8', kpiDefinitionId: 'op4', period: 'Kỳ 2 2024-2025', score: 94.12, targetValue: 17, actualValue: 16, rawNumerator: 16, rawDenominator: 17, calculatedAt: d(0) },
-  { id: 'ks6', userId: 'u8', kpiDefinitionId: 'op6', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 17, actualValue: 17, rawNumerator: 17, rawDenominator: 17, calculatedAt: d(0) },
-  { id: 'ks7', userId: 'u8', kpiDefinitionId: 'op7', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 1, actualValue: 1, rawNumerator: 1, rawDenominator: 1, calculatedAt: d(0) },
-  { id: 'ks8', userId: 'u8', kpiDefinitionId: 'op8', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 0, actualValue: 0, rawNumerator: 0, rawDenominator: 0, calculatedAt: d(0) },
-  { id: 'ks9', userId: 'u8', kpiDefinitionId: 'op9', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 0, actualValue: 0, rawNumerator: 0, rawDenominator: 0, calculatedAt: d(0) },
-  { id: 'ks10', userId: 'u8', kpiDefinitionId: 'op10', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 17, actualValue: 17, rawNumerator: 17, rawDenominator: 17, calculatedAt: d(0) },
-  { id: 'ks5', userId: 'u8', kpiDefinitionId: 'as5', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 5, actualValue: 5, rawNumerator: 5, rawDenominator: 5, calculatedAt: d(0) },
+  // Nguyễn Minh Tuấn (u8)
+  { id: 'ks_u8_op1', userId: 'u8', kpiDefinitionId: 'op1', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 17, actualValue: 17, rawNumerator: 17, rawDenominator: 17, calculatedAt: d(0) },
+  { id: 'ks_u8_op2', userId: 'u8', kpiDefinitionId: 'op2', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 41, actualValue: 41, rawNumerator: 41, rawDenominator: 41, calculatedAt: d(0) },
+  { id: 'ks_u8_op3', userId: 'u8', kpiDefinitionId: 'op3', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 27, actualValue: 27, rawNumerator: 27, rawDenominator: 27, calculatedAt: d(0) },
+  { id: 'ks_u8_op4', userId: 'u8', kpiDefinitionId: 'op4', period: 'Kỳ 2 2024-2025', score: 94.12, targetValue: 17, actualValue: 16, rawNumerator: 16, rawDenominator: 17, calculatedAt: d(0) },
+  { id: 'ks_u8_op6', userId: 'u8', kpiDefinitionId: 'op6', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 17, actualValue: 17, rawNumerator: 17, rawDenominator: 17, calculatedAt: d(0) },
+  { id: 'ks_u8_op7', userId: 'u8', kpiDefinitionId: 'op7', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 1, actualValue: 1, rawNumerator: 1, rawDenominator: 1, calculatedAt: d(0) },
+  { id: 'ks_u8_op8', userId: 'u8', kpiDefinitionId: 'op8', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 0, actualValue: 0, rawNumerator: 0, rawDenominator: 0, calculatedAt: d(0) },
+  { id: 'ks_u8_op9', userId: 'u8', kpiDefinitionId: 'op9', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 0, actualValue: 0, rawNumerator: 0, rawDenominator: 0, calculatedAt: d(0) },
+  { id: 'ks_u8_op10', userId: 'u8', kpiDefinitionId: 'op10', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 17, actualValue: 17, rawNumerator: 17, rawDenominator: 17, calculatedAt: d(0) },
+  { id: 'ks_u8_as5', userId: 'u8', kpiDefinitionId: 'as5', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 5, actualValue: 5, rawNumerator: 5, rawDenominator: 5, calculatedAt: d(0) },
+
+  // Đào Ngọc Diệp (u7)
+  { id: 'ks_u7_op1', userId: 'u7', kpiDefinitionId: 'op1', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 11, actualValue: 11, rawNumerator: 11, rawDenominator: 11, calculatedAt: d(0) },
+  { id: 'ks_u7_op10', userId: 'u7', kpiDefinitionId: 'op10', period: 'Kỳ 2 2024-2025', score: 81.82, targetValue: 11, actualValue: 9, rawNumerator: 9, rawDenominator: 11, calculatedAt: d(0) },
+  { id: 'ks_u7_op3', userId: 'u7', kpiDefinitionId: 'op3', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 3, actualValue: 3, rawNumerator: 3, rawDenominator: 3, calculatedAt: d(0) },
+
+  // Vũ Minh Nhật (u2)
+  { id: 'ks_u2_op1', userId: 'u2', kpiDefinitionId: 'op1', period: 'Kỳ 2 2024-2025', score: 80, targetValue: 5, actualValue: 4, rawNumerator: 4, rawDenominator: 5, calculatedAt: d(0) },
+
+  // Đoàn Thu Hương Giang (u9)
+  { id: 'ks_u9_op1', userId: 'u9', kpiDefinitionId: 'op1', period: 'Kỳ 2 2024-2025', score: 100, targetValue: 12, actualValue: 12, rawNumerator: 12, rawDenominator: 12, calculatedAt: d(0) },
+  { id: 'ks_u9_op10', userId: 'u9', kpiDefinitionId: 'op10', period: 'Kỳ 2 2024-2025', score: 91.67, targetValue: 12, actualValue: 11, rawNumerator: 11, rawDenominator: 12, calculatedAt: d(0) },
 ];
 
 // ==================== OTHER ACTIVITIES ====================
 export const otherActivityRecords: OtherActivityRecord[] = [
   { userId: 'u8', period: 'Kỳ 2 2024-2025', admission: true, studyAbroad: true, exchange: false, otherInstitute: true, updatedAt: d(0) },
+  { userId: 'u9', period: 'Kỳ 2 2024-2025', admission: true, studyAbroad: false, exchange: false, otherInstitute: true, updatedAt: d(0) },
 ];
 
 // ==================== LABOR DISCIPLINE ====================
 export const laborDisciplineRecords: LaborDisciplineRecord[] = [
   { userId: 'u8', period: 'Kỳ 2 2024-2025', score: 95, note: 'Đi làm đúng giờ, tuân thủ nội quy', updatedBy: 'u1', updatedAt: d(0) },
+  { userId: 'u9', period: 'Kỳ 2 2024-2025', score: 100, note: 'Tốt', updatedBy: 'u1', updatedAt: d(0) },
 ];
 
 // ==================== NOTIFICATIONS ====================
@@ -112,30 +143,31 @@ export function calculateOperationsKPI(userId: string, period: string): number {
 }
 
 export function getKPIDetailsBySnapshot(snapshotId: string): KPIDetailItem[] {
-  if (snapshotId === 'ks4') {
+  if (snapshotId === 'ks_u8_op4') {
     return [
-      { id: 'di1', kpiSnapshotId: 'ks4', label: 'Internship', achieved: true, note: 'Đã nhập điểm' },
-      { id: 'di2', kpiSnapshotId: 'ks4', label: 'Entrepreneurial Skills', achieved: false, note: 'Chưa nhập điểm xong' },
+      { id: 'di1', kpiSnapshotId: 'ks_u8_op4', label: 'Internship', achieved: true, note: 'Đã nhập điểm' },
+      { id: 'di2', kpiSnapshotId: 'ks_u8_op4', label: 'Entrepreneurial Skills', achieved: false, note: 'Chưa nhập điểm xong' },
     ];
   }
   return [];
 }
 
 export function getCoordinatorStats(userId: string): CoordinatorStats | undefined {
-  if (userId === 'u8') {
-    return {
-      userId: 'u8',
-      programme: 'BBAE',
-      totalStudents: 122,
-      totalClasses: 6,
-      totalLecturers: 29,
-      passRateActual: 0.9857,
-      passRateTarget: 0.95,
-      attendanceRateActual: 0.9881,
-      attendanceRateTarget: 0.95,
-    };
-  }
-  return undefined;
+  const user = getUserById(userId);
+  if (!user) return undefined;
+  
+  // Basic stats for demonstration
+  return {
+    userId: user.id,
+    programme: user.id === 'u9' ? 'BTEC' : 'BBAE',
+    totalStudents: user.id === 'u9' ? 145 : 122,
+    totalClasses: user.id === 'u9' ? 5 : 6,
+    totalLecturers: user.id === 'u9' ? 12 : 29,
+    passRateActual: user.id === 'u9' ? 0.85 : 0.9857,
+    passRateTarget: 0.95,
+    attendanceRateActual: user.id === 'u9' ? 0.92 : 0.9881,
+    attendanceRateTarget: 0.95,
+  };
 }
 
 export function calculateOverallKPI(userId: string, period: string): number {

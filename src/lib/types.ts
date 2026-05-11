@@ -168,9 +168,13 @@ export interface KPIEditRequest {
   // Old values
   oldScore: number;
   oldActualValue: number;
+  oldNumerator: number;
+  oldDenominator: number;
   // New values
   newScore: number;
   newActualValue: number;
+  newNumerator: number;
+  newDenominator: number;
   // Workflow
   reason: string;             // required reason for the edit
   status: KPIEditStatus;

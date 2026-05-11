@@ -42,9 +42,11 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
       kpiDefinitionId: snapshot.kpiDefinitionId,
       period: snapshot.period,
       oldScore: snapshot.score,
+      oldActualValue: snapshot.actualValue,
       oldNumerator: snapshot.rawNumerator,
       oldDenominator: snapshot.rawDenominator,
       newScore,
+      newActualValue: newNumerator, // Assuming actualValue is the numerator
       newNumerator,
       newDenominator,
       reason: reason.trim(),

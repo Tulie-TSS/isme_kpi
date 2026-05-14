@@ -565,43 +565,103 @@ export default function ReviewPage() {
 
       {/* KPI Drill-down Modal */}
       {drilldown && (
-        <div className="overlay" onClick={() => setDrilldown(null)} style={{ zIndex: 999 }}>
-          <div className="card animate-scale-in" onClick={e => e.stopPropagation()}
-            style={{ width: '100%', maxWidth: 520, maxHeight: '80vh', overflow: 'auto', padding: 0, position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1000 }}>
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>{drilldown.kpiName}</h3>
-                <div style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 4 }}>
-                  Kết quả: <strong style={{ color: drilldown.num < drilldown.den ? 'var(--warning)' : 'var(--success)' }}>{drilldown.num}/{drilldown.den}</strong>
-                  {drilldown.num < drilldown.den && <span style={{ color: 'var(--danger)', marginLeft: 8 }}>· Thiếu {drilldown.den - drilldown.num} mục</span>}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
+          padding: 20,
+        }} onClick={() => setDrilldown(null)}>
+          <div className="animate-scale-in" onClick={e => e.stopPropagation()} style={{
+            background: 'white', borderRadius: 24, width: '100%', maxWidth: 580,
+            maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            border: '1px solid var(--gray-100)',
+          }}>
+            {/* Header */}
+            <div style={{
+              padding: '24px 32px', borderBottom: '1px solid var(--gray-100)',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              background: 'white',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ 
+                  width: 44, height: 44, borderRadius: 12, 
+                  background: 'rgba(59, 130, 246, 0.1)', color: '#2563EB',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  <BarChart3 size={22} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em' }}>Chi tiết kết quả KPI</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>{drilldown.kpiName}</div>
                 </div>
               </div>
-              <button onClick={() => setDrilldown(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}><X size={20} color="var(--gray-400)" /></button>
+              <button onClick={() => setDrilldown(null)} style={{
+                background: 'var(--gray-50)', border: 'none', borderRadius: 12,
+                width: 36, height: 36, cursor: 'pointer', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+                color: 'var(--gray-400)',
+              }}
+              onMouseOver={e => { (e.currentTarget as any).style.background = 'var(--gray-100)'; (e.currentTarget as any).style.color = 'var(--gray-600)'; }}
+              onMouseOut={e => { (e.currentTarget as any).style.background = 'var(--gray-50)'; (e.currentTarget as any).style.color = 'var(--gray-400)'; }}
+              ><X size={20} /></button>
             </div>
-            <div style={{ padding: '12px 24px 24px' }}>
-              {drilldown.items.map((item, i) => (
-                <div key={item.id} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: 12, padding: '12px 0',
-                  borderBottom: i < drilldown.items.length - 1 ? '1px solid var(--gray-50)' : 'none',
-                }}>
-                  <div style={{
-                    width: 28, height: 28, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0,
-                    background: item.achieved ? '#D1FAE5' : '#FEE2E2',
-                  }}>
-                    {item.achieved ? '✅' : '❌'}
+
+            {/* Content */}
+            <div style={{ padding: '32px', overflowY: 'auto' }}>
+              <div style={{
+                background: 'var(--gray-50)', borderRadius: 20, padding: '20px 24px',
+                border: '1px solid var(--gray-100)', marginBottom: 24,
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+              }}>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>Tổng số đạt được</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: drilldown.num < drilldown.den ? 'var(--warning)' : 'var(--success)' }}>{drilldown.num}</div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-300)' }}>/ {drilldown.den}</div>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2, color: item.achieved ? 'var(--gray-700)' : '#B91C1C' }}>{item.label}</div>
-                    <div style={{ fontSize: 12, color: 'var(--gray-500)' }}>{item.note}</div>
-                  </div>
-                  {item.relatedTaskId && !item.achieved && (
-                    <button onClick={() => { setDrilldown(null); router.push(`/tasks/${item.relatedTaskId}`); }}
-                      style={{ fontSize: 11, color: 'var(--isme-red)', background: 'var(--isme-red-50)', border: 'none', padding: '4px 10px', borderRadius: 6, cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}>
-                      Xử lý <ExternalLink size={12} />
-                    </button>
-                  )}
                 </div>
-              ))}
+                {drilldown.num < drilldown.den && (
+                  <div style={{
+                    padding: '8px 16px', borderRadius: 12, background: '#FEE2E2', color: '#991B1B',
+                    fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6
+                  }}>
+                    <AlertTriangle size={16} /> Thiếu {drilldown.den - drilldown.num} mục
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {drilldown.items.map((item, i) => (
+                  <div key={item.id} style={{
+                    display: 'flex', alignItems: 'flex-start', gap: 16, padding: '16px 20px',
+                    borderRadius: 16, border: '1px solid var(--gray-100)',
+                    background: item.achieved ? 'white' : 'rgba(239, 68, 68, 0.02)',
+                    transition: 'all 0.2s',
+                  }}>
+                    <div style={{
+                      width: 32, height: 32, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0,
+                      background: item.achieved ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                      color: item.achieved ? '#10B981' : '#EF4444',
+                    }}>
+                      {item.achieved ? <CheckCircle size={18} /> : <X size={18} />}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, color: item.achieved ? 'var(--gray-800)' : '#B91C1C' }}>{item.label}</div>
+                      <div style={{ fontSize: 13, color: 'var(--gray-500)', lineHeight: '1.5' }}>{item.note}</div>
+                    </div>
+                    {item.relatedTaskId && !item.achieved && (
+                      <button onClick={() => { setDrilldown(null); router.push(`/tasks/${item.relatedTaskId}`); }}
+                        style={{ fontSize: 12, color: 'white', background: 'var(--isme-red)', border: 'none', padding: '8px 16px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', transition: 'transform 0.2s' }}
+                        onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                        onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+                      >
+                        Xử lý <ExternalLink size={14} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -152,15 +152,21 @@ export default function Header() {
             )}
           </button>
           {showNotif && (
-            <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 8, width: 440, maxHeight: 560, background: 'white', borderRadius: 16, boxShadow: '0 12px 48px rgba(0,0,0,0.15)', border: '1px solid var(--gray-100)', zIndex: 100, display: 'flex', flexDirection: 'column' }} className="animate-scale-in">
+            <div style={{ 
+              position: 'absolute', right: 0, top: '100%', marginTop: 12, width: 440, maxHeight: 560, 
+              background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(20px)',
+              borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.15)', 
+              border: '1px solid rgba(255, 255, 255, 0.5)', zIndex: 100, display: 'flex', flexDirection: 'column',
+              overflow: 'hidden'
+            }} className="animate-scale-in">
               {/* Header */}
-              <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700 }}>Thông báo</span>
-                  {unreadCount > 0 && <span style={{ fontSize: 11, background: 'var(--isme-red)', color: 'white', padding: '1px 8px', borderRadius: 8, fontWeight: 600 }}>{unreadCount} mới</span>}
+              <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>Thông báo</span>
+                  {unreadCount > 0 && <span style={{ fontSize: 11, background: 'var(--isme-red)', color: 'white', padding: '2px 10px', borderRadius: 20, fontWeight: 700 }}>{unreadCount} mới</span>}
                 </div>
                 {unreadCount > 0 && (
-                  <button onClick={markAllRead} style={{ fontSize: 12, color: 'var(--isme-red)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+                  <button onClick={markAllRead} style={{ fontSize: 13, color: 'var(--isme-red)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>
                     Đọc tất cả
                   </button>
                 )}
@@ -254,19 +260,19 @@ export default function Header() {
 
           {showUserMenu && (
             <div style={{
-              position: 'absolute', right: 0, top: '100%', marginTop: 8,
-              background: 'white', borderRadius: 12,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-              border: '1px solid var(--gray-100)',
-              overflow: 'hidden', minWidth: 240, zIndex: 100
+              position: 'absolute', right: 0, top: '100%', marginTop: 12,
+              background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(20px)',
+              borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.15)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              overflow: 'hidden', minWidth: 280, zIndex: 100
             }} className="animate-scale-in">
               {/* User info */}
-              <div style={{ padding: '16px 16px 12px', borderBottom: '1px solid var(--gray-100)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div className="avatar" style={{ background: avatarColors[colorIndex], width: 40, height: 40, fontSize: 16 }}>{initials}</div>
+              <div style={{ padding: '24px 24px 20px', borderBottom: '1px solid var(--gray-100)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                  <div className="avatar" style={{ background: avatarColors[colorIndex], width: 48, height: 48, fontSize: 18, fontWeight: 800 }}>{initials}</div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700 }}>{user?.name}</div>
-                    <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{user?.email}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em' }}>{user?.name}</div>
+                    <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>{user?.email}</div>
                   </div>
                 </div>
               </div>

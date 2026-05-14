@@ -1165,11 +1165,11 @@ html, body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 55;
-  animation: fadeIn 0.2s ease both;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 998;
+  animation: fadeIn 0.3s ease;
 }
 
 /* Enhanced buttons */

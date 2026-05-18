@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context';
-import { LayoutDashboard, ClipboardList, BarChart3, FileText, Settings, GraduationCap, X, Grid3X3, CheckSquare, Table2, Calendar } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, BarChart3, FileText, Settings, GraduationCap, X, Grid3X3, CheckSquare, Table2, Calendar, ShieldCheck } from 'lucide-react';
 
 interface NavLink {
   href: string;
@@ -36,6 +36,11 @@ export default function Sidebar() {
   // Admin settings - Hide for institute_leader
   if ((currentRole === 'admin' || hasAnyRole('manager')) && !isLeader) {
     filteredLinks.push({ href: '/settings', label: 'Cài đặt', icon: Settings });
+  }
+
+  // Root Admin Portal
+  if (currentRole === 'admin' || hasAnyRole('admin')) {
+    filteredLinks.push({ href: '/admin', label: 'Admin Gốc', icon: ShieldCheck });
   }
 
   return (

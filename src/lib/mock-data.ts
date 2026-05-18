@@ -14,7 +14,7 @@ export const kpiGroups: KPIGroup[] = [
 export const users: User[] = [
   { id: 'u1', name: 'Hồ Hoàng Lan', email: 'ho.lan@isneu.org', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Trưởng Ban Đào tạo đại học' },
   { id: 'u14', name: 'Nguyễn Thùy Chinh', email: 'nguyen.chinh@isneu.org', role: 'manager', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Phó Trưởng ban' },
-  { id: 'u0', name: 'Admin System', email: 'admin@isme.edu.vn', role: 'admin', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị hệ thống' },
+  { id: 'u0', name: 'Admin System', email: 'admin@isneu.org', role: 'admin', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị hệ thống' },
   
   // Leaders
   { id: 'u20', name: 'Lê Thanh', email: 'le.thanh@isneu.org', role: 'manager', roles: ['institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Lãnh đạo Viện' },

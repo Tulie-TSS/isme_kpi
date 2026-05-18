@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/auth-context';
 import { 
   Users, Layers, BookOpen, Settings, Plus, Edit3, Trash2, X, 
   Search, ShieldAlert, CheckCircle2, RefreshCw, AlertTriangle, 
-  UserPlus, FolderPlus, Grid, ChevronRight, Check, Play, Info
+  UserPlus, FolderPlus, Grid, ChevronRight, Check, Play, Info, LogIn
 } from 'lucide-react';
 import { User, Program, Course, KPIDefinition, KPIGroup, Role, UserRole, ProgramType } from '@/lib/types';
 
@@ -17,7 +17,7 @@ interface Toast {
 
 export default function AdminPortal() {
   const { currentRole } = useApp();
-  const { user: authUser } = useAuth();
+  const { user: authUser, impersonate } = useAuth();
   
   // States
   const [users, setUsers] = useState<User[]>([]);
@@ -25,6 +25,7 @@ export default function AdminPortal() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [kpiDefinitions, setKpiDefinitions] = useState<KPIDefinition[]>([]);
   const [kpiGroups, setKpiGroups] = useState<KPIGroup[]>([]);
+  const [kpiSnapshots, setKpiSnapshots] = useState<any[]>([]);
   
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -39,6 +40,7 @@ export default function AdminPortal() {
   // Modals / Dialogs States
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [userModalTab, setUserModalTab] = useState<'info' | 'assignments' | 'kpis'>('info');
   
   const [programModalOpen, setProgramModalOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<Program | null>(null);
@@ -56,7 +58,10 @@ export default function AdminPortal() {
   const [userForm, setUserForm] = useState({
     id: '', name: '', email: '', role: 'staff' as Role, 
     roles: [] as UserRole[], managerId: '', avatarUrl: '', 
-    active: true, position: ''
+    active: true, position: '',
+    assignedPrograms: [] as string[],
+    assignedCourses: [] as string[],
+    kpiTargets: {} as Record<string, number>
   });
   
   const [programForm, setProgramForm] = useState({
@@ -100,6 +105,7 @@ export default function AdminPortal() {
         setCourses(data.courses || []);
         setKpiDefinitions(data.kpiDefinitions || []);
         setKpiGroups(data.kpiGroups || []);
+        setKpiSnapshots(data.kpiSnapshots || []);
       } else {
         showToast('error', 'Không thể tải dữ liệu: ' + data.error);
       }
@@ -170,21 +176,42 @@ export default function AdminPortal() {
   // ==================== USER HANDLERS ====================
   const openAddUser = () => {
     setEditingUser(null);
+    setUserModalTab('info');
     setUserForm({
       id: 'u' + (Math.max(...users.map(u => parseInt(u.id.replace('u', '')) || 0)) + 1),
       name: '', email: '', role: 'staff', roles: ['operation'],
-      managerId: '', avatarUrl: '', active: true, position: ''
+      managerId: '', avatarUrl: '', active: true, position: '',
+      assignedPrograms: [],
+      assignedCourses: [],
+      kpiTargets: {}
     });
     setUserModalOpen(true);
   };
 
   const openEditUser = (user: User) => {
     setEditingUser(user);
+    setUserModalTab('info');
+    
+    // Find programs where this user is manager
+    const userPrograms = programs.filter(p => p.managerId === user.id).map(p => p.id);
+    
+    // Find courses where this user is lecturer
+    const userCourses = courses.filter((c: any) => c.lecturerId === user.id).map(c => c.id);
+    
+    // Find KPI targets for this user in 2026-Q1
+    const targets: Record<string, number> = {};
+    kpiSnapshots.filter(s => s.userId === user.id && s.period === '2026-Q1').forEach(s => {
+      targets[s.kpiDefinitionId] = Number(s.targetValue) || 0;
+    });
+
     setUserForm({
       id: user.id, name: user.name, email: user.email, role: user.role,
       roles: user.roles || [], managerId: user.managerId || '', 
       avatarUrl: user.avatarUrl || '', active: user.active !== false,
-      position: user.position || ''
+      position: user.position || '',
+      assignedPrograms: userPrograms,
+      assignedCourses: userCourses,
+      kpiTargets: targets
     });
     setUserModalOpen(true);
   };
@@ -705,7 +732,28 @@ export default function AdminPortal() {
                           </td>
                           <td style={{ padding: '16px 20px', textAlign: 'center' }}>
                             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-                              <button onClick={() => openEditUser(u)} style={{
+                              {u.id !== authUser?.id && (
+                                <button onClick={() => {
+                                  if (window.confirm(`Bạn có chắc chắn muốn đăng nhập giả lập dưới danh nghĩa "${u.name}"?`)) {
+                                    impersonate(u.id);
+                                    showToast('success', `Đang chuyển hướng sang tài khoản ${u.name}...`);
+                                    setTimeout(() => { window.location.href = '/'; }, 1000);
+                                  }
+                                }} 
+                                type="button"
+                                title="Đăng nhập giả lập"
+                                style={{
+                                  padding: 8, borderRadius: 8, border: 'none', background: 'var(--gray-50)', color: 'var(--gray-500)',
+                                  cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s'
+                                }}
+                                onMouseOver={e => { e.currentTarget.style.background = '#D1FAE5'; e.currentTarget.style.color = '#065F46'; }}
+                                onMouseOut={e => { e.currentTarget.style.background = 'var(--gray-50)'; e.currentTarget.style.color = 'var(--gray-500)'; }}
+                                ><LogIn size={16} /></button>
+                              )}
+
+                              <button onClick={() => openEditUser(u)} 
+                              type="button"
+                              style={{
                                 padding: 8, borderRadius: 8, border: 'none', background: 'var(--gray-50)', color: 'var(--gray-500)',
                                 cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s'
                               }}
@@ -713,7 +761,9 @@ export default function AdminPortal() {
                               onMouseOut={e => { e.currentTarget.style.background = 'var(--gray-50)'; e.currentTarget.style.color = 'var(--gray-500)'; }}
                               ><Edit3 size={16} /></button>
                               
-                              <button onClick={() => deleteUser(u.id, u.name)} style={{
+                              <button onClick={() => deleteUser(u.id, u.name)} 
+                              type="button"
+                              style={{
                                 padding: 8, borderRadius: 8, border: 'none', background: 'var(--gray-50)', color: 'var(--gray-500)',
                                 cursor: 'pointer', display: 'flex', alignItems: 'center', transition: 'all 0.2s'
                               }}
@@ -1131,11 +1181,11 @@ export default function AdminPortal() {
           justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)'
         }} onClick={() => setUserModalOpen(false)}>
           <div className="modal-content" style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,
+            background: 'white', borderRadius: 24, width: '100%', maxWidth: 640, padding: 32,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
             border: '1px solid var(--gray-100)'
           }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingUser ? 'Chỉnh sửa Thành viên' : 'Thêm Thành viên Mới'}
               </h3>
@@ -1144,110 +1194,248 @@ export default function AdminPortal() {
               </button>
             </div>
 
+            {/* Modal Tabs */}
+            <div style={{ display: 'flex', gap: 6, borderBottom: '1px solid var(--gray-100)', marginBottom: 20, paddingBottom: 1 }}>
+              {[
+                { id: 'info', label: 'Thông tin cơ bản' },
+                { id: 'assignments', label: 'Phân công Nhiệm vụ' },
+                { id: 'kpis', label: 'Chỉ tiêu KPI' }
+              ].map(t => (
+                <button
+                  key={t.id} type="button" onClick={() => setUserModalTab(t.id as any)}
+                  style={{
+                    padding: '8px 16px', border: 'none', borderBottom: userModalTab === t.id ? '2.5px solid var(--isme-red)' : '2.5px solid transparent',
+                    background: 'none', fontSize: 13, fontWeight: userModalTab === t.id ? 800 : 500,
+                    color: userModalTab === t.id ? 'var(--gray-900)' : 'var(--gray-400)', cursor: 'pointer',
+                    transition: 'all 0.15s'
+                  }}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
             <form onSubmit={saveUser} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>ID Thành viên</label>
-                  <input 
-                    type="text" value={userForm.id} disabled={!!editingUser}
-                    onChange={e => setUserForm({ ...userForm, id: e.target.value })}
-                    style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Họ và Tên</label>
-                  <input 
-                    type="text" value={userForm.name} required
-                    onChange={e => setUserForm({ ...userForm, name: e.target.value })}
-                    style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
-                  />
-                </div>
-              </div>
+              
+              {/* TAB 1: BASIC INFO */}
+              {userModalTab === 'info' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>ID Thành viên</label>
+                      <input 
+                        type="text" value={userForm.id} disabled={!!editingUser}
+                        onChange={e => setUserForm({ ...userForm, id: e.target.value })}
+                        style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Họ và Tên</label>
+                      <input 
+                        type="text" value={userForm.name} required
+                        onChange={e => setUserForm({ ...userForm, name: e.target.value })}
+                        style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Email</label>
-                <input 
-                  type="email" value={userForm.email} required
-                  onChange={e => setUserForm({ ...userForm, email: e.target.value })}
-                  style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Chức danh (Position)</label>
-                  <input 
-                    type="text" value={userForm.position} placeholder="Ví dụ: Điều phối viên"
-                    onChange={e => setUserForm({ ...userForm, position: e.target.value })}
-                    style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Hệ thống Role</label>
-                  <select 
-                    value={userForm.role}
-                    onChange={e => setUserForm({ ...userForm, role: e.target.value as Role })}
-                    style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none', background: 'white' }}
-                  >
-                    <option value="staff">Staff (Nhân viên)</option>
-                    <option value="manager">Manager (Quản lý)</option>
-                    <option value="admin">Admin (Quản trị)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Kiêm nhiệm Roles (Multi-Role)</label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, background: 'var(--gray-50)', padding: 16, borderRadius: 12 }}>
-                  {[
-                    { key: 'operation', label: 'Điều phối viên' },
-                    { key: 'coordinator_director', label: 'Chủ nhiệm CT' },
-                    { key: 'manager', label: 'Quản lý Đào tạo' },
-                    { key: 'institute_leader', label: 'Lãnh đạo Viện' }
-                  ].map(r => {
-                    const checked = userForm.roles.includes(r.key as UserRole);
-                    return (
-                      <label key={r.key} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
-                        <input 
-                          type="checkbox" checked={checked}
-                          onChange={() => {
-                            let newRoles = [...userForm.roles];
-                            if (checked) newRoles = newRoles.filter(x => x !== r.key);
-                            else newRoles.push(r.key as UserRole);
-                            setUserForm({ ...userForm, roles: newRoles });
-                          }}
-                        />
-                        {r.label}
-                      </label>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Quản lý Trực tiếp</label>
-                  <select 
-                    value={userForm.managerId}
-                    onChange={e => setUserForm({ ...userForm, managerId: e.target.value })}
-                    style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none', background: 'white' }}
-                  >
-                    <option value="">Không có</option>
-                    {users.filter(u => u.id !== userForm.id && u.role !== 'staff').map(u => (
-                      <option key={u.id} value={u.id}>{u.name} ({u.position})</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', height: '100%', paddingTop: 20 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                  <div>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Email</label>
                     <input 
-                      type="checkbox" checked={userForm.active}
-                      onChange={e => setUserForm({ ...userForm, active: e.target.checked })}
+                      type="email" value={userForm.email} required
+                      onChange={e => setUserForm({ ...userForm, email: e.target.value })}
+                      style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
                     />
-                    Tài khoản Active
-                  </label>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Chức danh (Position)</label>
+                      <input 
+                        type="text" value={userForm.position} placeholder="Ví dụ: Điều phối viên"
+                        onChange={e => setUserForm({ ...userForm, position: e.target.value })}
+                        style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Hệ thống Role</label>
+                      <select 
+                        value={userForm.role}
+                        onChange={e => setUserForm({ ...userForm, role: e.target.value as Role })}
+                        style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none', background: 'white' }}
+                      >
+                        <option value="staff">Staff (Nhân viên)</option>
+                        <option value="manager">Manager (Quản lý)</option>
+                        <option value="admin">Admin (Quản trị)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Kiêm nhiệm Roles (Multi-Role)</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, background: 'var(--gray-50)', padding: 16, borderRadius: 12 }}>
+                      {[
+                        { key: 'operation', label: 'Điều phối viên' },
+                        { key: 'coordinator_director', label: 'Chủ nhiệm CT' },
+                        { key: 'manager', label: 'Quản lý Đào tạo' },
+                        { key: 'institute_leader', label: 'Lãnh đạo Viện' }
+                      ].map(r => {
+                        const checked = userForm.roles.includes(r.key as UserRole);
+                        return (
+                          <label key={r.key} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
+                            <input 
+                              type="checkbox" checked={checked}
+                              onChange={() => {
+                                let newRoles = [...userForm.roles];
+                                if (checked) newRoles = newRoles.filter(x => x !== r.key);
+                                else newRoles.push(r.key as UserRole);
+                                setUserForm({ ...userForm, roles: newRoles });
+                              }}
+                            />
+                            {r.label}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div>
+                      <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 6 }}>Quản lý Trực tiếp</label>
+                      <select 
+                        value={userForm.managerId}
+                        onChange={e => setUserForm({ ...userForm, managerId: e.target.value })}
+                        style={{ width: '100%', padding: 12, borderRadius: 10, border: '1px solid var(--gray-200)', outline: 'none', background: 'white' }}
+                      >
+                        <option value="">Không có</option>
+                        {users.filter(u => u.id !== userForm.id && u.role !== 'staff').map(u => (
+                          <option key={u.id} value={u.id}>{u.name} ({u.position})</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', height: '100%', paddingTop: 20 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                        <input 
+                          type="checkbox" checked={userForm.active}
+                          onChange={e => setUserForm({ ...userForm, active: e.target.checked })}
+                        />
+                        Tài khoản Active
+                      </label>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* TAB 2: ASSIGNMENTS (PROGRAMS & COURSES) */}
+              {userModalTab === 'assignments' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                  <div>
+                    <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', display: 'block', marginBottom: 8 }}>
+                      Chương trình Phụ trách (Program Manager)
+                    </label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'var(--gray-50)', padding: 16, borderRadius: 14, maxHeight: 160, overflowY: 'auto', border: '1px solid var(--gray-100)' }}>
+                      {programs.length === 0 ? (
+                        <div style={{ color: 'var(--gray-400)', fontSize: 13, textAlign: 'center', padding: 8 }}>Không có chương trình nào</div>
+                      ) : (
+                        programs.map(p => {
+                          const checked = userForm.assignedPrograms.includes(p.id);
+                          return (
+                            <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                              <input 
+                                type="checkbox" checked={checked}
+                                onChange={() => {
+                                  let newProgs = [...userForm.assignedPrograms];
+                                  if (checked) newProgs = newProgs.filter(id => id !== p.id);
+                                  else newProgs.push(p.id);
+                                  setUserForm({ ...userForm, assignedPrograms: newProgs });
+                                }}
+                              />
+                              <span style={{ color: 'var(--isme-red)', fontWeight: 800 }}>{p.shortName}</span> - {p.name}
+                            </label>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', display: 'block', marginBottom: 8 }}>
+                      Môn học & Lớp phụ trách (Lecturer)
+                    </label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'var(--gray-50)', padding: 16, borderRadius: 14, maxHeight: 200, overflowY: 'auto', border: '1px solid var(--gray-100)' }}>
+                      {courses.length === 0 ? (
+                        <div style={{ color: 'var(--gray-400)', fontSize: 13, textAlign: 'center', padding: 8 }}>Không có môn học nào</div>
+                      ) : (
+                        courses.map(c => {
+                          const checked = userForm.assignedCourses.includes(c.id);
+                          const prog = programs.find(p => p.id === c.programId);
+                          return (
+                            <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                              <input 
+                                type="checkbox" checked={checked}
+                                onChange={() => {
+                                  let newCourses = [...userForm.assignedCourses];
+                                  if (checked) newCourses = newCourses.filter(id => id !== c.id);
+                                  else newCourses.push(c.id);
+                                  setUserForm({ ...userForm, assignedCourses: newCourses });
+                                }}
+                              />
+                              <span style={{ background: 'var(--gray-200)', padding: '2px 6px', borderRadius: 4, fontSize: 11, fontWeight: 700, color: 'var(--gray-700)' }}>
+                                {prog?.shortName || c.programId}
+                              </span>
+                              <span>{c.name} ({c.cohort})</span>
+                            </label>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: KPI TARGETS */}
+              {userModalTab === 'kpis' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', display: 'block' }}>
+                    Thiết lập Chỉ tiêu KPI (Học kỳ: 2026-Q1)
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 380, overflowY: 'auto', paddingRight: 4 }}>
+                    {kpiDefinitions.length === 0 ? (
+                      <div style={{ color: 'var(--gray-400)', fontSize: 13, textAlign: 'center', padding: 8 }}>Không có tiêu chí KPI nào</div>
+                    ) : (
+                      kpiDefinitions.map(def => {
+                        const val = userForm.kpiTargets[def.id] !== undefined ? userForm.kpiTargets[def.id] : 0;
+                        return (
+                          <div key={def.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '12px 16px', background: 'var(--gray-50)', borderRadius: 12, border: '1px solid var(--gray-100)' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+                              <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--gray-800)' }}>
+                                {def.stt}. {def.name} ({def.shortName})
+                              </span>
+                              <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>
+                                Nhóm: {getGroupLabel(def.groupId)} | Trọng số: {def.weight}%
+                              </span>
+                            </div>
+                            
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: 120 }}>
+                              <input 
+                                type="number" step="any" min="0" max="100000"
+                                value={val}
+                                onChange={e => {
+                                  const newTargets = { ...userForm.kpiTargets };
+                                  newTargets[def.id] = Number(e.target.value) || 0;
+                                  setUserForm({ ...userForm, kpiTargets: newTargets });
+                                }}
+                                style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 700, textAlign: 'right', outline: 'none' }}
+                              />
+                              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)', width: 24 }}>{def.unit}</span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 12 }}>
                 <button type="button" onClick={() => setUserModalOpen(false)} style={{ padding: '12px 20px', borderRadius: 10, border: '1px solid var(--gray-200)', background: 'white', cursor: 'pointer' }}>Hủy</button>

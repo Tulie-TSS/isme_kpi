@@ -9,6 +9,9 @@ interface AuthContextType {
   login: (email: string, password: string) => { success: boolean; error?: string };
   logout: () => void;
   isLoading: boolean;
+  impersonate: (userId: string) => void;
+  stopImpersonating: () => void;
+  isImpersonating: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +22,7 @@ const DEFAULT_PASSWORD = 'isme2026';
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isImpersonating, setIsImpersonating] = useState(false);
 
   useEffect(() => {
     // Check localStorage for saved auth
@@ -31,6 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(foundUser);
         }
       }
+      const original = localStorage.getItem('isme_original_admin_id');
+      setIsImpersonating(!!original);
     } catch {
       // Invalid storage, clear it
       localStorage.removeItem(AUTH_STORAGE_KEY);
@@ -70,10 +76,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    localStorage.removeItem('isme_original_admin_id');
+    setIsImpersonating(false);
+  };
+
+  const impersonate = (userId: string) => {
+    if (user && user.role === 'admin' && !localStorage.getItem('isme_original_admin_id')) {
+      localStorage.setItem('isme_original_admin_id', user.id);
+    }
+    const foundUser = users.find(u => u.id === userId);
+    if (foundUser) {
+      setUser(foundUser);
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ id: foundUser.id }));
+      setIsImpersonating(true);
+    }
+  };
+
+  const stopImpersonating = () => {
+    const originalAdminId = localStorage.getItem('isme_original_admin_id');
+    if (originalAdminId) {
+      const foundAdmin = users.find(u => u.id === originalAdminId);
+      if (foundAdmin) {
+        setUser(foundAdmin);
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ id: foundAdmin.id }));
+      }
+      localStorage.removeItem('isme_original_admin_id');
+      setIsImpersonating(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated: !!user, user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated: !!user, user, login, logout, isLoading,
+      impersonate, stopImpersonating, isImpersonating 
+    }}>
       {children}
     </AuthContext.Provider>
   );

@@ -35,12 +35,18 @@ export async function GET() {
       `);
     }
 
+    // Ensure lecturer_id exists in courses table
+    await query(`
+      ALTER TABLE courses ADD COLUMN IF NOT EXISTS lecturer_id VARCHAR(50) REFERENCES users(id) ON DELETE SET NULL
+    `);
+
     // 2. Query all tables
     const usersRes = await query(`SELECT * FROM users ORDER BY name ASC`);
     const programsRes = await query(`SELECT * FROM programs ORDER BY name ASC`);
     const coursesRes = await query(`SELECT * FROM courses ORDER BY name ASC`);
     const kpiDefsRes = await query(`SELECT * FROM kpi_definitions ORDER BY group_id ASC, stt ASC`);
     const kpiGroupsRes = await query(`SELECT * FROM kpi_groups ORDER BY id ASC`);
+    const kpiSnapshotsRes = await query(`SELECT * FROM kpi_snapshots`);
     
     // Map database snake_case rows to frontend camelCase objects
     const users = usersRes.rows.map(toCamelCase);
@@ -48,6 +54,7 @@ export async function GET() {
     const courses = coursesRes.rows.map(toCamelCase);
     const kpiDefinitions = kpiDefsRes.rows.map(toCamelCase);
     const kpiGroups = kpiGroupsRes.rows.map(toCamelCase);
+    const kpiSnapshots = kpiSnapshotsRes.rows.map(toCamelCase);
 
     return NextResponse.json({
       success: true,
@@ -55,7 +62,8 @@ export async function GET() {
       programs,
       courses,
       kpiDefinitions,
-      kpiGroups
+      kpiGroups,
+      kpiSnapshots
     });
   } catch (error: any) {
     console.error('❌ API Admin GET Error:', error);
@@ -75,23 +83,83 @@ export async function POST(request: Request) {
     switch (action) {
       // ================= USER CRUD =================
       case 'createUser': {
-        const { id, name, email, role, roles, managerId, avatarUrl, active, position } = body.data;
+        const { id, name, email, role, roles, managerId, avatarUrl, active, position, assignedPrograms, assignedCourses, kpiTargets } = body.data;
         await query(
           `INSERT INTO users (id, name, email, role, roles, manager_id, avatar_url, active, position)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
           [id, name, email, role, roles, managerId || null, avatarUrl || '', active !== false, position || '']
         );
+
+        // Assign Programs
+        if (assignedPrograms && Array.isArray(assignedPrograms)) {
+          for (const progId of assignedPrograms) {
+            await query(`UPDATE programs SET manager_id = $1 WHERE id = $2`, [id, progId]);
+          }
+        }
+
+        // Assign Courses
+        if (assignedCourses && Array.isArray(assignedCourses)) {
+          for (const courseId of assignedCourses) {
+            await query(`UPDATE courses SET lecturer_id = $1 WHERE id = $2`, [id, courseId]);
+          }
+        }
+
+        // Upsert KPI Targets
+        if (kpiTargets && typeof kpiTargets === 'object') {
+          const period = '2026-Q1';
+          for (const [kpiId, targetVal] of Object.entries(kpiTargets)) {
+            const snapshotId = `${id}_${kpiId}_${period}`;
+            await query(`
+              INSERT INTO kpi_snapshots (id, user_id, kpi_definition_id, period, score, target_value, actual_value, raw_numerator, raw_denominator)
+              VALUES ($1, $2, $3, $4, 0.0, $5, 0.0, 0.0, 0.0)
+              ON CONFLICT (id) 
+              DO UPDATE SET target_value = EXCLUDED.target_value
+            `, [snapshotId, id, kpiId, period, Number(targetVal) || 0]);
+          }
+        }
+
         return NextResponse.json({ success: true, message: 'User created successfully' });
       }
 
       case 'updateUser': {
-        const { id, name, email, role, roles, managerId, avatarUrl, active, position } = body.data;
+        const { id, name, email, role, roles, managerId, avatarUrl, active, position, assignedPrograms, assignedCourses, kpiTargets } = body.data;
         await query(
           `UPDATE users 
            SET name = $2, email = $3, role = $4, roles = $5, manager_id = $6, avatar_url = $7, active = $8, position = $9
            WHERE id = $1`,
           [id, name, email, role, roles, managerId || null, avatarUrl || '', active, position || '']
         );
+
+        // Reset all programs managed by this user, then assign new ones
+        await query(`UPDATE programs SET manager_id = NULL WHERE manager_id = $1`, [id]);
+        if (assignedPrograms && Array.isArray(assignedPrograms)) {
+          for (const progId of assignedPrograms) {
+            await query(`UPDATE programs SET manager_id = $1 WHERE id = $2`, [id, progId]);
+          }
+        }
+
+        // Reset all courses taught by this user, then assign new ones
+        await query(`UPDATE courses SET lecturer_id = NULL WHERE lecturer_id = $1`, [id]);
+        if (assignedCourses && Array.isArray(assignedCourses)) {
+          for (const courseId of assignedCourses) {
+            await query(`UPDATE courses SET lecturer_id = $1 WHERE id = $2`, [id, courseId]);
+          }
+        }
+
+        // Upsert KPI Targets
+        if (kpiTargets && typeof kpiTargets === 'object') {
+          const period = '2026-Q1';
+          for (const [kpiId, targetVal] of Object.entries(kpiTargets)) {
+            const snapshotId = `${id}_${kpiId}_${period}`;
+            await query(`
+              INSERT INTO kpi_snapshots (id, user_id, kpi_definition_id, period, score, target_value, actual_value, raw_numerator, raw_denominator)
+              VALUES ($1, $2, $3, $4, 0.0, $5, 0.0, 0.0, 0.0)
+              ON CONFLICT (id) 
+              DO UPDATE SET target_value = EXCLUDED.target_value
+            `, [snapshotId, id, kpiId, period, Number(targetVal) || 0]);
+          }
+        }
+
         return NextResponse.json({ success: true, message: 'User updated successfully' });
       }
 

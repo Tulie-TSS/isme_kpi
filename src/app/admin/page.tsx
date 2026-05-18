@@ -1177,8 +1177,9 @@ export default function AdminPortal() {
       {/* A. User Modal */}
       {userModalOpen && (
         <div className="modal-overlay" style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)'
+          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
+          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
+          overflowY: 'auto', padding: '40px 16px'
         }} onClick={() => setUserModalOpen(false)}>
           <div className="modal-content" style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 640, padding: 32,
@@ -1449,8 +1450,9 @@ export default function AdminPortal() {
       {/* B. Program Modal */}
       {programModalOpen && (
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)'
+          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
+          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
+          overflowY: 'auto', padding: '40px 16px'
         }} onClick={() => setProgramModalOpen(false)}>
           <div style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 520, padding: 32,
@@ -1562,8 +1564,9 @@ export default function AdminPortal() {
       {/* C. Course Modal */}
       {courseModalOpen && (
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)'
+          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
+          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
+          overflowY: 'auto', padding: '40px 16px'
         }} onClick={() => setCourseModalOpen(false)}>
           <div style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,
@@ -1703,8 +1706,9 @@ export default function AdminPortal() {
       {/* D. KPI Group Modal */}
       {groupModalOpen && (
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)'
+          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
+          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
+          overflowY: 'auto', padding: '40px 16px'
         }} onClick={() => setGroupModalOpen(false)}>
           <div style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 450, padding: 32,
@@ -1757,8 +1761,9 @@ export default function AdminPortal() {
       {/* E. KPI Definition Modal */}
       {defModalOpen && (
         <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)'
+          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
+          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
+          overflowY: 'auto', padding: '40px 16px'
         }} onClick={() => setDefModalOpen(false)}>
           <div style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,

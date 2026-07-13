@@ -134,11 +134,7 @@ export default function StaffDashboard() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Chào buổi sáng' : hour < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
 
-  const programs = [
-    { id: 'p3', name: 'BTEC HND', managerId: 'u9' },
-    { id: 'p7', name: 'BBAE', managerId: 'u8' },
-    { id: 'p_au', name: 'Andrews University', managerId: 'u7' }
-  ];
+
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 40 }}>

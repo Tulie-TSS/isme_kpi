@@ -29,15 +29,19 @@ export async function GET() {
         INSERT INTO kpi_groups (id, name, weight) VALUES
         ('operations', 'Nhóm KPI theo mô tả CV (Operations)', 50),
         ('academic_support', 'Hoạt động hỗ trợ học tập', 20),
-        ('student_results', 'Kết quả học tập và Kỷ luật của sinh viên', 10),
-        ('other_activities', 'Các hoạt động khác', 10),
-        ('labor_discipline', 'Kỷ luật lao động', 10)
+        ('student_results', 'Kết quả học tập và Kỷ luật của sinh viên', 20),
+        ('other_activities', 'Các hoạt động khác', 10)
       `);
     }
 
-    // Ensure lecturer_id exists in courses table
+    // Ensure lecturer_id and other course columns exist in courses table
     await query(`
-      ALTER TABLE courses ADD COLUMN IF NOT EXISTS lecturer_id VARCHAR(50) REFERENCES users(id) ON DELETE SET NULL
+      ALTER TABLE courses ADD COLUMN IF NOT EXISTS lecturer_id VARCHAR(50) REFERENCES users(id) ON DELETE SET NULL,
+      ADD COLUMN IF NOT EXISTS submit_rate NUMERIC(5,4) NOT NULL DEFAULT 0.0,
+      ADD COLUMN IF NOT EXISTS submit_target NUMERIC(5,4) NOT NULL DEFAULT 1.0,
+      ADD COLUMN IF NOT EXISTS code VARCHAR(50),
+      ADD COLUMN IF NOT EXISTS year INTEGER NOT NULL DEFAULT 1,
+      ADD COLUMN IF NOT EXISTS semester VARCHAR(20) NOT NULL DEFAULT 'SEM 2'
     `);
 
     // 2. Query all tables
@@ -106,7 +110,7 @@ export async function POST(request: Request) {
 
         // Upsert KPI Targets
         if (kpiTargets && typeof kpiTargets === 'object') {
-          const period = '2026-Q1';
+          const period = 'Kỳ 2 2025-2026';
           for (const [kpiId, targetVal] of Object.entries(kpiTargets)) {
             const snapshotId = `${id}_${kpiId}_${period}`;
             await query(`
@@ -148,7 +152,7 @@ export async function POST(request: Request) {
 
         // Upsert KPI Targets
         if (kpiTargets && typeof kpiTargets === 'object') {
-          const period = '2026-Q1';
+          const period = 'Kỳ 2 2025-2026';
           for (const [kpiId, targetVal] of Object.entries(kpiTargets)) {
             const snapshotId = `${id}_${kpiId}_${period}`;
             await query(`
@@ -165,8 +169,6 @@ export async function POST(request: Request) {
 
       case 'deleteUser': {
         const { id } = body.data;
-        // In case of foreign constraints, delete cascading is handled in schema,
-        // but let's delete references if needed, or simply let CASCADE do the job.
         await query(`DELETE FROM users WHERE id = $1`, [id]);
         return NextResponse.json({ success: true, message: 'User deleted successfully' });
       }
@@ -201,22 +203,22 @@ export async function POST(request: Request) {
 
       // ================= COURSE CRUD =================
       case 'createCourse': {
-        const { id, programId, name, cohort, numLecturers, numStudents, attendanceRate, attendanceTarget, passRate, submitRate, passTarget } = body.data;
+        const { id, programId, name, cohort, numLecturers, numStudents, attendanceRate, attendanceTarget, passRate, submitRate, passTarget, submitTarget, code, year, semester } = body.data;
         await query(
-          `INSERT INTO courses (id, program_id, name, cohort, num_lecturers, num_students, attendance_rate, attendance_target, pass_rate, submit_rate, pass_target)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-          [id, programId, name, cohort, numLecturers || 1, numStudents || 0, attendanceRate || 1.0, attendanceTarget || 0.95, passRate || 1.0, submitRate || 1.0, passTarget || 0.95]
+          `INSERT INTO courses (id, program_id, name, cohort, num_lecturers, num_students, attendance_rate, attendance_target, pass_rate, submit_rate, pass_target, submit_target, code, year, semester)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+          [id, programId, name, cohort, numLecturers || 1, numStudents || 0, attendanceRate || 1.0, attendanceTarget || 0.95, passRate || 1.0, submitRate || 1.0, passTarget || 0.95, submitTarget || 1.0, code || '', year || 1, semester || 'SEM 2']
         );
         return NextResponse.json({ success: true, message: 'Course created successfully' });
       }
 
       case 'updateCourse': {
-        const { id, programId, name, cohort, numLecturers, numStudents, attendanceRate, attendanceTarget, passRate, submitRate, passTarget } = body.data;
+        const { id, programId, name, cohort, numLecturers, numStudents, attendanceRate, attendanceTarget, passRate, submitRate, passTarget, submitTarget, code, year, semester } = body.data;
         await query(
           `UPDATE courses 
-           SET program_id = $2, name = $3, cohort = $4, num_lecturers = $5, num_students = $6, attendance_rate = $7, attendance_target = $8, pass_rate = $9, submit_rate = $10, pass_target = $11
+           SET program_id = $2, name = $3, cohort = $4, num_lecturers = $5, num_students = $6, attendance_rate = $7, attendance_target = $8, pass_rate = $9, submit_rate = $10, pass_target = $11, submit_target = $12, code = $13, year = $14, semester = $15
            WHERE id = $1`,
-          [id, programId, name, cohort, numLecturers, numStudents, attendanceRate, attendanceTarget, passRate, submitRate, passTarget]
+          [id, programId, name, cohort, numLecturers, numStudents, attendanceRate, attendanceTarget, passRate, submitRate, passTarget, submitTarget, code, year, semester]
         );
         return NextResponse.json({ success: true, message: 'Course updated successfully' });
       }

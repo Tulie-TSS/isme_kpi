@@ -7,12 +7,13 @@ import {
   kpiDefinitions, 
   getUserById, 
   calculateOverallKPI, 
+  calculateCoursesKPI,
   getPendingEditForSnapshot, 
   subscribeEditRequests, 
   getUserRoleLabel,
   courses,
-  otherActivityRecords,
-  laborDisciplineRecords
+  getSubmissionStatus,
+  programs
 } from '@/lib/mock-data';
 import { KPISnapshot, KPIDefinition } from '@/lib/types';
 import { ChevronDown, ChevronRight, CheckCircle2, AlertTriangle, Edit3, Clock, Target, Users, Award, BookOpen, ShieldCheck } from 'lucide-react';
@@ -32,13 +33,13 @@ import {
   ShieldCheck as ShieldIcon 
 } from 'lucide-react';
 
-function getScoreColor(s: number) { return s >= 85 ? '#10B981' : s >= 60 ? '#F59E0B' : '#EF4444'; }
-function getScoreLabel(s: number) { return s >= 95 ? 'Xuất sắc' : s >= 85 ? 'Tốt' : s >= 60 ? 'Cần cải thiện' : 'Cảnh báo'; }
+function getScoreColor(s: number) { return s >= 90 ? '#10B981' : s >= 75 ? '#F59E0B' : '#EF4444'; }
+function getScoreLabel(s: number) { return s >= 100 ? 'Xuất sắc' : s >= 90 ? 'Tốt' : s >= 75 ? 'Khá' : 'Cần cải thiện'; }
 
 export default function KPIPage() {
   const { currentUserId } = useApp();
   const user = getUserById(currentUserId);
-  const period = 'Kỳ 2 2024-2025';
+  const period = 'Kỳ 2 2025-2026';
   const snapshots = getKPISnapshotsByUser(currentUserId, period);
   const overall = calculateOverallKPI(currentUserId, period);
   const [editingSnapshot, setEditingSnapshot] = useState<KPISnapshot | null>(null);
@@ -49,11 +50,19 @@ export default function KPIPage() {
     return unsub;
   }, []);
 
-  const otherRec = otherActivityRecords.find(r => r.userId === currentUserId && r.period === period);
-  const laborRec = laborDisciplineRecords.find(r => r.userId === currentUserId && r.period === period);
-  const userCourses = courses; // Filter in real app
-
   const isStaff = user?.role === 'staff';
+
+  // Find program managed by coordinator
+  const managedProgram = programs.find(p => p.managerId === currentUserId);
+  const activeCourses = managedProgram 
+    ? courses.filter(c => c.programId === managedProgram.id && c.semester === 'SEM 2') 
+    : [];
+
+  const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;
+
+  // Check coordinator submission status
+  const assessmentStatus = getSubmissionStatus(currentUserId, period);
+
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 60 }}>
@@ -67,6 +76,13 @@ export default function KPIPage() {
             <span style={{ fontSize: 14, color: 'var(--gray-500)' }}>{user?.position}</span>
             <span style={{ fontSize: 14, color: 'var(--gray-400)' }}>|</span>
             <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)' }}>{period}</span>
+            <span style={{ fontSize: 14, color: 'var(--gray-400)' }}>|</span>
+            <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 4, 
+              background: assessmentStatus === 'approved' ? '#D1FAE5' : assessmentStatus === 'submitted' ? '#FEF3C7' : '#F3F4F6',
+              color: assessmentStatus === 'approved' ? '#065F46' : assessmentStatus === 'submitted' ? '#B45309' : '#374151'
+            }}>
+              Trạng thái: {assessmentStatus === 'approved' ? 'Đã duyệt' : assessmentStatus === 'submitted' ? 'Đang chờ duyệt' : 'Chưa nộp'}
+            </span>
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
@@ -110,7 +126,7 @@ export default function KPIPage() {
               .map((snap, i) => {
                 const def = kpiDefinitions.find(k => k.id === snap.kpiDefinitionId)!;
                 return (
-                  <KPIRow key={snap.id} snap={snap} def={def} idx={i + 1} isStaff={isStaff} onEdit={() => setEditingSnapshot(snap)} />
+                  <KPIRow key={snap.id} snap={snap} def={def} idx={i + 1} isStaff={isStaff} assessmentStatus={assessmentStatus} onEdit={() => setEditingSnapshot(snap)} />
                 );
               })
             }
@@ -124,54 +140,87 @@ export default function KPIPage() {
                 </div>
               </td>
             </tr>
-            {snapshots
-              .filter(s => kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === 'academic_support')
-              .map((snap, i) => {
-                const def = kpiDefinitions.find(k => k.id === snap.kpiDefinitionId)!;
-                return (
-                  <KPIRow key={snap.id} snap={snap} def={def} idx={i + 1} isStaff={isStaff} onEdit={() => setEditingSnapshot(snap)} />
-                );
-              })
-            }
+            {(() => {
+              const snap = snapshots.find(s => s.kpiDefinitionId === 'op1');
+              const def = kpiDefinitions.find(k => k.id === 'op1');
+              if (!snap || !def) return null;
+              return (
+                <tr style={{ borderBottom: '1px solid var(--gray-100)', background: 'rgba(59,130,246,0.02)' }}>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, color: 'var(--gray-400)' }}>1</td>
+                  <td style={{ padding: '12px 16px', fontSize: 12 }}>
+                    <div style={{ fontWeight: 700 }}>{def.name} (Hỗ trợ học tập)</div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
+                  </td>
+                  <td style={{ padding: '12px 16px', fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.4 }}>
+                    {def.criteria} <br/> <span style={{ color: '#1E40AF', fontSize: 11 }}>💡 Được lấy điểm trực tiếp từ Vận hành chỉ tiêu STT 1.</span>
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{def.unit}</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.targetValue}</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.actualValue}</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: getScoreColor(snap.score) }}>
+                    {snap.score}%
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(snap.score) }}>{getScoreLabel(snap.score)}</span>
+                  </td>
+                </tr>
+              );
+            })()}
 
-            {/* 3. STUDENT RESULTS (10%) */}
+            {/* 3. STUDENT RESULTS (20%) */}
             <tr style={{ background: '#F1F5F9' }}>
               <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 800, fontSize: 13, color: '#1E293B' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <AwardIcon size={16} color="var(--isme-red)" />
-                  III. KẾT QUẢ HỌC TẬP & KỶ LUẬT CỦA SINH VIÊN (Trọng số 10%)
+                  III. KẾT QUẢ HỌC TẬP & KỶ LUẬT CỦA SINH VIÊN (Trọng số 20%)
                 </div>
               </td>
             </tr>
-            {userCourses.map((c, i) => (
-              <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{i + 1}</td>
-                <td style={{ padding: '12px 16px', fontSize: 12 }}>
-                  <div style={{ fontWeight: 700 }}>{c.name}</div>
-                  <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{c.cohort}</div>
-                </td>
-                <td style={{ padding: '12px 16px', fontSize: 12 }}>
-                  Duy trì tỷ lệ chuyên cần ≥{(c.attendanceTarget * 100).toFixed(0)}% và tỷ lệ Pass ≥{(c.passTarget * 100).toFixed(0)}%
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>Lớp</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)' }}>
-                  CC: {c.attendanceTarget * 100}% <br/> Pass: {c.passTarget * 100}%
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11 }}>
-                  CC: {(c.attendanceRate * 100).toFixed(1)}% <br/> Pass: {(c.passRate * 100).toFixed(1)}%
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800 }}>
-                  {Math.round(((c.attendanceRate / c.attendanceTarget + c.passRate / c.passTarget) / 2) * 100)}%
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                  {c.attendanceRate >= c.attendanceTarget && c.passRate >= c.passTarget ? (
-                    <CheckIcon size={16} color="#10B981" style={{ margin: '0 auto' }} />
-                  ) : (
-                    <AlertIcon size={16} color="#EF4444" style={{ margin: '0 auto' }} />
-                  )}
-                </td>
-              </tr>
-            ))}
+            {activeCourses.map((c, i) => {
+              const attendComp = Math.round((c.attendanceRate / c.attendanceTarget) * 100);
+              const passComp = Math.round((c.passRate / c.passTarget) * 100);
+              const submitComp = Math.round((c.submitRate / c.submitTarget) * 100);
+              const avgComp = Math.round((attendComp + passComp + submitComp) / 3);
+
+              return (
+                <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{i + 1}</td>
+                  <td style={{ padding: '12px 16px', fontSize: 12 }}>
+                    <div style={{ fontWeight: 700 }}>{c.name}</div>
+                    <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Lớp: {c.cohort} · {c.semester}</div>
+                  </td>
+                  <td style={{ padding: '12px 16px', fontSize: 12, lineHeight: 1.4 }}>
+                    Đảm bảo chỉ tiêu chuyên cần & học tập môn học đầu kỳ.
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>Môn</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)', whiteSpace: 'nowrap' }}>
+                    CC Target: {c.attendanceTarget * 100}% <br/> Pass Target: {c.passTarget * 100}% <br/> Nộp bài Target: {c.submitTarget * 100}%
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap' }}>
+                    CC KQ: {Math.round(c.attendanceRate * 100)}% <br/> Pass KQ: {Math.round(c.passRate * 100)}% <br/> Nộp bài KQ: {Math.round(c.submitRate * 100)}%
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: getScoreColor(avgComp) }}>
+                    {avgComp}%
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(avgComp) }}>{getScoreLabel(avgComp)}</span>
+                  </td>
+                </tr>
+              );
+            })}
+            
+            {/* 3.1 Course Aggregate Row */}
+            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--gray-200)' }}>
+              <td style={{ padding: '10px 16px', textAlign: 'center' }}>★</td>
+              <td style={{ padding: '10px 16px', fontWeight: 700, fontSize: 12 }} colSpan={2}>Mức hoàn thành trung bình Nhóm Kết quả học sinh</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>100%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>-</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 14, fontWeight: 900, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{getScoreLabel(studentResultsScore)}</span>
+              </td>
+            </tr>
 
             {/* 4. OTHER ACTIVITIES (10%) */}
             <tr style={{ background: '#F1F5F9' }}>
@@ -182,49 +231,15 @@ export default function KPIPage() {
                 </div>
               </td>
             </tr>
-            {[
-              { id: 'oa1', name: 'Tuyển sinh', active: otherRec?.admission },
-              { id: 'oa2', name: 'Hỗ trợ du học', active: otherRec?.studyAbroad },
-              { id: 'oa3', name: 'Hỗ trợ exchange', active: otherRec?.exchange },
-              { id: 'oa4', name: 'Các hoạt động khác của Viện', active: otherRec?.otherInstitute },
-            ].map((oa, i) => (
-              <tr key={oa.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{i + 1}</td>
-                <td style={{ padding: '12px 16px', fontSize: 12, fontWeight: 600 }}>{oa.name}</td>
-                <td style={{ padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)' }}>Tham gia các hoạt động theo phân công của Viện</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>Mục</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>1</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{oa.active ? '1' : '0'}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800 }}>{oa.active ? '100%' : '0%'}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                  {oa.active ? <CheckIcon size={16} color="#10B981" style={{ margin: '0 auto' }} /> : <ClockIcon size={16} color="var(--gray-300)" style={{ margin: '0 auto' }} />}
-                </td>
-              </tr>
-            ))}
-
-            {/* 5. LABOR DISCIPLINE (10%) */}
-            <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 800, fontSize: 13, color: '#1E293B' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <ShieldIcon size={16} color="var(--isme-red)" />
-                  V. KỶ LUẬT LAO ĐỘNG (Trọng số 10%)
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>1</td>
-              <td style={{ padding: '12px 16px', fontSize: 12, fontWeight: 700 }}>Tuân thủ nội quy & giờ giấc</td>
-              <td style={{ padding: '12px 16px', fontSize: 12, color: 'var(--gray-500)' }}>{laborRec?.note || 'Không có vi phạm, đi làm đúng giờ'}</td>
-              <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>Điểm</td>
-              <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>100</td>
-              <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{laborRec?.score || 0}</td>
-              <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800 }}>{laborRec?.score || 0}%</td>
-              <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(laborRec?.score || 0) }}>
-                  {getScoreLabel(laborRec?.score || 0)}
-                </span>
-              </td>
-            </tr>
+            {snapshots
+              .filter(s => kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === 'other_activities')
+              .map((snap, i) => {
+                const def = kpiDefinitions.find(k => k.id === snap.kpiDefinitionId)!;
+                return (
+                  <KPIRow key={snap.id} snap={snap} def={def} idx={i + 1} isStaff={isStaff} assessmentStatus={assessmentStatus} onEdit={() => setEditingSnapshot(snap)} />
+                );
+              })
+            }
 
           </tbody>
         </table>
@@ -243,8 +258,10 @@ export default function KPIPage() {
   );
 }
 
-function KPIRow({ snap, def, idx, isStaff, onEdit }: { snap: KPISnapshot; def: KPIDefinition; idx: number; isStaff: boolean; onEdit: () => void }) {
+function KPIRow({ snap, def, idx, isStaff, assessmentStatus, onEdit }: { snap: KPISnapshot; def: KPIDefinition; idx: number; isStaff: boolean; assessmentStatus: string; onEdit: () => void }) {
   const pendingEdit = getPendingEditForSnapshot(snap.id);
+  const isDirectEdit = assessmentStatus === 'open';
+
   return (
     <tr style={{ borderBottom: '1px solid var(--gray-100)', transition: 'background 0.15s' }}>
       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, color: 'var(--gray-400)' }}>{idx}</td>
@@ -263,8 +280,9 @@ function KPIRow({ snap, def, idx, isStaff, onEdit }: { snap: KPISnapshot; def: K
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
           <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(snap.score) }}>{getScoreLabel(snap.score)}</span>
           {isStaff && (
-            <button onClick={onEdit} style={{ background: 'var(--gray-100)', border: 'none', borderRadius: 4, padding: '2px 6px', cursor: 'pointer', display: 'flex' }}>
-              <EditIcon size={11} />
+            <button onClick={onEdit} title={isDirectEdit ? 'Sửa trực tiếp' : 'Gửi yêu cầu sửa'}
+              style={{ background: 'var(--gray-100)', border: 'none', borderRadius: 4, padding: '2px 6px', cursor: 'pointer', display: 'flex' }}>
+              <EditIcon size={11} color="var(--isme-red)" />
             </button>
           )}
           {pendingEdit && (

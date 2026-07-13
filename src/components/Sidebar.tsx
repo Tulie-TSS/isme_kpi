@@ -30,6 +30,10 @@ export default function Sidebar() {
     filteredLinks.push({ href: '/kpi/heatmap', label: 'KPI Heatmap', icon: BarChart3 });
   }
 
+  if (currentRole === 'manager' || currentRole === 'admin' || hasAnyRole('manager', 'admin')) {
+    filteredLinks.push({ href: '/logs', label: 'Nhật ký hệ thống', icon: ClipboardList });
+  }
+
   filteredLinks.push({ href: '/review', label: 'Đánh giá', icon: FileText });
   filteredLinks.push({ href: '/schedule', label: 'Lịch làm việc', icon: Calendar });
 

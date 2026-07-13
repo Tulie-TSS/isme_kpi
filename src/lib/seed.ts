@@ -27,6 +27,7 @@ async function main() {
   console.log("🧹 Dropping existing tables if resetting...");
   // Drop table order matters due to foreign key constraints!
   const dropTables = [
+    'audit_logs',
     'course_edit_requests',
     'kpi_edit_requests',
     'manager_questions',
@@ -35,7 +36,6 @@ async function main() {
     'programs',
     'kpi_snapshots',
     'other_activities',
-    'labor_disciplines',
     'reviews',
     'review_cycles',
     'kpi_definitions',
@@ -89,8 +89,12 @@ async function main() {
       attendance_rate NUMERIC(5,4) NOT NULL DEFAULT 0.0,
       attendance_target NUMERIC(5,4) NOT NULL DEFAULT 0.95,
       pass_rate NUMERIC(5,4) NOT NULL DEFAULT 0.0,
+      pass_target NUMERIC(5,4) NOT NULL DEFAULT 0.95,
       submit_rate NUMERIC(5,4) NOT NULL DEFAULT 0.0,
-      pass_target NUMERIC(5,4) NOT NULL DEFAULT 0.95
+      submit_target NUMERIC(5,4) NOT NULL DEFAULT 1.0,
+      code VARCHAR(50),
+      year INTEGER NOT NULL DEFAULT 1,
+      semester VARCHAR(20) NOT NULL DEFAULT 'SEM 2'
     )
   `);
 
@@ -127,34 +131,7 @@ async function main() {
     )
   `);
 
-  // 6. Other Activities
-  await client.query(`
-    CREATE TABLE other_activities (
-      user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      period VARCHAR(100) NOT NULL,
-      admission BOOLEAN NOT NULL DEFAULT FALSE,
-      study_abroad BOOLEAN NOT NULL DEFAULT FALSE,
-      exchange BOOLEAN NOT NULL DEFAULT FALSE,
-      other_institute BOOLEAN NOT NULL DEFAULT FALSE,
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (user_id, period)
-    )
-  `);
-
-  // 7. Labor Disciplines
-  await client.query(`
-    CREATE TABLE labor_disciplines (
-      user_id VARCHAR(50) NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      period VARCHAR(100) NOT NULL,
-      score NUMERIC(6,2) NOT NULL DEFAULT 100.0,
-      note TEXT,
-      updated_by VARCHAR(50) REFERENCES users(id),
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (user_id, period)
-    )
-  `);
-
-  // 8. Review Cycles
+  // 6. Review Cycles
   await client.query(`
     CREATE TABLE review_cycles (
       id VARCHAR(50) PRIMARY KEY,
@@ -166,7 +143,7 @@ async function main() {
     )
   `);
 
-  // 9. Reviews
+  // 7. Reviews
   await client.query(`
     CREATE TABLE reviews (
       id VARCHAR(50) PRIMARY KEY,
@@ -181,7 +158,7 @@ async function main() {
     )
   `);
 
-  // 10. KPI Edit Requests
+  // 8. KPI Edit Requests
   await client.query(`
     CREATE TABLE kpi_edit_requests (
       id VARCHAR(50) PRIMARY KEY,
@@ -206,7 +183,7 @@ async function main() {
     )
   `);
 
-  // 11. Course Edit Requests
+  // 9. Course Edit Requests
   await client.query(`
     CREATE TABLE course_edit_requests (
       id VARCHAR(50) PRIMARY KEY,
@@ -225,7 +202,7 @@ async function main() {
     )
   `);
 
-  // 12. Manager Questions
+  // 10. Manager Questions
   await client.query(`
     CREATE TABLE manager_questions (
       id VARCHAR(50) PRIMARY KEY,
@@ -245,7 +222,7 @@ async function main() {
     )
   `);
 
-  // 13. Tasks
+  // 11. Tasks
   await client.query(`
     CREATE TABLE tasks (
       id VARCHAR(50) PRIMARY KEY,
@@ -259,12 +236,26 @@ async function main() {
     )
   `);
 
+  // 12. Audit Logs
+  await client.query(`
+    CREATE TABLE audit_logs (
+      id VARCHAR(50) PRIMARY KEY,
+      user_id VARCHAR(50) NOT NULL,
+      user_name VARCHAR(100) NOT NULL,
+      action VARCHAR(255) NOT NULL,
+      timestamp VARCHAR(100) NOT NULL,
+      ip_address VARCHAR(50) NOT NULL,
+      user_agent TEXT NOT NULL,
+      details TEXT NOT NULL
+    )
+  `);
+
   console.log("✅ Database tables created successfully!");
 
   console.log("🌱 Seeding initial mock data from application code...");
 
   // Import mock data directly (since we're running in tsx, we can import them)
-  const { users: mockUsers, programs: mockPrograms, courses: mockCourses, kpiDefinitions: mockKpiDefinitions, kpiSnapshots: mockKpiSnapshots, otherActivityRecords: mockOtherActivities, laborDisciplineRecords: mockLaborDisciplines, reviewCycles: mockReviewCycles, reviews: mockReviews, getManagerQuestions } = require('./mock-data');
+  const { users: mockUsers, programs: mockPrograms, courses: mockCourses, kpiDefinitions: mockKpiDefinitions, kpiSnapshots: mockKpiSnapshots, reviewCycles: mockReviewCycles, reviews: mockReviews, getManagerQuestions, getAuditLogs } = require('./mock-data');
   const { tasks: mockTasks } = require('./mock-tasks');
 
   // Insert Users
@@ -291,9 +282,9 @@ async function main() {
   console.log(`Inserting ${mockCourses.length} courses...`);
   for (const c of mockCourses) {
     await client.query(
-      `INSERT INTO courses (id, program_id, name, cohort, num_lecturers, num_students, attendance_rate, attendance_target, pass_rate, submit_rate, pass_target) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-      [c.id, c.programId, c.name, c.cohort, c.numLecturers, c.numStudents, c.attendanceRate, c.attendanceTarget, c.passRate, c.submitRate, c.passTarget]
+      `INSERT INTO courses (id, program_id, name, cohort, num_lecturers, num_students, attendance_rate, attendance_target, pass_rate, submit_rate, pass_target, submit_target, code, year, semester) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
+      [c.id, c.programId, c.name, c.cohort, c.numLecturers, c.numStudents, c.attendanceRate, c.attendanceTarget, c.passRate, c.submitRate, c.passTarget, c.submitTarget, c.code || null, c.year, c.semester]
     );
   }
 
@@ -314,26 +305,6 @@ async function main() {
       `INSERT INTO kpi_snapshots (id, user_id, kpi_definition_id, period, score, target_value, actual_value, raw_numerator, raw_denominator, calculated_at) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [ks.id, ks.userId, ks.kpiDefinitionId, ks.period, ks.score, ks.targetValue, ks.actualValue, ks.rawNumerator, ks.rawDenominator, ks.calculatedAt]
-    );
-  }
-
-  // Insert Other Activities
-  console.log(`Inserting ${mockOtherActivities.length} other activity records...`);
-  for (const oa of mockOtherActivities) {
-    await client.query(
-      `INSERT INTO other_activities (user_id, period, admission, study_abroad, exchange, other_institute, updated_at) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [oa.userId, oa.period, oa.admission, oa.studyAbroad, oa.exchange, oa.otherInstitute, oa.updatedAt]
-    );
-  }
-
-  // Insert Labor Disciplines
-  console.log(`Inserting ${mockLaborDisciplines.length} labor discipline records...`);
-  for (const ld of mockLaborDisciplines) {
-    await client.query(
-      `INSERT INTO labor_disciplines (user_id, period, score, note, updated_by, updated_at) 
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [ld.userId, ld.period, ld.score, ld.note, ld.updatedBy, ld.updatedAt]
     );
   }
 
@@ -375,6 +346,17 @@ async function main() {
       `INSERT INTO tasks (id, owner_id, program_id, title, status, due_date, priority, created_at) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [t.id, t.ownerId, t.programId, t.title, t.status, t.dueDate, t.priority, t.createdAt]
+    );
+  }
+
+  // Insert Audit Logs
+  const mockLogs = getAuditLogs();
+  console.log(`Inserting ${mockLogs.length} audit logs...`);
+  for (const l of mockLogs) {
+    await client.query(
+      `INSERT INTO audit_logs (id, user_id, user_name, action, timestamp, ip_address, user_agent, details) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [l.id, l.userId, l.userName, l.action, l.timestamp, l.ipAddress, l.userAgent, l.details]
     );
   }
 

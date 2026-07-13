@@ -1,8 +1,14 @@
 'use client';
 import React, { useState } from 'react';
 import { KPISnapshot, KPIDefinition, KPIEditRequest } from '@/lib/types';
-import { createKPIEditRequest, getPendingEditForSnapshot } from '@/lib/mock-data';
-import { X, Edit3, AlertTriangle } from 'lucide-react';
+import { 
+  createKPIEditRequest, 
+  getPendingEditForSnapshot, 
+  getSubmissionStatus, 
+  updateSnapshotValue, 
+  addAuditLog 
+} from '@/lib/mock-data';
+import { X, Edit3, AlertTriangle, CheckCircle } from 'lucide-react';
 
 interface Props {
   snapshot: KPISnapshot;
@@ -18,42 +24,63 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
   const [error, setError] = useState('');
 
   const pendingEdit = getPendingEditForSnapshot(snapshot.id);
+  const status = getSubmissionStatus(snapshot.userId, snapshot.period);
+  const isDirectEdit = status === 'open';
 
   const newScore = newDenominator > 0 ? Math.round((newNumerator / newDenominator) * 100) : 0;
   const hasChanged = newNumerator !== snapshot.rawNumerator || newDenominator !== snapshot.rawDenominator;
 
   const handleSubmit = () => {
-    if (!reason.trim()) {
-      setError('Vui lòng nhập lý do chỉnh sửa');
-      return;
-    }
-    if (reason.trim().length < 10) {
-      setError('Lý do cần ít nhất 10 ký tự');
-      return;
-    }
     if (!hasChanged) {
       setError('Chưa có thay đổi nào');
       return;
     }
 
-    createKPIEditRequest({
-      snapshotId: snapshot.id,
-      userId: snapshot.userId,
-      kpiDefinitionId: snapshot.kpiDefinitionId,
-      period: snapshot.period,
-      oldScore: snapshot.score,
-      oldActualValue: snapshot.actualValue,
-      oldNumerator: snapshot.rawNumerator,
-      oldDenominator: snapshot.rawDenominator,
-      newScore,
-      newActualValue: newNumerator, // Assuming actualValue is the numerator
-      newNumerator,
-      newDenominator,
-      reason: reason.trim(),
-    });
+    if (isDirectEdit) {
+      // Direct update
+      updateSnapshotValue(snapshot.id, {
+        rawNumerator: newNumerator,
+        rawDenominator: newDenominator,
+        actualValue: newNumerator,
+        score: newScore
+      });
+      addAuditLog(
+        snapshot.userId, 
+        'Cập nhật KPI trực tiếp', 
+        `Đã tự cập nhật KPI "${definition.shortName}" (${definition.name}): ${snapshot.rawNumerator}/${snapshot.rawDenominator} (${snapshot.score}%) -> ${newNumerator}/${newDenominator} (${newScore}%).`
+      );
+      onSubmitted();
+      onClose();
+    } else {
+      // Submit edit request
+      if (!reason.trim()) {
+        setError('Vui lòng nhập lý do chỉnh sửa');
+        return;
+      }
+      if (reason.trim().length < 10) {
+        setError('Lý do cần ít nhất 10 ký tự');
+        return;
+      }
 
-    onSubmitted();
-    onClose();
+      createKPIEditRequest({
+        snapshotId: snapshot.id,
+        userId: snapshot.userId,
+        kpiDefinitionId: snapshot.kpiDefinitionId,
+        period: snapshot.period,
+        oldScore: snapshot.score,
+        oldActualValue: snapshot.actualValue,
+        oldNumerator: snapshot.rawNumerator,
+        oldDenominator: snapshot.rawDenominator,
+        newScore,
+        newActualValue: newNumerator,
+        newNumerator,
+        newDenominator,
+        reason: reason.trim(),
+      });
+
+      onSubmitted();
+      onClose();
+    }
   };
 
   return (
@@ -78,13 +105,16 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <div style={{ 
               width: 44, height: 44, borderRadius: 12, 
-              background: 'rgba(59, 130, 246, 0.1)', color: '#2563EB',
+              background: isDirectEdit ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)', 
+              color: isDirectEdit ? '#10B981' : '#2563EB',
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
               <Edit3 size={22} />
             </div>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em' }}>Yêu cầu chỉnh sửa KPI</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em' }}>
+                {isDirectEdit ? 'Cập nhật số liệu trực tiếp' : 'Yêu cầu chỉnh sửa KPI'}
+              </div>
               <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>{definition.shortName} — {definition.name}</div>
             </div>
           </div>
@@ -123,6 +153,12 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
         ) : (
           /* Edit form */
           <div style={{ padding: '32px' }}>
+            {isDirectEdit && (
+              <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 12, marginBottom: 20 }}>
+                💡 Bản tự đánh giá đang ở trạng thái <b>Bản nháp</b>. Mọi thay đổi về số liệu sẽ được áp dụng ngay lập tức vào hệ thống mà không cần phê duyệt.
+              </div>
+            )}
+            
             {/* Value Comparison Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
               <div style={{
@@ -162,7 +198,7 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
                   <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 10 }}>Số lượng hoàn thành</label>
                   <div style={{ position: 'relative' }}>
                     <input
-                      type="number" min={0} max={newDenominator} value={newNumerator}
+                      type="number" min={0} value={newNumerator}
                       onChange={e => setNewNumerator(Math.max(0, parseInt(e.target.value) || 0))}
                       style={{
                         width: '100%', padding: '14px 18px', borderRadius: 14, border: '2px solid white',
@@ -193,29 +229,31 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
               </div>
             </div>
 
-            {/* Reason */}
-            <div style={{ marginBottom: 32 }}>
-              <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 10 }}>
-                Lý do chỉnh sửa <span style={{ color: '#EF4444' }}>*</span>
-              </label>
-              <textarea
-                value={reason} onChange={e => { setReason(e.target.value); setError(''); }}
-                placeholder="Nêu rõ lý do cần thay đổi số liệu KPI (vd: đã hoàn thành thêm hoạt động, cập nhật số liệu mới từ GV...)"
-                rows={4}
-                style={{
-                  width: '100%', padding: '16px 20px', borderRadius: 16, border: '2px solid var(--gray-50)',
-                  fontSize: 14, resize: 'vertical', outline: 'none', fontFamily: 'inherit',
-                  transition: 'all 0.2s', background: 'var(--gray-50)',
-                  lineHeight: '1.6', color: 'var(--gray-800)',
-                }}
-                onFocus={e => { e.target.style.borderColor = '#3B82F6'; e.target.style.background = 'white'; e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.05)'; }}
-                onBlur={e => { e.target.style.borderColor = 'var(--gray-50)'; e.target.style.background = 'var(--gray-50)'; e.target.style.boxShadow = 'none'; }}
-              />
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 8, display: 'flex', justifyContent: 'space-between' }}>
-                <span>Yêu cầu sẽ được gửi cho quản lý duyệt</span>
-                <span>{reason.length}/200</span>
+            {/* Reason - only for non-direct edits */}
+            {!isDirectEdit && (
+              <div style={{ marginBottom: 32 }}>
+                <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 10 }}>
+                  Lý do chỉnh sửa <span style={{ color: '#EF4444' }}>*</span>
+                </label>
+                <textarea
+                  value={reason} onChange={e => { setReason(e.target.value); setError(''); }}
+                  placeholder="Nêu rõ lý do cần thay đổi số liệu KPI (vd: đã hoàn thành thêm hoạt động, cập nhật số liệu mới từ GV...)"
+                  rows={4}
+                  style={{
+                    width: '100%', padding: '16px 20px', borderRadius: 16, border: '2px solid var(--gray-50)',
+                    fontSize: 14, resize: 'vertical', outline: 'none', fontFamily: 'inherit',
+                    transition: 'all 0.2s', background: 'var(--gray-50)',
+                    lineHeight: '1.6', color: 'var(--gray-800)',
+                  }}
+                  onFocus={e => { e.target.style.borderColor = '#3B82F6'; e.target.style.background = 'white'; e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.05)'; }}
+                  onBlur={e => { e.target.style.borderColor = 'var(--gray-50)'; e.target.style.background = 'var(--gray-50)'; e.target.style.boxShadow = 'none'; }}
+                />
+                <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 8, display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Yêu cầu sẽ được gửi cho quản lý duyệt</span>
+                  <span>{reason.length}/200</span>
+                </div>
               </div>
-            </div>
+            )}
 
             {error && (
               <div style={{
@@ -237,17 +275,19 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
               onMouseOver={e => e.currentTarget.style.background = 'var(--gray-50)'}
               onMouseOut={e => e.currentTarget.style.background = 'white'}
               >Huỷ</button>
-              <button onClick={handleSubmit} disabled={!hasChanged || !reason.trim()} style={{
+              <button onClick={handleSubmit} disabled={!hasChanged || (!isDirectEdit && !reason.trim())} style={{
                 padding: '12px 32px', borderRadius: 14, border: 'none',
-                background: hasChanged && reason.trim() ? 'linear-gradient(135deg, #3B82F6, #2563EB)' : 'var(--gray-200)',
-                color: hasChanged && reason.trim() ? 'white' : 'var(--gray-400)',
-                fontSize: 14, fontWeight: 800, cursor: hasChanged && reason.trim() ? 'pointer' : 'not-allowed',
+                background: hasChanged && (isDirectEdit || reason.trim()) ? (isDirectEdit ? 'linear-gradient(135deg, #10B981, #059669)' : 'linear-gradient(135deg, #3B82F6, #2563EB)') : 'var(--gray-200)',
+                color: hasChanged && (isDirectEdit || reason.trim()) ? 'white' : 'var(--gray-400)',
+                fontSize: 14, fontWeight: 800, cursor: hasChanged && (isDirectEdit || reason.trim()) ? 'pointer' : 'not-allowed',
                 transition: 'all 0.3s ease',
-                boxShadow: hasChanged && reason.trim() ? '0 10px 20px -5px rgba(59, 130, 246, 0.4)' : 'none',
+                boxShadow: hasChanged && (isDirectEdit || reason.trim()) ? (isDirectEdit ? '0 10px 20px -5px rgba(16, 185, 129, 0.4)' : '0 10px 20px -5px rgba(59, 130, 246, 0.4)') : 'none',
               }}
-              onMouseOver={e => { if (hasChanged && reason.trim()) e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseOver={e => { if (hasChanged && (isDirectEdit || reason.trim())) e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-              >Gửi yêu cầu chỉnh sửa</button>
+              >
+                {isDirectEdit ? 'Cập nhật trực tiếp' : 'Gửi yêu cầu chỉnh sửa'}
+              </button>
             </div>
           </div>
         )}

@@ -5,14 +5,20 @@ import {
   kpiDefinitions, 
   getUserById, 
   calculateOverallKPI, 
+  calculateOperationsKPI,
+  calculateCoursesKPI,
   getNotificationsByUser, 
   getQuestionsForUser, 
   answerQuestion, 
   subscribeQuestions, 
   kpiGroups,
-  otherActivityRecords,
-  laborDisciplineRecords,
-  courses
+  courses,
+  programs,
+  getSubmissionStatus,
+  setSubmissionStatus,
+  addAuditLog,
+  subscribeEditRequests,
+  subscribeCourseEditRequests
 } from '@/lib/mock-data';
 import { ManagerQuestion } from '@/lib/types';
 import { useState, useEffect } from 'react';
@@ -27,14 +33,17 @@ import {
   CheckCircle2,
   BookOpen,
   Award,
-  Users
+  Users,
+  Send,
+  HelpCircle,
+  FileCheck2
 } from 'lucide-react';
 import Link from 'next/link';
 
 function CircularProgress({ value, size = 72, strokeWidth = 6, color }: { value: number; size?: number; strokeWidth?: number; color: string }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (value / 100) * circumference;
+  const offset = circumference - (Math.min(value, 100) / 100) * circumference;
   return (
     <div className="circular-progress" style={{ width: size, height: size, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
@@ -49,8 +58,8 @@ function CircularProgress({ value, size = 72, strokeWidth = 6, color }: { value:
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 85) return '#10B981';
-  if (score >= 60) return '#F59E0B';
+  if (score >= 90) return '#10B981';
+  if (score >= 75) return '#F59E0B';
   return '#EF4444';
 }
 
@@ -59,46 +68,77 @@ export default function StaffDashboard() {
   const user = getUserById(currentUserId);
   const notifications = getNotificationsByUser(currentUserId);
   const unreadNotifs = notifications.filter(n => !n.read);
-  const period = 'Kỳ 2 2024-2025';
+  const period = 'Kỳ 2 2025-2026';
 
   const [myQuestions, setMyQuestions] = useState<ManagerQuestion[]>([]);
   const [expandedQ, setExpandedQ] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<'open' | 'submitted' | 'approved'>('open');
+  const [, forceUpdate] = useState(0);
 
   useEffect(() => {
     setMyQuestions(getQuestionsForUser(currentUserId));
-    const unsub = subscribeQuestions(() => setMyQuestions(getQuestionsForUser(currentUserId)));
-    return unsub;
+    setStatus(getSubmissionStatus(currentUserId, period));
+
+    const unsub1 = subscribeQuestions(() => setMyQuestions(getQuestionsForUser(currentUserId)));
+    const unsub2 = subscribeEditRequests(() => forceUpdate(n => n + 1));
+    const unsub3 = subscribeCourseEditRequests(() => forceUpdate(n => n + 1));
+    
+    return () => {
+      unsub1();
+      unsub2();
+      unsub3();
+    };
   }, [currentUserId]);
 
   const openQuestions = myQuestions.filter(q => q.status === 'open');
 
-  // KPI Snapshots
+  // Find program managed by coordinator
+  const managedProgram = programs.find(p => p.managerId === currentUserId);
+  const isCoordinator = !!managedProgram;
+
+  // KPI Snapshots & Scores
   const snapshots = getKPISnapshotsByUser(currentUserId, period);
   const overall = calculateOverallKPI(currentUserId, period);
   
   // Groupings
   const opSnaps = snapshots.filter(s => kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === 'operations');
-  const asSnaps = snapshots.filter(s => kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === 'academic_support');
+  const otherSnaps = snapshots.filter(s => kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === 'other_activities');
   
-  // Other Activity Record
-  const otherRec = otherActivityRecords.find(r => r.userId === currentUserId && r.period === period);
+  // Linked academic support KPI (STT 5 Hoạt động ngoại khóa)
+  const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as');
+  const asScore = op5AsSnap ? op5AsSnap.score : 0;
+
+  // Student Results & Discipline KPI Score (20% weight)
+  const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;
   
-  // Labor Discipline Record
-  const laborRec = laborDisciplineRecords.find(r => r.userId === currentUserId && r.period === period);
+  // Active courses list for year 1/2
+  const activeCourses = managedProgram 
+    ? courses.filter(c => c.programId === managedProgram.id && c.semester === 'SEM 2') 
+    : [];
 
-  // Student Results (from Courses)
-  const userCourses = courses; // In real app, filter by manager
-
-  // Low KPI Alerts
-  const lowKpis = snapshots.filter(s => s.score < 85).map(s => {
+  const lowKpis = snapshots.filter(s => s.score < 90).map(s => {
     const def = kpiDefinitions.find(k => k.id === s.kpiDefinitionId);
     return { ...s, name: def?.shortName || '', fullName: def?.name || '' };
   });
 
-  // Greeting
+  const handleSubmitting = () => {
+    if (confirm('Bạn có chắc chắn muốn nộp bản tự đánh giá KPI kỳ này lên quản lý phê duyệt? Thao tác này sẽ khoá các quyền sửa đổi trực tiếp.')) {
+      setSubmissionStatus(currentUserId, period, 'submitted');
+      setStatus('submitted');
+      addAuditLog(currentUserId, 'Nộp tự đánh giá', `Đã nộp tự đánh giá KPI kì ${period} lên quản lý phê duyệt. Điểm tổng hợp tự đánh giá: ${overall}%.`);
+      forceUpdate(n => n + 1);
+    }
+  };
+
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Chào buổi sáng' : hour < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
+
+  const programs = [
+    { id: 'p3', name: 'BTEC HND', managerId: 'u9' },
+    { id: 'p7', name: 'BBAE', managerId: 'u8' },
+    { id: 'p_au', name: 'Andrews University', managerId: 'u7' }
+  ];
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 40 }}>
@@ -116,17 +156,17 @@ export default function StaffDashboard() {
           <div style={{ fontSize: 26, fontWeight: 800, marginBottom: 8, letterSpacing: '-0.02em' }}>{user?.name}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{user?.position} · {period}</div>
         </div>
-        <div style={{ display: 'flex', gap: 24, marginTop: 24 }}>
+        <div style={{ display: 'flex', gap: 24, marginTop: 24, flexWrap: 'wrap' }}>
           {[
             { label: 'KPI Tổng hợp', value: `${overall}%`, color: getScoreColor(overall), icon: BarChart3 },
-            { label: 'Cảnh báo KPI', value: lowKpis.length, color: lowKpis.length > 0 ? '#EF4444' : '#10B981', icon: AlertTriangle },
-            { label: 'Câu hỏi mới', value: openQuestions.length, color: openQuestions.length > 0 ? '#F59E0B' : 'white', icon: MessageCircleQuestion },
-            { label: 'Thông báo', value: unreadNotifs.length, color: unreadNotifs.length > 0 ? '#F59E0B' : 'white', icon: Bell },
+            { label: 'Chỉ tiêu cần cải thiện', value: lowKpis.length, color: lowKpis.length > 0 ? '#EF4444' : '#10B981', icon: AlertTriangle },
+            { label: 'Câu hỏi của quản lý', value: openQuestions.length, color: openQuestions.length > 0 ? '#F59E0B' : 'white', icon: MessageCircleQuestion },
+            { label: 'Thông báo mới', value: unreadNotifs.length, color: unreadNotifs.length > 0 ? '#F59E0B' : 'white', icon: Bell },
           ].map((s, i) => (
             <div key={i} style={{
               background: 'rgba(255,255,255,0.06)', borderRadius: 12, padding: '12px 20px',
               backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.06)',
-              minWidth: 120,
+              minWidth: 140,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                 <s.icon size={12} color="rgba(255,255,255,0.45)" />
@@ -138,6 +178,31 @@ export default function StaffDashboard() {
         </div>
       </div>
 
+      {/* ── Submission workflow bar ── */}
+      {isCoordinator && (
+        <div className="card" style={{ padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+          background: status === 'approved' ? 'rgba(16,185,129,0.08)' : status === 'submitted' ? 'rgba(245,158,11,0.08)' : 'rgba(155,27,48,0.05)',
+          borderLeft: `4px solid ${status === 'approved' ? '#10B981' : status === 'submitted' ? '#F59E0B' : 'var(--isme-red)'}`
+        }}>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--gray-800)' }}>
+              Trạng thái tự đánh giá: {status === 'approved' ? '✓ Đã phê duyệt' : status === 'submitted' ? '⏳ Đang chờ phê duyệt' : '✏️ Chưa nộp (Bản nháp)'}
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+              {status === 'approved' && 'Bản KPI của bạn đã được quản lý phê duyệt chính thức. Để thay đổi số liệu môn học/vận hành, vui lòng gửi yêu cầu và nêu rõ lý do.'}
+              {status === 'submitted' && 'Các số liệu của bạn đang được Hồ Hoàng Lan duyệt. Quyền sửa điểm trực tiếp đã tạm khoá.'}
+              {status === 'open' && 'Vui lòng hoàn thành tự đánh giá toàn bộ KPI môn học và Vận hành bên dưới, sau đó bấm nút "Nộp phê duyệt" bên phải.'}
+            </div>
+          </div>
+          {status === 'open' && (
+            <button className="btn btn-primary" onClick={handleSubmitting} style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Send size={14} /> Nộp phê duyệt
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Main Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
         {/* Left Column: KPI Groups */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -147,9 +212,9 @@ export default function StaffDashboard() {
             <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--gray-50)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Target size={18} color="var(--isme-red)" />
-                <span style={{ fontSize: 15, fontWeight: 700 }}>1. Nhóm Operations (50%)</span>
+                <span style={{ fontSize: 15, fontWeight: 700 }}>1. Nhóm Vận hành - Operations (50%)</span>
               </div>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-500)' }}>{opSnaps.length} chỉ tiêu</span>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-500)' }}>{opSnaps.length} chỉ tiêu · Trọng số 5%/mỗi KPI</span>
             </div>
             <div style={{ padding: 0 }}>
               {opSnaps.map((kpi, i) => {
@@ -158,7 +223,10 @@ export default function StaffDashboard() {
                   <div key={kpi.id} style={{ padding: '16px 24px', borderBottom: i < opSnaps.length - 1 ? '1px solid var(--gray-50)' : 'none', display: 'flex', alignItems: 'center', gap: 16 }}>
                     <CircularProgress value={kpi.score} size={44} strokeWidth={4} color={getScoreColor(kpi.score)} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-800)' }}>{def?.stt}. {def?.name}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-800)' }}>
+                        STT {def?.stt}: {def?.name}
+                        {def?.id === 'op5_op' && <span style={{ marginLeft: 8, padding: '2px 6px', background: '#EFF6FF', color: '#1E40AF', borderRadius: 4, fontSize: 10 }}>Liên kết Hỗ trợ HT (20%)</span>}
+                      </div>
                       <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def?.criteria}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
@@ -170,88 +238,102 @@ export default function StaffDashboard() {
               })}
             </div>
           </div>
-
+ 
           {/* Group 2: Academic Support (20%) */}
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--gray-50)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Users size={18} color="var(--isme-red)" />
-                <span style={{ fontSize: 15, fontWeight: 700 }}>2. Hỗ trợ học tập (20%)</span>
+                <span style={{ fontSize: 15, fontWeight: 700 }}>2. Hoạt động Hỗ trợ học tập (20%)</span>
               </div>
+              <span style={{ fontSize: 11, color: 'var(--gray-400)', fontStyle: 'italic' }}>Liên kết với Chỉ tiêu Vận hành STT 5</span>
             </div>
-            <div style={{ padding: 0 }}>
-              {asSnaps.map((kpi, i) => {
-                const def = kpiDefinitions.find(k => k.id === kpi.kpiDefinitionId);
-                return (
-                  <div key={kpi.id} style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <CircularProgress value={kpi.score} size={44} strokeWidth={4} color={getScoreColor(kpi.score)} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-800)' }}>{def?.name}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def?.criteria}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: getScoreColor(kpi.score) }}>{kpi.actualValue} hoạt động</div>
-                    </div>
-                  </div>
-                );
-              })}
+            <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', gap: 16 }}>
+              <CircularProgress value={asScore} size={44} strokeWidth={4} color={getScoreColor(asScore)} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-800)' }}>Tổ chức hoạt động ngoại khóa/Guest Speaker/Tọa đàm/Workshop...</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Số hoạt động ngoại khóa được tổ chức thành công.</div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: getScoreColor(asScore) }}>
+                  {op5AsSnap ? `${op5AsSnap.actualValue}/${op5AsSnap.targetValue}` : '0/0'} hoạt động
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Group 3: Student Results (10%) */}
+          {/* Group 3: Student Results & Discipline (20%) */}
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--gray-50)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Award size={18} color="var(--isme-red)" />
-                <span style={{ fontSize: 15, fontWeight: 700 }}>3. Kết quả học tập & Kỷ luật SV (10%)</span>
+                <span style={{ fontSize: 15, fontWeight: 700 }}>3. Kết quả học tập và Kỷ luật học sinh (20%)</span>
               </div>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-500)' }}>{userCourses.length} lớp/môn</span>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: getScoreColor(studentResultsScore), background: 'var(--gray-100)', padding: '2px 8px', borderRadius: 4 }}>Chung: {studentResultsScore}%</span>
+                <Link href="/kpi/courses" style={{ fontSize: 12, fontWeight: 700, color: 'var(--isme-red)', textDecoration: 'none' }}>Chi tiết →</Link>
+              </div>
             </div>
+            
             <div style={{ padding: 0, overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
                 <thead style={{ background: 'var(--gray-50)', color: 'var(--gray-500)', textAlign: 'left' }}>
                   <tr>
-                    <th style={{ padding: '12px 24px', fontWeight: 600 }}>Tên lớp/môn</th>
-                    <th style={{ padding: '12px 12px', fontWeight: 600 }}>Chuyên cần</th>
-                    <th style={{ padding: '12px 12px', fontWeight: 600 }}>Tỷ lệ Pass</th>
-                    <th style={{ padding: '12px 24px', fontWeight: 600, textAlign: 'right' }}>Trạng thái</th>
+                    <th style={{ padding: '10px 16px', fontWeight: 600 }}>Tên lớp/môn</th>
+                    <th style={{ padding: '10px 10px', fontWeight: 600, textAlign: 'center' }}>Chuyên cần</th>
+                    <th style={{ padding: '10px 10px', fontWeight: 600, textAlign: 'center' }}>Pass 1st</th>
+                    <th style={{ padding: '10px 10px', fontWeight: 600, textAlign: 'center' }}>Nộp bài đúng hạn</th>
+                    <th style={{ padding: '10px 16px', fontWeight: 600, textAlign: 'right' }}>Mức đạt</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {userCourses.map((c, i) => (
-                    <tr key={c.id} style={{ borderBottom: i < userCourses.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
-                      <td style={{ padding: '12px 24px' }}>
-                        <div style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{c.name}</div>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{c.cohort}</div>
-                      </td>
-                      <td style={{ padding: '12px 12px' }}>
-                        <span style={{ color: c.attendanceRate >= c.attendanceTarget ? '#10B981' : '#EF4444', fontWeight: 700 }}>
-                          {(c.attendanceRate * 100).toFixed(1)}%
-                        </span>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Target: {c.attendanceTarget * 100}%</div>
-                      </td>
-                      <td style={{ padding: '12px 12px' }}>
-                        <span style={{ color: c.passRate >= c.passTarget ? '#10B981' : '#EF4444', fontWeight: 700 }}>
-                          {(c.passRate * 100).toFixed(1)}%
-                        </span>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Target: {c.passTarget * 100}%</div>
-                      </td>
-                      <td style={{ padding: '12px 24px', textAlign: 'right' }}>
-                        {c.attendanceRate >= c.attendanceTarget && c.passRate >= c.passTarget ? (
-                          <CheckCircle2 size={16} color="#10B981" />
-                        ) : (
-                          <AlertTriangle size={16} color="#F59E0B" />
-                        )}
-                      </td>
+                  {activeCourses.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} style={{ padding: 24, textAlign: 'center', color: 'var(--gray-400)' }}>Không có môn học đang hoạt động trong kỳ này</td>
                     </tr>
-                  ))}
+                  ) : activeCourses.map((c, i) => {
+                    const attendComp = Math.round((c.attendanceRate / c.attendanceTarget) * 100);
+                    const passComp = Math.round((c.passRate / c.passTarget) * 100);
+                    const submitComp = Math.round((c.submitRate / c.submitTarget) * 100);
+                    const avgComp = Math.round((attendComp + passComp + submitComp) / 3);
+
+                    return (
+                      <tr key={c.id} style={{ borderBottom: i < activeCourses.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
+                        <td style={{ padding: '10px 16px' }}>
+                          <div style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{c.name}</div>
+                          <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Khóa: {c.cohort} · {c.semester}</div>
+                        </td>
+                        <td style={{ padding: '10px 10px', textAlign: 'center' }}>
+                          <div style={{ fontWeight: 600, color: c.attendanceRate >= c.attendanceTarget ? '#10B981' : '#EF4444' }}>
+                            {Math.round(c.attendanceRate * 100)}%
+                          </div>
+                          <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {c.attendanceTarget * 100}%</div>
+                        </td>
+                        <td style={{ padding: '10px 10px', textAlign: 'center' }}>
+                          <div style={{ fontWeight: 600, color: c.passRate >= c.passTarget ? '#10B981' : '#EF4444' }}>
+                            {Math.round(c.passRate * 100)}%
+                          </div>
+                          <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {c.passTarget * 100}%</div>
+                        </td>
+                        <td style={{ padding: '10px 10px', textAlign: 'center' }}>
+                          <div style={{ fontWeight: 600, color: c.submitRate >= c.submitTarget ? '#10B981' : '#EF4444' }}>
+                            {Math.round(c.submitRate * 100)}%
+                          </div>
+                          <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {c.submitTarget * 100}%</div>
+                        </td>
+                        <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: getScoreColor(avgComp) }}>
+                          {avgComp}%
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Other, Discipline & Interaction */}
+        {/* Right Column: Other, Interactions */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           
           {/* Group 4: Other Activities (10%) */}
@@ -260,56 +342,19 @@ export default function StaffDashboard() {
               <BookOpen size={18} color="var(--isme-red)" />
               <span style={{ fontSize: 14, fontWeight: 700 }}>4. Các hoạt động khác (10%)</span>
             </div>
-            <div style={{ padding: '16px 20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                {[
-                  { label: 'Tuyển sinh', active: otherRec?.admission },
-                  { label: 'Hỗ trợ du học', active: otherRec?.studyAbroad },
-                  { label: 'Hỗ trợ exchange', active: otherRec?.exchange },
-                  { label: 'HĐ khác của Viện', active: otherRec?.otherInstitute },
-                ].map((item, i) => (
-                  <div key={i} style={{ 
-                    padding: '10px', borderRadius: 8, border: '1px solid var(--gray-100)',
-                    background: item.active ? 'rgba(16, 185, 129, 0.05)' : 'transparent',
-                    display: 'flex', alignItems: 'center', gap: 8
-                  }}>
-                    <div style={{ 
-                      width: 16, height: 16, borderRadius: 4, border: '2px solid',
-                      borderColor: item.active ? '#10B981' : 'var(--gray-300)',
-                      background: item.active ? '#10B981' : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                      {item.active && <CheckCircle2 size={12} color="white" />}
+            <div style={{ padding: 0 }}>
+              {otherSnaps.map((kpi, i) => {
+                const def = kpiDefinitions.find(k => k.id === kpi.kpiDefinitionId);
+                return (
+                  <div key={kpi.id} style={{ padding: '14px 20px', borderBottom: i < otherSnaps.length - 1 ? '1px solid var(--gray-50)' : 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <CircularProgress value={kpi.score} size={36} strokeWidth={3} color={getScoreColor(kpi.score)} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-800)' }}>{def?.name}</div>
+                      <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Thực tế: {kpi.actualValue} / {kpi.targetValue}</div>
                     </div>
-                    <span style={{ fontSize: 12, fontWeight: 500, color: item.active ? '#065F46' : 'var(--gray-500)' }}>{item.label}</span>
                   </div>
-                ))}
-              </div>
-              <div style={{ marginTop: 16, padding: '8px 12px', background: 'var(--gray-50)', borderRadius: 6, textAlign: 'center' }}>
-                <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>Điểm chuyển đổi: </span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)' }}>
-                  {otherRec ? [otherRec.admission, otherRec.studyAbroad, otherRec.exchange, otherRec.otherInstitute].filter(Boolean).length * 25 : 0}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Group 5: Labor Discipline (10%) */}
-          <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 10, background: 'var(--gray-50)' }}>
-              <ShieldCheck size={18} color="var(--isme-red)" />
-              <span style={{ fontSize: 14, fontWeight: 700 }}>5. Kỷ luật lao động (10%)</span>
-            </div>
-            <div style={{ padding: '20px', textAlign: 'center' }}>
-              <div style={{ fontSize: 32, fontWeight: 800, color: getScoreColor(laborRec?.score || 0) }}>
-                {laborRec?.score || 0}
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>Điểm đánh giá từ Quản lý</div>
-              {laborRec?.note && (
-                <div style={{ marginTop: 12, padding: 10, background: 'var(--gray-50)', borderRadius: 8, fontSize: 12, fontStyle: 'italic', color: 'var(--gray-600)' }}>
-                  "{laborRec.note}"
-                </div>
-              )}
+                );
+              })}
             </div>
           </div>
 
@@ -318,33 +363,33 @@ export default function StaffDashboard() {
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 10, background: openQuestions.length > 0 ? 'linear-gradient(135deg, #F5F3FF, #EDE9FE)' : undefined }}>
               <MessageCircleQuestion size={18} color="#7C3AED" />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: openQuestions.length > 0 ? '#5B21B6' : 'var(--gray-700)' }}>Phản hồi Quản lý</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: openQuestions.length > 0 ? '#5B21B6' : 'var(--gray-700)' }}>Phản hồi quản lý</div>
               </div>
             </div>
             <div style={{ maxHeight: 300, overflowY: 'auto' }}>
               {myQuestions.length === 0 ? (
-                <div style={{ padding: 32, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Không có câu hỏi nào</div>
+                <div style={{ padding: 32, textAlign: 'center', color: 'var(--gray-400)', fontSize: 13 }}>Không có phản hồi nào</div>
               ) : myQuestions.map((q, i) => (
                 <div key={q.id} style={{ padding: '12px 16px', borderBottom: i < myQuestions.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{q.subject}</div>
                     <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: q.status === 'open' ? '#FEE2E2' : '#D1FAE5', color: q.status === 'open' ? '#DC2626' : '#059669' }}>
-                      {q.status === 'open' ? 'Chờ' : 'Đã trả lời'}
+                      {q.status === 'open' ? 'Chờ trả lời' : 'Đã trả lời'}
                     </span>
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.4, marginBottom: 8 }}>{q.question}</div>
                   {q.status === 'open' && (
                     <button onClick={() => setExpandedQ(expandedQ === q.id ? null : q.id)} style={{ fontSize: 11, fontWeight: 700, color: '#7C3AED', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                      Trả lời ngay →
+                      Phản hồi ngay →
                     </button>
                   )}
                   {expandedQ === q.id && (
                     <div style={{ marginTop: 10 }}>
-                      <textarea placeholder="Nhập phản hồi..." value={answerText[q.id] || ''} onChange={e => setAnswerText(p => ({ ...p, [q.id]: e.target.value }))} rows={3}
+                      <textarea placeholder="Nhập câu trả lời..." value={answerText[q.id] || ''} onChange={e => setAnswerText(p => ({ ...p, [q.id]: e.target.value }))} rows={3}
                         style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #DDD6FE', fontSize: 12, resize: 'none', outline: 'none' }} />
-                      <button onClick={() => { if (answerText[q.id]?.trim()) { answerQuestion(q.id, answerText[q.id].trim()); setAnswerText(p => ({ ...p, [q.id]: '' })); setExpandedQ(null); } }}
+                      <button onClick={() => { if (answerText[q.id]?.trim()) { answerQuestion(q.id, answerText[q.id].trim()); addAuditLog(currentUserId, 'Trả lời phản hồi', `Đã trả lời câu hỏi của quản lý về "${q.subject}": "${answerText[q.id].trim()}"`); setAnswerText(p => ({ ...p, [q.id]: '' })); setExpandedQ(null); } }}
                         style={{ marginTop: 6, width: '100%', padding: '6px', borderRadius: 6, border: 'none', background: '#7C3AED', color: 'white', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
-                        Gửi phản hồi
+                        Gửi câu trả lời
                       </button>
                     </div>
                   )}
@@ -357,11 +402,9 @@ export default function StaffDashboard() {
 
       {/* ── Notifications Footer ── */}
       <div className="card" style={{ padding: 0, overflow: 'hidden', marginTop: 24 }}>
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Bell size={18} color="#F59E0B" />
-            <span style={{ fontSize: 15, fontWeight: 700 }}>Thông báo hệ thống</span>
-          </div>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Bell size={18} color="#F59E0B" />
+          <span style={{ fontSize: 15, fontWeight: 700 }}>Thông báo hệ thống</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
           {notifications.slice(0, 3).map((n, i) => {

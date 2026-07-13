@@ -49,6 +49,10 @@ export interface Course {
   passRate: number;            // Tỉ lệ pass trung bình
   submitRate: number;          // Tỉ lệ nộp bài lần đầu đúng hạn
   passTarget: number;          // Mục tiêu học tập
+  submitTarget: number;        // Mục tiêu nộp bài đúng hạn
+  year: number;                // Năm học (1, 2, 3, 4)
+  semester: string;            // Kỳ học (SEM 1, SEM 2, etc.)
+  code?: string;               // Mã môn học
 }
 
 export type KPIGroupId = 'operations' | 'academic_support' | 'student_results' | 'other_activities' | 'labor_discipline';
@@ -84,6 +88,8 @@ export interface KPISnapshot {
   rawDenominator: number;     // For drill-down detail (e.g. 7 in 6/7)
   managerScore?: number;      // Đánh giá của line manager
   leaderScore?: number;       // Đánh giá của trưởng ban
+  leaderNote?: string;        // Nhận xét chi tiết của trưởng ban
+  managerNote?: string;       // Nhận xét chi tiết của line manager
   calculatedAt: string;
 }
 
@@ -244,4 +250,15 @@ export interface CoordinatorStats {
   passRateTarget: number;
   attendanceRateActual: number;
   attendanceRateTarget: number;
+}
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  action: string;
+  ipAddress: string;
+  details: string;
+  userAgent: string;
 }

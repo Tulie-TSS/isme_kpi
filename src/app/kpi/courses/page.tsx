@@ -17,7 +17,7 @@ import {
 } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
-import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award } from 'lucide-react';
 
 function getScoreColor(val: number) {
   if (val >= 100) return '#047857'; // Excellent
@@ -306,6 +306,7 @@ export default function KPICoursePage() {
   const { currentRole, currentUserId, selectedProgramId, setSelectedProgramId } = useApp();
   const [selectedProgram, setSelectedProgram] = useState(selectedProgramId !== 'all' ? selectedProgramId : 'p_au');
   const [filterSemester, setFilterSemester] = useState<'current' | 'year1' | 'year2' | 'year3' | 'year4' | 'all'>('current');
+  const [selectedCohort, setSelectedCohort] = useState<string>('all');
   const [editTarget, setEditTarget] = useState<{ course: Course; field: CourseEditField; fieldLabel: string; value: number } | null>(null);
   const [, forceUpdate] = useState(0);
 
@@ -317,12 +318,19 @@ export default function KPICoursePage() {
   }, [selectedProgramId]);
 
   useEffect(() => {
+    setSelectedCohort('all');
+  }, [selectedProgram]);
+
+  useEffect(() => {
     const unsub = subscribeCourseEditRequests(() => forceUpdate((n: number) => n + 1));
     return unsub;
   }, []);
 
   const program = programs.find(p => p.id === selectedProgram);
   const coordinator = program ? getUserById(program.managerId) : null;
+
+  // Get unique cohorts in this program
+  const uniqueCohorts = Array.from(new Set(courses.filter(c => c.programId === selectedProgram).map(c => c.cohort))).sort();
   
   // Filter courses by program
   let programCourses = courses.filter(c => c.programId === selectedProgram);
@@ -333,10 +341,37 @@ export default function KPICoursePage() {
   } else if (filterSemester.startsWith('year')) {
     const yearNum = parseInt(filterSemester.replace('year', ''));
     programCourses = programCourses.filter(c => c.year === yearNum);
-  } else {
-    // Show all
-    programCourses = programCourses;
   }
+
+  // Calculate averages for each cohort (accumulated, only past and current semesters: year <= 2)
+  const cohortAverages = uniqueCohorts.map(coh => {
+    const cohCourses = courses.filter(c => c.programId === selectedProgram && c.cohort === coh && c.year <= 2);
+    const avg = cohCourses.length > 0
+      ? Math.round(cohCourses.reduce((sum, c) => {
+          const attendComp = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
+          const passComp = Math.min((c.passRate / c.passTarget) * 100, 100);
+          const submitComp = Math.min((c.submitRate / c.submitTarget) * 100, 100);
+          return sum + (attendComp + passComp + submitComp) / 3;
+        }, 0) / cohCourses.length)
+      : 0;
+    return { cohort: coh, avg };
+  });
+
+  // Apply cohort filter
+  if (selectedCohort !== 'all') {
+    programCourses = programCourses.filter(c => c.cohort === selectedCohort);
+  }
+
+  // Calculate average completion rate of the currently filtered courses (only started ones: year <= 2)
+  const completedCourses = programCourses.filter(c => c.year <= 2);
+  const totalAvgScore = completedCourses.length > 0
+    ? Math.round(completedCourses.reduce((sum, c) => {
+        const attendComp = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
+        const passComp = Math.min((c.passRate / c.passTarget) * 100, 100);
+        const submitComp = Math.min((c.submitRate / c.submitTarget) * 100, 100);
+        return sum + (attendComp + passComp + submitComp) / 3;
+      }, 0) / completedCourses.length)
+    : 0;
 
   // Sort by year, semester order, then name
   const semesterOrder: Record<string, number> = {
@@ -456,22 +491,76 @@ export default function KPICoursePage() {
       </div>
 
       {/* Filter View Selector */}
-      <div className="card" style={{ padding: '16px 20px', marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)' }}>Chế độ hiển thị:</span>
-          <div className="tab-bar" style={{ display: 'flex', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
-            {[
-              { id: 'current', label: 'Kỳ hiện tại (Sem 2 2026)' },
-              { id: 'year1', label: 'Năm 1' },
-              { id: 'year2', label: 'Năm 2' },
-              { id: 'year3', label: 'Năm 3 (Dự kiến)' },
-              { id: 'year4', label: 'Năm 4 (Dự kiến)' },
-              { id: 'all', label: 'Toàn khóa' },
-            ].map(tab => (
-              <button 
-                key={tab.id}
-                className={`tab-item ${filterSemester === tab.id ? 'active' : ''}`}
-                onClick={() => setFilterSemester(tab.id as any)}
+      <div className="card" style={{ padding: '16px 20px', marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)' }}>Chế độ hiển thị:</span>
+            <div className="tab-bar" style={{ display: 'flex', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
+              {[
+                { id: 'current', label: 'Kỳ hiện tại (Sem 2 2026)' },
+                { id: 'year1', label: 'Năm 1' },
+                { id: 'year2', label: 'Năm 2' },
+                { id: 'year3', label: 'Năm 3 (Dự kiến)' },
+                { id: 'year4', label: 'Năm 4 (Dự kiến)' },
+                { id: 'all', label: 'Toàn khóa' },
+              ].map(tab => (
+                <button 
+                  key={tab.id}
+                  className={`tab-item ${filterSemester === tab.id ? 'active' : ''}`}
+                  onClick={() => setFilterSemester(tab.id as any)}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 6,
+                    border: 'none',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: filterSemester === tab.id ? 'white' : 'transparent',
+                    color: filterSemester === tab.id ? 'var(--isme-red)' : 'var(--gray-500)',
+                    boxShadow: filterSemester === tab.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    transition: 'all 0.15s ease'
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <HelpCircle size={14} /> 
+            {filterSemester === 'current' && 'Đang hiển thị 12 môn học đang diễn ra trong Kỳ 2 năm 2026.'}
+            {filterSemester === 'year1' && 'Đang hiển thị toàn bộ môn học thuộc lộ trình Năm 1.'}
+            {filterSemester === 'year2' && 'Đang hiển thị toàn bộ môn học thuộc lộ trình Năm 2.'}
+            {filterSemester === 'year3' && 'Đang hiển thị các môn học dự kiến ở Năm 3 (Chưa bắt đầu).'}
+            {filterSemester === 'year4' && 'Đang hiển thị các môn học dự kiến ở Năm 4 (Chưa bắt đầu).'}
+            {filterSemester === 'all' && 'Đang hiển thị lộ trình học tập trọn khóa (Năm 1 - Năm 4) của chương trình.'}
+          </div>
+        </div>
+
+        <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)' }}>Lọc theo Lớp/Khóa:</span>
+          <div style={{ display: 'flex', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
+            <button
+              onClick={() => setSelectedCohort('all')}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 6,
+                border: 'none',
+                fontSize: 12,
+                fontWeight: 600,
+                cursor: 'pointer',
+                background: selectedCohort === 'all' ? 'white' : 'transparent',
+                color: selectedCohort === 'all' ? 'var(--isme-red)' : 'var(--gray-500)',
+                boxShadow: selectedCohort === 'all' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              Tất cả các lớp
+            </button>
+            {uniqueCohorts.map(coh => (
+              <button
+                key={coh}
+                onClick={() => setSelectedCohort(coh)}
                 style={{
                   padding: '6px 12px',
                   borderRadius: 6,
@@ -479,27 +568,51 @@ export default function KPICoursePage() {
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: 'pointer',
-                  background: filterSemester === tab.id ? 'white' : 'transparent',
-                  color: filterSemester === tab.id ? 'var(--isme-red)' : 'var(--gray-500)',
-                  boxShadow: filterSemester === tab.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                  background: selectedCohort === coh ? 'white' : 'transparent',
+                  color: selectedCohort === coh ? 'var(--isme-red)' : 'var(--gray-500)',
+                  boxShadow: selectedCohort === coh ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
                   transition: 'all 0.15s ease'
                 }}
               >
-                {tab.label}
+                Lớp {coh}
               </button>
             ))}
           </div>
         </div>
-        <div style={{ fontSize: 12, color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: 4 }}>
-          <HelpCircle size={14} /> 
-          {filterSemester === 'current' && 'Đang hiển thị 12 môn học đang diễn ra trong Kỳ 2 năm 2026.'}
-          {filterSemester === 'year1' && 'Đang hiển thị toàn bộ môn học thuộc lộ trình Năm 1.'}
-          {filterSemester === 'year2' && 'Đang hiển thị toàn bộ môn học thuộc lộ trình Năm 2.'}
-          {filterSemester === 'year3' && 'Đang hiển thị các môn học dự kiến ở Năm 3 (Chưa bắt đầu).'}
-          {filterSemester === 'year4' && 'Đang hiển thị các môn học dự kiến ở Năm 4 (Chưa bắt đầu).'}
-          {filterSemester === 'all' && 'Đang hiển thị lộ trình học tập trọn khóa (Năm 1 - Năm 4) của chương trình.'}
-        </div>
       </div>
+
+      {/* Widget Thống kê Tổng % Hoàn thành các Khóa */}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${1 + cohortAverages.length}, 1fr)`, gap: 16, marginBottom: 20 }}>
+        <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: '4px solid var(--isme-red)' }}>
+          <div>
+            <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>KPI Môn học trung bình đang xem</div>
+            <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--isme-red)', marginTop: 4 }}>{totalAvgScore}%</div>
+          </div>
+          <div style={{ background: 'rgba(239,68,68,0.06)', borderRadius: 10, padding: 8 }}>
+            <BookOpen size={20} color="var(--isme-red)" />
+          </div>
+        </div>
+
+        {cohortAverages.map((cohAvg, cIdx) => {
+          const colors = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B'];
+          const bgs = ['rgba(59,130,246,0.06)', 'rgba(16,185,129,0.06)', 'rgba(124,58,237,0.06)', 'rgba(245,158,11,0.06)'];
+          const color = colors[cIdx % colors.length];
+          const bg = bgs[cIdx % bgs.length];
+
+          return (
+            <div key={cohAvg.cohort} className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: `4px solid ${color}` }}>
+              <div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Toàn khóa {cohAvg.cohort} (Tích lũy)</div>
+                <div style={{ fontSize: 24, fontWeight: 900, color: color, marginTop: 4 }}>{cohAvg.avg}%</div>
+              </div>
+              <div style={{ background: bg, borderRadius: 10, padding: 8 }}>
+                <Award size={20} color={color} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
 
       {/* Course Edit Approval Panel */}
       <CourseApprovalPanel isManager={isManager} userId={currentUserId} selectedProgramId={selectedProgram} />

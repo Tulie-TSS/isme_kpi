@@ -75,7 +75,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, padding: '0 16px', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600, padding: '0 16px', marginBottom: 8 }}>
           Menu
         </div>
 

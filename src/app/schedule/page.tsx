@@ -350,7 +350,7 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
             {selectedSlot.freeUsers.length > 0 && (
               <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#16A34A', textTransform: 'uppercase', marginBottom: 6 }}>Rảnh ({selectedSlot.freeUsers.length})</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#16A34A', marginBottom: 6 }}>Rảnh ({selectedSlot.freeUsers.length})</div>
                 {selectedSlot.freeUsers.map(name => (
                   <div key={name} style={{ padding: '4px 0', fontSize: 13, color: 'var(--gray-600)' }}>
                     <CheckCircle size={12} color="#16A34A" style={{ marginRight: 6, verticalAlign: -1 }} />{name}
@@ -361,7 +361,7 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
             {selectedSlot.busyUsers.length > 0 && (
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#DC2626', textTransform: 'uppercase', marginBottom: 6 }}>Bận ({selectedSlot.busyUsers.length})</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#DC2626', marginBottom: 6 }}>Bận ({selectedSlot.busyUsers.length})</div>
                 {selectedSlot.busyUsers.map(name => (
                   <div key={name} style={{ padding: '4px 0', fontSize: 13, color: 'var(--gray-600)' }}>
                     <AlertTriangle size={12} color="#DC2626" style={{ marginRight: 6, verticalAlign: -1 }} />{name}

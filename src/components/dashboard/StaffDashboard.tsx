@@ -148,8 +148,8 @@ export default function StaffDashboard() {
         <div style={{ position: 'absolute', top: -60, right: -30, width: 200, height: 200, borderRadius: '50%', background: 'rgba(155, 27, 48, 0.12)', filter: 'blur(60px)' }} />
         <div style={{ position: 'absolute', bottom: -30, right: 120, width: 140, height: 140, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.08)', filter: 'blur(50px)' }} />
         <div style={{ position: 'relative' }}>
-          <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', marginBottom: 6, letterSpacing: '0.02em' }}>{greeting}! 👋</div>
-          <div style={{ fontSize: 26, fontWeight: 800, marginBottom: 8, letterSpacing: '-0.02em' }}>{user?.name}</div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 6 }}>{greeting}! 👋</div>
+          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>{user?.name}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{user?.position} · {period}</div>
         </div>
         <div style={{ display: 'flex', gap: 24, marginTop: 24, flexWrap: 'wrap' }}>
@@ -168,7 +168,7 @@ export default function StaffDashboard() {
                 <s.icon size={12} color="rgba(255,255,255,0.45)" />
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>{s.label}</div>
               </div>
-              <div style={{ fontSize: 26, fontWeight: 800, color: s.color as string, letterSpacing: '-0.02em' }}>{s.value}</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: s.color as string }}>{s.value}</div>
             </div>
           ))}
         </div>

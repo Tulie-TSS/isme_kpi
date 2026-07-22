@@ -123,7 +123,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
             <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị hiện tại</div>
-                <div style={{ fontSize: 24, fontWeight: 800 }}>{currentValue}%</div>
+                <div style={{ fontSize: 24, fontWeight: 700 }}>{currentValue}%</div>
               </div>
               <div style={{ fontSize: 20, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
               <div>
@@ -451,7 +451,7 @@ export default function KPICoursePage() {
       {/* Compact Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: 'var(--gray-900)' }}>Bảng KPI Môn học</h1>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Bảng KPI Môn học</h1>
           {coordinator && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--gray-100)', padding: '4px 10px', borderRadius: 6, border: '1px solid var(--gray-200)' }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-700)' }}>Coordinator: {coordinator.name}</span>
@@ -543,7 +543,7 @@ export default function KPICoursePage() {
           }}>
             <BookOpen size={14} color="var(--isme-red)" />
             <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Đang xem:</span>
-            <span style={{ fontSize: 13, fontWeight: 900, color: 'var(--isme-red)' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--isme-red)' }}>
               {isNaN(totalAvgScore) ? 0 : totalAvgScore}%
             </span>
           </div>
@@ -562,7 +562,7 @@ export default function KPICoursePage() {
               }}>
                 <Award size={14} color={color} />
                 <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>{cohAvg.cohort}:</span>
-                <span style={{ fontSize: 13, fontWeight: 900, color: color }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: color }}>
                   {displayScore}%
                 </span>
               </div>
@@ -685,7 +685,7 @@ export default function KPICoursePage() {
                     <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : getBgColor(submitComp!) }}>{isFuture ? '-' : `${submitComp}%`}</td>
                     
                     {/* Course Avg Completion */}
-                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : getScoreColor(avgComp!), fontWeight: 800, fontSize: 13 }}>
+                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : getScoreColor(avgComp!), fontWeight: 700, fontSize: 13 }}>
                       {isFuture ? (
                         <span style={{ fontSize: 10, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '2px 6px', borderRadius: 4, fontWeight: 500 }}>Chưa bắt đầu</span>
                       ) : (

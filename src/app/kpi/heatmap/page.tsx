@@ -94,17 +94,17 @@ export default function HeatmapPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#F8FAFC', borderBottom: '2px solid var(--gray-200)' }}>
-              <th style={{ textAlign: 'left', padding: '16px 20px', fontSize: 12, fontWeight: 700, minWidth: 200, position: 'sticky', left: 0, background: '#F8FAFC', zIndex: 10 }}>
-                NHÂN VIÊN
+              <th style={{ textAlign: 'left', padding: '14px 18px', fontSize: 11, fontWeight: 700, minWidth: 200, position: 'sticky', left: 0, background: '#F8FAFC', zIndex: 10 }}>
+                Nhân viên
               </th>
               {kpiGroups.map(g => (
                 <th key={g.id} style={{ textAlign: 'center', padding: '12px', fontSize: 11, fontWeight: 700, borderLeft: '1px solid var(--gray-100)' }}>
-                  <div style={{ color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>{g.name}</div>
+                  <div style={{ color: 'var(--gray-500)', marginBottom: 4 }}>{g.name}</div>
                   <div style={{ fontSize: 13, color: 'var(--isme-red)' }}>{g.weight}%</div>
                 </th>
               ))}
-              <th style={{ textAlign: 'center', padding: '12px', fontSize: 12, fontWeight: 800, background: '#F1F5F9', borderLeft: '2px solid var(--gray-200)' }}>
-                KPI TỔNG
+              <th style={{ textAlign: 'center', padding: '12px', fontSize: 11, fontWeight: 700, background: '#F1F5F9', borderLeft: '2px solid var(--gray-200)' }}>
+                KPI Tổng hợp
               </th>
             </tr>
           </thead>

@@ -443,11 +443,11 @@ export default function AdminPortal() {
         marginBottom: 32, flexWrap: 'wrap', gap: 16 
       }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--isme-red)', fontWeight: 700, fontSize: 13, textTransform: 'uppercase', letterSpacing: 1.2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--isme-red)', fontWeight: 700, fontSize: 13 }}>
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--isme-red)' }} />
             Root Admin Space
           </div>
-          <h1 style={{ fontSize: 32, fontWeight: 900, color: 'var(--gray-900)', letterSpacing: '-0.02em', marginTop: 4 }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)', marginTop: 4 }}>
             Quản trị Hệ thống
           </h1>
           <p style={{ color: 'var(--gray-500)', fontSize: 14, marginTop: 4 }}>
@@ -540,13 +540,13 @@ export default function AdminPortal() {
                       onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.02)'; }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 0.5 }}>{card.title}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>{card.title}</span>
                         <div style={{ width: 44, height: 44, borderRadius: 12, background: card.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
                           <Icon size={20} />
                         </div>
                       </div>
                       <div style={{ marginTop: 16 }}>
-                        <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--gray-900)', letterSpacing: '-0.02em' }}>{card.value}</div>
+                        <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--gray-900)' }}>{card.value}</div>
                         <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 4, fontWeight: 500 }}>{card.desc}</div>
                       </div>
                     </div>
@@ -558,14 +558,14 @@ export default function AdminPortal() {
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, flexWrap: 'wrap' }}>
                 {/* System DB info */}
                 <div style={{ background: 'white', borderRadius: 24, padding: 32, border: '1px solid var(--gray-100)' }}>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-900)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Info size={18} color="var(--isme-red)" />
                     Thông tin Cơ sở Dữ liệu Supabase
                   </h3>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     <div style={{ background: 'var(--gray-50)', padding: 20, borderRadius: 16, border: '1px solid var(--gray-100)' }}>
-                      <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', marginBottom: 6 }}>Database Connection</div>
+                      <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 700, marginBottom: 6 }}>Database Connection</div>
                       <div style={{ fontFamily: 'monospace', fontSize: 13, color: 'var(--gray-700)', wordBreak: 'break-all' }}>
                         aws-1-ap-southeast-1.pooler.supabase.com:6543
                       </div>
@@ -695,15 +695,15 @@ export default function AdminPortal() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--gray-200)' }}>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>ID</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Họ và Tên</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Email</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Chức vụ (Position)</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Hệ thống Role</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Kiêm nhiệm Roles</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Quản lý trực tiếp</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Trạng thái</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Thao tác</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>ID</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Họ và Tên</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Email</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Chức vụ</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Hệ thống Role</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Kiêm nhiệm Roles</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Quản lý trực tiếp</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Trạng thái</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -834,14 +834,14 @@ export default function AdminPortal() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--gray-200)' }}>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>ID</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Tên chương trình</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Tên viết tắt</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Loại (Type)</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Manager phụ trách</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Manager phụ (BTEC)</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Trạng thái</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Thao tác</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>ID</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Tên chương trình</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Tên viết tắt</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Loại</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Manager phụ trách</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Manager phụ</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Trạng thái</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -959,16 +959,16 @@ export default function AdminPortal() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid var(--gray-200)' }}>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>ID</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Tên môn học</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Thuộc chương trình</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Khóa/Cohort</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Số GV</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Số SV</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Đi học (Target)</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Pass (Target)</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Nộp bài đúng hạn</th>
-                      <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Thao tác</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>ID</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Tên môn học</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Thuộc chương trình</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Khóa/Cohort</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Số GV</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Số SV</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Đi học (Target)</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Pass (Target)</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Nộp bài đúng hạn</th>
+                      <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1122,14 +1122,14 @@ export default function AdminPortal() {
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid var(--gray-200)' }}>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Nhóm KPI</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>STT</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Tên viết tắt</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Tiêu chí / Tên đầy đủ</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Đơn vị</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Trọng số</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5 }}>Tiêu chí Đánh giá</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--gray-400)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.5, textAlign: 'center' }}>Thao tác</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Nhóm KPI</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>STT</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Tên viết tắt</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Tiêu chí / Tên đầy đủ</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Đơn vị</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Trọng số</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11 }}>Tiêu chí Đánh giá</th>
+                        <th style={{ padding: '12px 16px', color: 'var(--gray-500)', fontWeight: 700, fontSize: 11, textAlign: 'center' }}>Thao tác</th>
                       </tr>
                     </thead>
                     <tbody>

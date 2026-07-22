@@ -59,13 +59,19 @@
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.03), 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   
-  /* Typography Scale */
+  /* Typography Scale — Standardized 4 Tier System */
+  --text-caption: 11px;
+  --text-body: 13px;
+  --text-heading: 15px;
+  --text-title: 20px;
+  --text-hero: 28px;
+  
   --text-xs: 11px;
   --text-sm: 13px;
-  --text-base: 14px;
-  --text-lg: 16px;
+  --text-base: 13px;
+  --text-lg: 15px;
   --text-xl: 20px;
-  --text-2xl: 24px;
+  --text-2xl: 20px;
   --text-3xl: 28px;
   
   /* Animation Timing */
@@ -572,8 +578,6 @@ html, body {
   font-size: 11px;
   font-weight: 700;
   color: var(--gray-500);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   border-bottom: 2px solid var(--gray-200);
   background: var(--gray-50);
   position: sticky;
@@ -1305,10 +1309,9 @@ textarea:focus-visible {
 }
 
 .page-title {
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--gray-900);
-  letter-spacing: -0.02em;
   margin: 0;
   line-height: 1.2;
 }

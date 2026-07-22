@@ -162,7 +162,7 @@ export default function Header() {
               {/* Header */}
               <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.02em' }}>Thông báo</span>
+                  <span style={{ fontSize: 16, fontWeight: 700 }}>Thông báo</span>
                   {unreadCount > 0 && <span style={{ fontSize: 11, background: 'var(--isme-red)', color: 'white', padding: '2px 10px', borderRadius: 20, fontWeight: 700 }}>{unreadCount} mới</span>}
                 </div>
                 {unreadCount > 0 && (
@@ -269,9 +269,9 @@ export default function Header() {
               {/* User info */}
               <div style={{ padding: '24px 24px 20px', borderBottom: '1px solid var(--gray-100)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div className="avatar" style={{ background: avatarColors[colorIndex], width: 48, height: 48, fontSize: 18, fontWeight: 800 }}>{initials}</div>
+                  <div className="avatar" style={{ background: avatarColors[colorIndex], width: 48, height: 48, fontSize: 18, fontWeight: 700 }}>{initials}</div>
                   <div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em' }}>{user?.name}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-900)' }}>{user?.name}</div>
                     <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>{user?.email}</div>
                   </div>
                 </div>
@@ -280,7 +280,7 @@ export default function Header() {
               {/* Role switch (admin only can switch roles for demo) */}
               {authUser?.role === 'admin' && (
                 <>
-                  <div style={{ padding: '8px 16px 4px', fontSize: 11, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Chuyển vai trò</div>
+                  <div style={{ padding: '8px 16px 4px', fontSize: 11, color: 'var(--gray-400)', fontWeight: 600 }}>Chuyển vai trò</div>
                   {(['staff', 'manager', 'admin'] as Role[]).map(role => (
                     <button key={role} onClick={() => handleRoleSwitch(role)}
                       style={{

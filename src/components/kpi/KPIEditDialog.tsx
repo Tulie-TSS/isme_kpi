@@ -165,10 +165,10 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
                 background: 'var(--gray-50)', borderRadius: 20, padding: '20px 24px',
                 border: '1px solid var(--gray-100)',
               }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 12 }}>Hiện tại</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 12 }}>Hiện tại</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--gray-800)' }}>{snapshot.score}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--gray-400)' }}>%</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--gray-800)' }}>{snapshot.score}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-400)' }}>%</div>
                 </div>
                 <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4, fontWeight: 600 }}>{snapshot.rawNumerator}/{snapshot.rawDenominator} hoàn thành</div>
               </div>
@@ -179,10 +179,10 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
                 border: hasChanged ? (newScore >= snapshot.score ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)') : '1px solid var(--gray-100)',
                 transition: 'all 0.3s ease',
               }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 12 }}>Dự kiến</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 12 }}>Dự kiến</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-400)' }}>{newScore}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-300)' }}>%</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-400)' }}>{newScore}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-300)' }}>%</div>
                 </div>
                 <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4, fontWeight: 600 }}>{newNumerator}/{newDenominator} hoàn thành</div>
               </div>

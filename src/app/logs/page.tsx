@@ -91,20 +91,20 @@ export default function AuditLogsPage() {
       {/* Stats Summary Panel */}
       <div className="summary-grid" style={{ marginBottom: 20 }}>
         <div className="summary-card">
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', marginBottom: 4 }}>Tổng số bản ghi</div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--isme-red)' }}>{logs.length}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 4 }}>Tổng số bản ghi</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--isme-red)' }}>{logs.length}</div>
           <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>Toàn thời gian hệ thống hoạt động</div>
         </div>
         <div className="summary-card">
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', marginBottom: 4 }}>Hành động phê duyệt</div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: '#10B981' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 4 }}>Hành động phê duyệt</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: '#10B981' }}>
             {logs.filter(l => l.action.includes('Duyệt')).length}
           </div>
           <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>Thay đổi số liệu được chấp thuận</div>
         </div>
         <div className="summary-card">
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', marginBottom: 4 }}>Yêu cầu sửa đổi điểm</div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: '#3B82F6' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 4 }}>Yêu cầu sửa đổi điểm</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: '#3B82F6' }}>
             {logs.filter(l => l.action.includes('Yêu cầu') || l.action.includes('sửa')).length}
           </div>
           <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>Đang chờ xử lý hoặc đã duyệt</div>

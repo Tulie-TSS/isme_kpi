@@ -149,7 +149,7 @@ export default function KPIApprovalPanel() {
                   <div style={{ padding: '12px 16px', background: 'white', borderRadius: 10, border: '1px solid var(--gray-100)' }}>
                     {/* Reason */}
                     <div style={{ marginBottom: 12 }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', marginBottom: 4 }}>Lý do chỉnh sửa</div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 4 }}>Lý do chỉnh sửa</div>
                       <div style={{ fontSize: 13, color: 'var(--gray-700)', lineHeight: 1.5 }}>{req.reason}</div>
                     </div>
 

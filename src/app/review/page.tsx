@@ -355,8 +355,8 @@ export default function ReviewPage() {
                 return (
                   <div key={group.id}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
-                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{roman}</div>
-                      <h4 style={{ fontSize: 14, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{group.name} (Trọng số {group.weight}%)</h4>
+                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{roman}</div>
+                      <h4 style={{ fontSize: 14, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
                     <table className="data-table">
                       <thead>
@@ -405,8 +405,8 @@ export default function ReviewPage() {
                 return (
                   <div key={group.id}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
-                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{roman}</div>
-                      <h4 style={{ fontSize: 14, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{group.name} (Trọng số {group.weight}%)</h4>
+                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{roman}</div>
+                      <h4 style={{ fontSize: 14, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
                     <table className="data-table">
                       <thead>
@@ -461,8 +461,8 @@ export default function ReviewPage() {
                 return (
                   <div key={group.id}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
-                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{roman}</div>
-                      <h4 style={{ fontSize: 14, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{group.name} (Trọng số {group.weight}%)</h4>
+                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{roman}</div>
+                      <h4 style={{ fontSize: 14, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
                     <table className="data-table">
                       <thead>
@@ -502,8 +502,8 @@ export default function ReviewPage() {
                 return (
                   <div key={group.id}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
-                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800 }}>{roman}</div>
-                      <h4 style={{ fontSize: 14, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{group.name} (Trọng số {group.weight}%)</h4>
+                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700 }}>{roman}</div>
+                      <h4 style={{ fontSize: 14, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
                     <div style={{ padding: '24px', background: 'var(--gray-50)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div>
@@ -531,17 +531,17 @@ export default function ReviewPage() {
               boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.2)'
             }}>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Tổng kết kết quả</div>
-                <div style={{ fontSize: 24, fontWeight: 800 }}>ĐIỂM KPI TỔNG HỢP</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>Tổng kết kết quả</div>
+                <div style={{ fontSize: 20, fontWeight: 700 }}>Điểm KPI Tổng hợp</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Xếp loại</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Xếp loại</div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: getRankColor(calculateOverallKPI(currentUserId, period)) }}>{getRank(calculateOverallKPI(currentUserId, period))}</div>
                 </div>
                 <div style={{ width: 2, height: 40, background: 'rgba(255,255,255,0.1)' }} />
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 44, fontWeight: 900, color: getScoreColor(calculateOverallKPI(currentUserId, period)), lineHeight: 1 }}>{calculateOverallKPI(currentUserId, period)}<span style={{ fontSize: 20, color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>/100</span></div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: getScoreColor(calculateOverallKPI(currentUserId, period)), lineHeight: 1 }}>{calculateOverallKPI(currentUserId, period)}<span style={{ fontSize: 15, color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>/100</span></div>
                 </div>
               </div>
             </div>

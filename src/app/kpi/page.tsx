@@ -93,17 +93,17 @@ export default function KPIPage() {
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 60 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--gray-900)' }}>Bảng Theo dõi Kết quả KPI</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 8 }}>
-            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--isme-red)' }}>{user?.name}</span>
-            <span style={{ fontSize: 14, color: 'var(--gray-400)' }}>|</span>
-            <span style={{ fontSize: 14, color: 'var(--gray-500)' }}>{user?.position}</span>
-            <span style={{ fontSize: 14, color: 'var(--gray-400)' }}>|</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)' }}>{period}</span>
-            <span style={{ fontSize: 14, color: 'var(--gray-400)' }}>|</span>
-            <span style={{ fontSize: 12, fontWeight: 700, padding: '2px 8px', borderRadius: 4, 
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>Bảng Theo dõi Kết quả KPI</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--isme-red)' }}>{user?.name}</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{user?.position}</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)' }}>{period}</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>
+            <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 4, 
               background: assessmentStatus === 'approved' ? '#D1FAE5' : assessmentStatus === 'submitted' ? '#FEF3C7' : '#F3F4F6',
               color: assessmentStatus === 'approved' ? '#065F46' : assessmentStatus === 'submitted' ? '#B45309' : '#374151'
             }}>
@@ -112,9 +112,9 @@ export default function KPIPage() {
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', marginBottom: 4 }}>Điểm KPI Tổng hợp</div>
-          <div style={{ fontSize: 36, fontWeight: 900, color: getScoreColor(overall), lineHeight: 1 }}>
-            {overall}<span style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-300)' }}>/100</span>
+          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Điểm KPI Tổng hợp</div>
+          <div style={{ fontSize: 28, fontWeight: 700, color: getScoreColor(overall), lineHeight: 1 }}>
+            {overall}<span style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-300)' }}>/100</span>
           </div>
         </div>
       </div>

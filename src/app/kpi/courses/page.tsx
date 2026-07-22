@@ -1,5 +1,6 @@
 'use client';
 import { useApp } from '@/lib/context';
+import PortalModal from '@/components/common/PortalModal';
 import { 
   courses, 
   programs, 
@@ -85,102 +86,100 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
   };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }} onClick={onDone}>
-      <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 16, width: '100%', maxWidth: 460, boxShadow: '0 25px 50px rgba(0,0,0,0.2)', overflow: 'hidden' }}>
-        <div style={{ padding: '16px 20px', background: 'linear-gradient(135deg, var(--isme-red), var(--isme-red-light))', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
-              {isDirectEdit ? 'Cập nhật trực tiếp số liệu' : 'Yêu cầu chỉnh sửa số liệu'}
-            </div>
-            <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>{course.name} — {fieldLabel}</div>
+    <PortalModal isOpen={true} onClose={onDone} maxWidth={460}>
+      <div style={{ padding: '16px 20px', background: 'linear-gradient(135deg, var(--isme-red), var(--isme-red-light))', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
+            {isDirectEdit ? 'Cập nhật trực tiếp số liệu' : 'Yêu cầu chỉnh sửa số liệu'}
           </div>
-          <button onClick={onDone} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex' }}>
-            <X size={16} color="white" />
-          </button>
+          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>{course.name} — {fieldLabel}</div>
         </div>
-        
-        {pending ? (
-          <div style={{ padding: 20 }}>
-            <div style={{ background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: 10, padding: 14, display: 'flex', gap: 10 }}>
-              <Clock size={18} color="#F59E0B" style={{ flexShrink: 0, marginTop: 2 }} />
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 13, color: '#92400E' }}>Đã có yêu cầu đang chờ phê duyệt</div>
-                <div style={{ fontSize: 12, color: '#92400E', marginTop: 4 }}>
-                  Đang yêu cầu sửa: <b>{pending.oldValue}%</b> → <b>{pending.newValue}%</b>
-                </div>
-                <div style={{ fontSize: 11, color: '#B45309', marginTop: 4, fontStyle: 'italic' }}>"{pending.reason}"</div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div style={{ padding: 20 }}>
-            {!isDirectEdit && (
-              <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 12, marginBottom: 16 }}>
-                💡 Bản tự đánh giá đã nộp hoặc được duyệt. Thay đổi này cần nêu rõ lý do và sẽ được áp dụng sau khi quản lý phê duyệt.
-              </div>
-            )}
-            
-            <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị hiện tại</div>
-                <div style={{ fontSize: 24, fontWeight: 700 }}>{currentValue}%</div>
-              </div>
-              <div style={{ fontSize: 20, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
-              <div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị mới (%)</div>
-                <input 
-                  type="number" 
-                  min="0" 
-                  max="100" 
-                  value={val} 
-                  onChange={e => setVal(parseFloat(e.target.value) || 0)}
-                  style={{ width: 110, padding: '8px 12px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 16, fontWeight: 700, outline: 'none' }}
-                  onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
-                  onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
-                />
-              </div>
-            </div>
-
-            {!isDirectEdit && (
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 11, color: 'var(--gray-500)', marginBottom: 4 }}>Lý do chỉnh sửa</div>
-                <textarea 
-                  value={reason} 
-                  onChange={e => { setReason(e.target.value); setErr(''); }}
-                  placeholder="Nhập nội dung và lý do sửa điểm môn học (tối thiểu 10 ký tự)..." 
-                  rows={3}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit' }}
-                  onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
-                  onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
-                />
-              </div>
-            )}
-
-            {err && <div style={{ background: '#FEE2E2', color: '#991B1B', padding: '8px 12px', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{err}</div>}
-            
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button onClick={onDone} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
-              <button 
-                onClick={handleSubmit} 
-                disabled={val === currentValue} 
-                style={{
-                  padding: '8px 20px', 
-                  borderRadius: 8, 
-                  border: 'none', 
-                  fontSize: 12, 
-                  fontWeight: 700, 
-                  cursor: val !== currentValue ? 'pointer' : 'not-allowed',
-                  background: val !== currentValue ? 'var(--isme-red)' : 'var(--gray-200)', 
-                  color: val !== currentValue ? 'white' : 'var(--gray-400)',
-                }}
-              >
-                {isDirectEdit ? 'Cập nhật' : 'Gửi yêu cầu'}
-              </button>
-            </div>
-          </div>
-        )}
+        <button onClick={onDone} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex' }}>
+          <X size={16} color="white" />
+        </button>
       </div>
-    </div>
+      
+      {pending ? (
+        <div style={{ padding: 20 }}>
+          <div style={{ background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: 10, padding: 14, display: 'flex', gap: 10 }}>
+            <Clock size={18} color="#F59E0B" style={{ flexShrink: 0, marginTop: 2 }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: '#92400E' }}>Đã có yêu cầu đang chờ phê duyệt</div>
+              <div style={{ fontSize: 12, color: '#92400E', marginTop: 4 }}>
+                Đang yêu cầu sửa: <b>{pending.oldValue}%</b> → <b>{pending.newValue}%</b>
+              </div>
+              <div style={{ fontSize: 11, color: '#B45309', marginTop: 4, fontStyle: 'italic' }}>"{pending.reason}"</div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div style={{ padding: 20 }}>
+          {!isDirectEdit && (
+            <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 12, marginBottom: 16 }}>
+              💡 Bản tự đánh giá đã nộp hoặc được duyệt. Thay đổi này cần nêu rõ lý do và sẽ được áp dụng sau khi quản lý phê duyệt.
+            </div>
+          )}
+          
+          <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị hiện tại</div>
+              <div style={{ fontSize: 24, fontWeight: 700 }}>{currentValue}%</div>
+            </div>
+            <div style={{ fontSize: 20, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị mới (%)</div>
+              <input 
+                type="number" 
+                min="0" 
+                max="100" 
+                value={val} 
+                onChange={e => setVal(parseFloat(e.target.value) || 0)}
+                style={{ width: 110, padding: '8px 12px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 16, fontWeight: 700, outline: 'none' }}
+                onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
+                onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
+              />
+            </div>
+          </div>
+
+          {!isDirectEdit && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginBottom: 4 }}>Lý do chỉnh sửa</div>
+              <textarea 
+                value={reason} 
+                onChange={e => { setReason(e.target.value); setErr(''); }}
+                placeholder="Nhập nội dung và lý do sửa điểm môn học (tối thiểu 10 ký tự)..." 
+                rows={3}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit' }}
+                onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
+                onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
+              />
+            </div>
+          )}
+
+          {err && <div style={{ background: '#FEE2E2', color: '#991B1B', padding: '8px 12px', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{err}</div>}
+          
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <button onClick={onDone} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
+            <button 
+              onClick={handleSubmit} 
+              disabled={val === currentValue} 
+              style={{
+                padding: '8px 20px', 
+                borderRadius: 8, 
+                border: 'none', 
+                fontSize: 12, 
+                fontWeight: 700, 
+                cursor: val !== currentValue ? 'pointer' : 'not-allowed',
+                background: val !== currentValue ? 'var(--isme-red)' : 'var(--gray-200)', 
+                color: val !== currentValue ? 'white' : 'var(--gray-400)',
+              }}
+            >
+              {isDirectEdit ? 'Cập nhật' : 'Gửi yêu cầu'}
+            </button>
+          </div>
+        </div>
+      )}
+    </PortalModal>
   );
 }
 

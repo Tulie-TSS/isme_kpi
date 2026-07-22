@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import PortalModal from '@/components/common/PortalModal';
 import { 
   users, 
   kpiSnapshots, 
@@ -70,33 +71,31 @@ function AskQuestionDialog({ toUserId, context, managerId, onClose }: {
     onClose();
   };
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 16, width: '100%', maxWidth: 500, boxShadow: '0 25px 50px rgba(0,0,0,0.2)', overflow: 'hidden', margin: 'auto' }}>
-        <div style={{ padding: '16px 20px', background: 'linear-gradient(135deg, #0F172A, #1E293B)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <MessageCircleQuestion size={18} color="white" />
-            <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>Yêu cầu giải trình / Trao đổi</div>
-          </div>
-          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex' }}><X size={16} color="white" /></button>
+    <PortalModal isOpen={true} onClose={onClose} maxWidth={500}>
+      <div style={{ padding: '16px 20px', background: 'linear-gradient(135deg, #0F172A, #1E293B)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <MessageCircleQuestion size={18} color="white" />
+          <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>Yêu cầu giải trình / Trao đổi</div>
         </div>
-        <div style={{ padding: 20 }}>
-          <div style={{ background: '#F8FAFC', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: 'var(--gray-600)' }}>
-            Gửi cho: <b>{user?.name}</b> · Đối tượng: <b>{context}</b>
-          </div>
-          <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Tiêu đề..."
-            style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 14, fontWeight: 600, outline: 'none', marginBottom: 12 }} />
-          <textarea value={question} onChange={e => setQuestion(e.target.value)} placeholder="Nội dung chi tiết..." rows={4}
-            style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 13, outline: 'none', resize: 'none' }} />
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
-            <button onClick={onClose} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
-            <button onClick={submit} disabled={!subject.trim() || !question.trim()} style={{
-              padding: '8px 20px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-              background: 'var(--isme-red)', color: 'white', display: 'flex', alignItems: 'center', gap: 4,
-            }}><Send size={12} /> Gửi yêu cầu</button>
-          </div>
+        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex' }}><X size={16} color="white" /></button>
+      </div>
+      <div style={{ padding: 20 }}>
+        <div style={{ background: '#F8FAFC', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 12, color: 'var(--gray-600)' }}>
+          Gửi cho: <b>{user?.name}</b> · Đối tượng: <b>{context}</b>
+        </div>
+        <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Tiêu đề..."
+          style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 14, fontWeight: 600, outline: 'none', marginBottom: 12 }} />
+        <textarea value={question} onChange={e => setQuestion(e.target.value)} placeholder="Nội dung chi tiết..." rows={4}
+          style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 13, outline: 'none', resize: 'none' }} />
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
+          <button onClick={onClose} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
+          <button onClick={submit} disabled={!subject.trim() || !question.trim()} style={{
+            padding: '8px 20px', borderRadius: 8, border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            background: 'var(--isme-red)', color: 'white', display: 'flex', alignItems: 'center', gap: 4,
+          }}><Send size={12} /> Gửi yêu cầu</button>
         </div>
       </div>
-    </div>
+    </PortalModal>
   );
 }
 

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import PortalModal from '@/components/common/PortalModal';
 import { useApp } from '@/lib/context';
 import { getUserById } from '@/lib/mock-data';
 import {
@@ -336,8 +337,8 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
       {/* Detail Modal */}
       {selectedSlot && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setSelectedSlot(null)}>
-          <div className="card" style={{ maxWidth: 400, width: '90%', maxHeight: '80vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
+        <PortalModal isOpen={Boolean(selectedSlot)} onClose={() => setSelectedSlot(null)} maxWidth={400}>
+          <div style={{ padding: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--gray-800)' }}>{selectedSlot.dayLabel} — {selectedSlot.hourLabel}</div>
@@ -370,7 +371,7 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
               </div>
             )}
           </div>
-        </div>
+        </PortalModal>
       )}
     </div>
   );

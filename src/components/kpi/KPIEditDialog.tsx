@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import { KPISnapshot, KPIDefinition, KPIEditRequest } from '@/lib/types';
+import PortalModal from '@/components/common/PortalModal';
+import { KPISnapshot, KPIDefinition } from '@/lib/types';
 import { 
   createKPIEditRequest, 
   getPendingEditForSnapshot, 
@@ -8,7 +9,7 @@ import {
   updateSnapshotValue, 
   addAuditLog 
 } from '@/lib/mock-data';
-import { X, Edit3, AlertTriangle, CheckCircle } from 'lucide-react';
+import { X, Edit3, AlertTriangle } from 'lucide-react';
 
 interface Props {
   snapshot: KPISnapshot;
@@ -23,74 +24,64 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
   const [reason, setReason] = useState('');
   const [error, setError] = useState('');
 
+  const submissionStatus = getSubmissionStatus(snapshot.userId, snapshot.period);
   const pendingEdit = getPendingEditForSnapshot(snapshot.id);
-  const status = getSubmissionStatus(snapshot.userId, snapshot.period);
-  const isDirectEdit = status === 'open';
+  const isDirectEdit = submissionStatus === 'open';
 
-  const newScore = newDenominator > 0 ? Math.round((newNumerator / newDenominator) * 100) : 0;
+  const previewScore = newDenominator > 0 
+    ? Math.round((newNumerator / newDenominator) * 100) 
+    : 0;
+  const newScore = previewScore;
   const hasChanged = newNumerator !== snapshot.rawNumerator || newDenominator !== snapshot.rawDenominator;
 
-  const handleSubmit = () => {
-    if (!hasChanged) {
-      setError('Chưa có thay đổi nào');
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (newDenominator <= 0) {
+      setError('Mẫu số phải lớn hơn 0');
+      return;
+    }
+
+    if (!isDirectEdit && !reason.trim()) {
+      setError('Vui lòng nhập lý do chỉnh sửa (bắt buộc khi đã nộp)');
       return;
     }
 
     if (isDirectEdit) {
-      // Direct update
       updateSnapshotValue(snapshot.id, {
         rawNumerator: newNumerator,
         rawDenominator: newDenominator,
         actualValue: newNumerator,
-        score: newScore
+        score: previewScore
       });
-      addAuditLog(
-        snapshot.userId, 
-        'Cập nhật KPI trực tiếp', 
-        `Đã tự cập nhật KPI "${definition.shortName}" (${definition.name}): ${snapshot.rawNumerator}/${snapshot.rawDenominator} (${snapshot.score}%) -> ${newNumerator}/${newDenominator} (${newScore}%).`
-      );
+      addAuditLog(snapshot.userId, 'Chỉnh sửa KPI trực tiếp', `Đã cập nhật chỉ tiêu ${definition.shortName} thành ${newNumerator}/${newDenominator} (${previewScore}%)`);
       onSubmitted();
       onClose();
     } else {
-      // Submit edit request
-      if (!reason.trim()) {
-        setError('Vui lòng nhập lý do chỉnh sửa');
-        return;
-      }
-      if (reason.trim().length < 10) {
-        setError('Lý do cần ít nhất 10 ký tự');
-        return;
-      }
-
       createKPIEditRequest({
         snapshotId: snapshot.id,
         userId: snapshot.userId,
-        kpiDefinitionId: snapshot.kpiDefinitionId,
         period: snapshot.period,
-        oldScore: snapshot.score,
-        oldActualValue: snapshot.actualValue,
+        kpiDefinitionId: snapshot.kpiDefinitionId,
         oldNumerator: snapshot.rawNumerator,
         oldDenominator: snapshot.rawDenominator,
-        newScore,
-        newActualValue: newNumerator,
         newNumerator,
         newDenominator,
+        oldScore: snapshot.score,
+        newScore: previewScore,
+        oldActualValue: snapshot.actualValue,
+        newActualValue: newNumerator,
         reason: reason.trim(),
       });
-
       onSubmitted();
       onClose();
     }
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{
-        background: 'white', borderRadius: 24, width: '100%', maxWidth: 580,
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', margin: 'auto',
-        animation: 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-        overflow: 'hidden', border: '1px solid var(--gray-100)',
-      }}>
+    <PortalModal isOpen={true} onClose={onClose} maxWidth={580}>
+      <div style={{ overflow: 'hidden', borderRadius: 16 }}>
         {/* Header */}
         <div style={{
           padding: '24px 32px', borderBottom: '1px solid var(--gray-100)',
@@ -287,6 +278,6 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
           </div>
         )}
       </div>
-    </div>
+    </PortalModal>
   );
 }

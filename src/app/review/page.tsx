@@ -1,5 +1,6 @@
 'use client';
 import { useApp } from '@/lib/context';
+import PortalModal from '@/components/common/PortalModal';
 import { reviewCycles, reviews, users, kpiDefinitions, getKPISnapshotsByUser, calculateOverallKPI, calculateOperationsKPI, getKPIDetailsBySnapshot, getTasksByUser, getOverdueTasksByUser, getProgramById, getCoordinatorStats, getUserRoleLabel, kpiGroups, courses, otherActivityRecords, laborDisciplineRecords } from '@/lib/mock-data';
 import { tasks } from '@/lib/mock-tasks';
 import { FileText, CheckCircle, Clock, Send, X, ExternalLink, TrendingUp, TrendingDown, BarChart3, Target, AlertTriangle, Award, ChevronDown, ChevronRight, Minus } from 'lucide-react';
@@ -581,18 +582,8 @@ export default function ReviewPage() {
 
       {/* KPI Drill-down Modal */}
       {drilldown && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 1000,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
-          padding: 20,
-        }} onClick={() => setDrilldown(null)}>
-          <div className="animate-scale-in" onClick={e => e.stopPropagation()} style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 580,
-            maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-            border: '1px solid var(--gray-100)',
-          }}>
+        <PortalModal isOpen={Boolean(drilldown)} onClose={() => setDrilldown(null)} maxWidth={580}>
+          <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: 16 }}>
             {/* Header */}
             <div style={{
               padding: '24px 32px', borderBottom: '1px solid var(--gray-100)',
@@ -608,7 +599,7 @@ export default function ReviewPage() {
                   <BarChart3 size={22} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)', letterSpacing: '-0.01em' }}>Chi tiết kết quả KPI</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--gray-900)' }}>Chi tiết kết quả KPI</div>
                   <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>{drilldown.kpiName}</div>
                 </div>
               </div>
@@ -617,10 +608,7 @@ export default function ReviewPage() {
                 width: 36, height: 36, cursor: 'pointer', display: 'flex',
                 alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
                 color: 'var(--gray-400)',
-              }}
-              onMouseOver={e => { (e.currentTarget as any).style.background = 'var(--gray-100)'; (e.currentTarget as any).style.color = 'var(--gray-600)'; }}
-              onMouseOut={e => { (e.currentTarget as any).style.background = 'var(--gray-50)'; (e.currentTarget as any).style.color = 'var(--gray-400)'; }}
-              ><X size={20} /></button>
+              }}><X size={20} /></button>
             </div>
 
             {/* Content */}
@@ -668,9 +656,11 @@ export default function ReviewPage() {
                     </div>
                     {item.relatedTaskId && !item.achieved && (
                       <button onClick={() => { setDrilldown(null); router.push(`/tasks/${item.relatedTaskId}`); }}
-                        style={{ fontSize: 12, color: 'white', background: 'var(--isme-red)', border: 'none', padding: '8px 16px', borderRadius: 10, cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', transition: 'transform 0.2s' }}
-                        onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+                        style={{
+                          padding: '6px 12px', borderRadius: 8, border: '1px solid var(--gray-200)',
+                          background: 'white', fontSize: 12, fontWeight: 600, color: 'var(--gray-700)',
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0,
+                        }}
                       >
                         Xử lý <ExternalLink size={14} />
                       </button>
@@ -680,7 +670,7 @@ export default function ReviewPage() {
               </div>
             </div>
           </div>
-        </div>
+        </PortalModal>
       )}
     </div>
   );

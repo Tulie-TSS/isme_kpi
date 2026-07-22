@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import PortalModal from '@/components/common/PortalModal';
 import { useApp } from '@/lib/context';
 import { useAuth } from '@/lib/auth-context';
 import { 
@@ -1187,13 +1188,8 @@ export default function AdminPortal() {
       {/* ======================================================== */}
 
       {/* A. User Modal */}
-      {userModalOpen && (
-        <div className="modal-overlay" onClick={() => setUserModalOpen(false)}>
-          <div className="modal-content" style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 640, padding: 32,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)', margin: 'auto'
-          }} onClick={e => e.stopPropagation()}>
+      <PortalModal isOpen={userModalOpen} onClose={() => setUserModalOpen(false)} maxWidth={640}>
+        <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingUser ? 'Chỉnh sửa Thành viên' : 'Thêm Thành viên Mới'}
@@ -1452,17 +1448,11 @@ export default function AdminPortal() {
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </PortalModal>
 
       {/* B. Program Modal */}
-      {programModalOpen && (
-        <div className="modal-overlay" onClick={() => setProgramModalOpen(false)}>
-          <div className="modal-content" style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 520, padding: 32,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)', margin: 'auto'
-          }} onClick={e => e.stopPropagation()}>
+      <PortalModal isOpen={programModalOpen} onClose={() => setProgramModalOpen(false)} maxWidth={520}>
+        <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingProgram ? 'Chỉnh sửa Chương trình' : 'Tạo Chương trình Mới'}
@@ -1562,17 +1552,11 @@ export default function AdminPortal() {
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </PortalModal>
 
       {/* C. Course Modal */}
-      {courseModalOpen && (
-        <div className="modal-overlay" onClick={() => setCourseModalOpen(false)}>
-          <div className="modal-content" style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)', margin: 'auto'
-          }} onClick={e => e.stopPropagation()}>
+      <PortalModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} maxWidth={580}>
+        <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingCourse ? 'Chỉnh sửa Môn học' : 'Thêm Môn học Mới'}
@@ -1700,17 +1684,11 @@ export default function AdminPortal() {
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </PortalModal>
 
       {/* D. KPI Group Modal */}
-      {groupModalOpen && (
-        <div className="modal-overlay" onClick={() => setGroupModalOpen(false)}>
-          <div className="modal-content" style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 450, padding: 32,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)', margin: 'auto'
-          }} onClick={e => e.stopPropagation()}>
+      <PortalModal isOpen={groupModalOpen} onClose={() => setGroupModalOpen(false)} maxWidth={450}>
+        <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>Chỉnh sửa Phân loại KPI</h3>
               <button onClick={() => setGroupModalOpen(false)} style={{ background: 'var(--gray-50)', border: 'none', borderRadius: 10, padding: 8, cursor: 'pointer' }}>
@@ -1751,17 +1729,11 @@ export default function AdminPortal() {
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </PortalModal>
 
       {/* E. KPI Definition Modal */}
-      {defModalOpen && (
-        <div className="modal-overlay" onClick={() => setDefModalOpen(false)}>
-          <div className="modal-content" style={{
-            background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)', margin: 'auto'
-          }} onClick={e => e.stopPropagation()}>
+      <PortalModal isOpen={defModalOpen} onClose={() => setDefModalOpen(false)} maxWidth={580}>
+        <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingDef ? 'Chỉnh sửa Tiêu chí KPI' : 'Thêm Tiêu chí KPI Mới'}
@@ -1865,8 +1837,7 @@ export default function AdminPortal() {
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </PortalModal>
 
       {/* Toast Notification Container */}
       {toast && (

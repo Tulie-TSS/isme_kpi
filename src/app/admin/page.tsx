@@ -95,6 +95,7 @@ export default function AdminPortal() {
     if (showRefresh) setRefreshing(true);
     else setLoading(true);
     
+    const startTime = Date.now();
     try {
       const res = await fetch('/api/admin');
       const data = await res.json();
@@ -106,6 +107,15 @@ export default function AdminPortal() {
         setKpiDefinitions(data.kpiDefinitions || []);
         setKpiGroups(data.kpiGroups || []);
         setKpiSnapshots(data.kpiSnapshots || []);
+        
+        // Ensure smooth minimum spin duration when manual refresh is clicked
+        if (showRefresh) {
+          const elapsed = Date.now() - startTime;
+          if (elapsed < 800) {
+            await new Promise(r => setTimeout(r, 800 - elapsed));
+          }
+          showToast('success', 'Đồng bộ cơ sở dữ liệu và tải lại thông tin thành công!');
+        }
       } else {
         showToast('error', 'Không thể tải dữ liệu: ' + data.error);
       }
@@ -449,15 +459,17 @@ export default function AdminPortal() {
           <button 
             onClick={() => fetchData(true)} 
             disabled={refreshing}
-            className="btn-refresh"
+            className="btn-solid-outline"
             style={{
-              padding: '12px 18px', borderRadius: 12, border: '1px solid var(--gray-200)',
-              background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
-              fontSize: 14, fontWeight: 600, color: 'var(--gray-600)', transition: 'all 0.2s'
+              padding: '10px 18px', borderRadius: 10, border: '1px solid var(--gray-200)',
+              background: refreshing ? 'var(--gray-100)' : 'white', cursor: refreshing ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', gap: 8,
+              fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', transition: 'all 0.2s ease',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.05)', opacity: refreshing ? 0.85 : 1
             }}
           >
-            <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
-            Đồng bộ DB
+            <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} color={refreshing ? 'var(--isme-red)' : 'var(--gray-600)'} />
+            <span>{refreshing ? 'Đang đồng bộ DB...' : 'Đồng bộ DB'}</span>
           </button>
         </div>
       </div>
@@ -1872,6 +1884,28 @@ export default function AdminPortal() {
                 <button type="submit" style={{ padding: '12px 30px', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg, var(--isme-red), #991B1B)', color: 'white', fontWeight: 700, cursor: 'pointer' }}>Lưu tiêu chí</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification Container */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999 }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10, padding: '12px 20px', borderRadius: 10,
+            background: toast.type === 'success' ? '#064E3B' : '#7F1D1D',
+            color: 'white', fontSize: 13, fontWeight: 600,
+            boxShadow: '0 10px 25px rgba(0,0,0,0.25)', border: toast.type === 'success' ? '1px solid #059669' : '1px solid #DC2626',
+            animation: 'fadeInUp 0.3s ease'
+          }}>
+            {toast.type === 'success' ? <CheckCircle2 size={18} color="#34D399" /> : <AlertTriangle size={18} color="#FCA5A5" />}
+            <span>{toast.message}</span>
+            <button 
+              onClick={() => setToast(null)} 
+              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: 2, marginLeft: 8, display: 'flex' }}
+            >
+              <X size={14} />
+            </button>
           </div>
         </div>
       )}

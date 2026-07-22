@@ -26,8 +26,13 @@ export default function AuditLogsPage() {
     };
   }, []);
 
-  const handleRefresh = () => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
     setLogs(getAuditLogs());
+    await new Promise(r => setTimeout(r, 600));
+    setRefreshing(false);
     forceUpdate(n => n + 1);
   };
 
@@ -69,17 +74,17 @@ export default function AuditLogsPage() {
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 40 }}>
       {/* Title Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Terminal size={24} color="var(--isme-red)" /> Nhật ký hệ thống (Audit Logs)
+          <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--gray-900)' }}>
+            <Terminal size={22} color="var(--isme-red)" /> Nhật ký hệ thống (Audit Logs)
           </h1>
-          <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>
-            Bản ghi lịch sử chi tiết thời gian, địa chỉ IP và hành động của nhân sự trên hệ thống đánh giá.
+          <p style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>
+            Bản ghi lịch sử chi tiết thời gian, địa chỉ IP và hành động của nhân sự trên hệ thống.
           </p>
         </div>
-        <button className="btn btn-secondary" onClick={handleRefresh} style={{ fontSize: 12, padding: '8px 16px' }}>
-          <RotateCw size={14} /> Làm mới
+        <button className="btn-solid-outline" onClick={handleRefresh} disabled={refreshing} style={{ fontSize: 12, padding: '7px 14px' }}>
+          <RotateCw size={14} className={refreshing ? 'animate-spin' : ''} /> Làm mới
         </button>
       </div>
 

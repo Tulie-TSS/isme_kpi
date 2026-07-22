@@ -215,7 +215,6 @@ function MyScheduleTab({ userId, nextMonday, weekDates }: { userId: string; next
 // ==================== TEAM SCHEDULE TAB ====================
 function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDates: { date: string; dayLabel: string }[] }) {
   const heatmap = getTeamAvailabilityHeatmap(nextMonday);
-  const bestSlots = findBestMeetingSlots(nextMonday, 4);
   const updateStatus = getScheduleUpdateStatus();
   const [selectedSlot, setSelectedSlot] = useState<MeetingSlotInfo | null>(null);
   const [filterType, setFilterType] = useState<'all' | 'updated' | 'pending'>('all');
@@ -325,48 +324,6 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
         </div>
       </div>
 
-      {/* Section 2: Recommended Meeting Time Slots */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Sparkles size={16} color="#F59E0B" />
-          Gợi ý Top 4 khung giờ tối ưu nhất để đặt lịch họp
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-          {bestSlots.map((slot, i) => {
-            const isOptimal = i === 0;
-            return (
-              <div
-                key={i}
-                onClick={() => setSelectedSlot(slot)}
-                style={{
-                  background: isOptimal ? 'linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%)' : 'white',
-                  border: isOptimal ? '2px solid #10B981' : '1px solid var(--gray-200)',
-                  borderRadius: 12, padding: '12px 14px', cursor: 'pointer', transition: 'all 0.15s',
-                  boxShadow: isOptimal ? '0 4px 12px rgba(16, 185, 129, 0.12)' : '0 1px 3px rgba(0,0,0,0.04)'
-                }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: isOptimal ? '#047857' : 'var(--gray-400)' }}>
-                    #{i + 1} {isOptimal ? '★ Tối ưu nhất' : 'Khung giờ gợi ý'}
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#059669', background: '#D1FAE5', padding: '2px 6px', borderRadius: 4 }}>
-                    {slot.freeCount}/{slot.totalPeople} rảnh
-                  </span>
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>
-                  {slot.dayLabel}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--gray-600)', marginTop: 2 }}>
-                  <Clock size={12} style={{ marginRight: 4, verticalAlign: -1 }} />
-                  {slot.hourLabel}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
 
       {/* Section 3: High-Density Interactive Heatmap Grid */}
       <div className="card" style={{ padding: 0, overflow: 'hidden', borderRadius: 14 }}>

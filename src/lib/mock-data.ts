@@ -217,39 +217,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u10_10",
-    "programId": "p_dm",
-    "name": "Người đánh giá",
-    "cohort": "Người Duyệt",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "SEM 2"
-  },
-  {
-    "id": "c_u10_11",
-    "programId": "p_dm",
-    "name": "Cán bộ quản lý trực tiếp",
-    "cohort": "Trưởng Ban",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "SEM 2"
-  },
-  {
-    "id": "c_u2_12",
+    "id": "c_u2_10",
     "programId": "p_uwe",
     "name": "MDGC",
     "cohort": "I18 MT",
@@ -265,7 +233,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_13",
+    "id": "c_u2_11",
     "programId": "p_uwe",
     "name": "IBMS",
     "cohort": "I18 MT",
@@ -281,7 +249,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_14",
+    "id": "c_u2_12",
     "programId": "p_uwe",
     "name": "GMM",
     "cohort": "I18 MT",
@@ -297,7 +265,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_15",
+    "id": "c_u2_13",
     "programId": "p_uwe",
     "name": "BP",
     "cohort": "I18 MT",
@@ -313,7 +281,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_16",
+    "id": "c_u2_14",
     "programId": "p_uwe",
     "name": "APD",
     "cohort": "I19 MX",
@@ -329,7 +297,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 1"
   },
   {
-    "id": "c_u2_17",
+    "id": "c_u2_15",
     "programId": "p_uwe",
     "name": "MOC",
     "cohort": "I19 MX",
@@ -345,7 +313,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 1"
   },
   {
-    "id": "c_u2_18",
+    "id": "c_u2_16",
     "programId": "p_uwe",
     "name": "BS",
     "cohort": "I19 MX",
@@ -361,7 +329,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 1"
   },
   {
-    "id": "c_u2_19",
+    "id": "c_u2_17",
     "programId": "p_uwe",
     "name": "BPT",
     "cohort": "I19 MX",
@@ -377,7 +345,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 1"
   },
   {
-    "id": "c_u2_20",
+    "id": "c_u2_18",
     "programId": "p_uwe",
     "name": "AFDM",
     "cohort": "BScBF I20",
@@ -393,7 +361,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_21",
+    "id": "c_u2_19",
     "programId": "p_uwe",
     "name": "FIM",
     "cohort": "BScBF I20",
@@ -409,7 +377,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_22",
+    "id": "c_u2_20",
     "programId": "p_uwe",
     "name": "PSBF",
     "cohort": "BScBF I20",
@@ -425,7 +393,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u2_23",
+    "id": "c_u2_21",
     "programId": "p_uwe",
     "name": "EBF",
     "cohort": "BScBF I20",
@@ -441,7 +409,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u11_24",
+    "id": "c_u11_22",
     "programId": "p_nam1",
     "name": "ENGLISH (Upper -Intermediate Level)",
     "cohort": "SEM 2",
@@ -457,7 +425,7 @@ const initialCourses: Course[] = [
     "semester": "I21 MT"
   },
   {
-    "id": "c_u11_25",
+    "id": "c_u11_23",
     "programId": "p_nam1",
     "name": "ENGLISH (Advanced Level)",
     "cohort": "SEM 2",
@@ -473,7 +441,7 @@ const initialCourses: Course[] = [
     "semester": "I21 MT"
   },
   {
-    "id": "c_u11_26",
+    "id": "c_u11_24",
     "programId": "p_nam1",
     "name": "Basic Economics",
     "cohort": "SEM 2",
@@ -489,7 +457,7 @@ const initialCourses: Course[] = [
     "semester": "I21 MT"
   },
   {
-    "id": "c_u11_27",
+    "id": "c_u11_25",
     "programId": "p_nam1",
     "name": "ENGLISH (Intermediate Level)",
     "cohort": "SEM 2",
@@ -505,7 +473,7 @@ const initialCourses: Course[] = [
     "semester": "I22 MX"
   },
   {
-    "id": "c_u11_28",
+    "id": "c_u11_26",
     "programId": "p_nam1",
     "name": "ENGLISH (Upper -Intermediate Level)",
     "cohort": "SEM 2",
@@ -515,13 +483,13 @@ const initialCourses: Course[] = [
     "passTarget": 0.95,
     "submitTarget": 1,
     "attendanceRate": 0.95,
-    "passRate": 0.9,
+    "passRate": 0.95,
     "submitRate": 1,
     "year": 1,
     "semester": "I22 MX"
   },
   {
-    "id": "c_u11_29",
+    "id": "c_u11_27",
     "programId": "p_nam1",
     "name": "Study skills",
     "cohort": "SEM 2",
@@ -537,44 +505,76 @@ const initialCourses: Course[] = [
     "semester": "I22 MX"
   },
   {
-    "id": "c_u11_30",
-    "programId": "p_nam1",
-    "name": "Người đánh giá",
-    "cohort": "Người Duyệt",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
+    "id": "c_u6_28",
+    "programId": "p_cu",
+    "name": "Project/ Khóa luận tốt nghiệp",
+    "cohort": "CU",
+    "numLecturers": 1,
+    "numStudents": 20,
+    "attendanceTarget": 0.95,
     "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
+    "submitTarget": 1,
+    "attendanceRate": 0.95,
+    "passRate": 1,
+    "submitRate": 1,
     "year": 1,
-    "semester": "I22 MX"
+    "semester": "SEM 1"
   },
   {
-    "id": "c_u11_31",
-    "programId": "p_nam1",
-    "name": "Cán bộ quản lý trực tiếp",
-    "cohort": "Trưởng Ban",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
+    "id": "c_u6_29",
+    "programId": "p_cu",
+    "name": "Academic Writing 3/ Kỹ năng viết luận học thuật 3",
+    "cohort": "CU",
+    "numLecturers": 1,
+    "numStudents": 20,
+    "attendanceTarget": 0.95,
     "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
+    "submitTarget": 1,
+    "attendanceRate": 0.95,
+    "passRate": 1,
+    "submitRate": 1,
     "year": 1,
-    "semester": "I22 MX"
+    "semester": "SEM 1"
+  },
+  {
+    "id": "c_u6_30",
+    "programId": "p_cu",
+    "name": "Career Development/ Phát triển nghề nghiệp",
+    "cohort": "CU",
+    "numLecturers": 1,
+    "numStudents": 20,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 1,
+    "attendanceRate": 0.95,
+    "passRate": 1,
+    "submitRate": 1,
+    "year": 1,
+    "semester": "SEM 1"
+  },
+  {
+    "id": "c_u6_31",
+    "programId": "p_cu",
+    "name": "Innovation and Change/ Sáng tạo và thay đổi",
+    "cohort": "CU",
+    "numLecturers": 1,
+    "numStudents": 20,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 1,
+    "attendanceRate": 0.95,
+    "passRate": 0.9649,
+    "submitRate": 0.9649,
+    "year": 1,
+    "semester": "SEM 1"
   },
   {
     "id": "c_u6_32",
     "programId": "p_cu",
-    "name": "Project/\nKhóa luận tốt nghiệp",
-    "cohort": "Sun Aug 31 2025 23:59:30 GMT+0700 (Indochina Time)",
-    "numLecturers": 0,
-    "numStudents": 0,
+    "name": "Contemporary Marketing Issues/ Các vấn đề của Marketing đương đại",
+    "cohort": "CU",
+    "numLecturers": 1,
+    "numStudents": 20,
     "attendanceTarget": 0.95,
     "passTarget": 0.95,
     "submitTarget": 1,
@@ -586,70 +586,6 @@ const initialCourses: Course[] = [
   },
   {
     "id": "c_u6_33",
-    "programId": "p_cu",
-    "name": "Academic Writing 3/\nKỹ năng viết luận học thuật 3",
-    "cohort": "Sun Aug 31 2025 23:59:30 GMT+0700 (Indochina Time)",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0.95,
-    "passTarget": 0.95,
-    "submitTarget": 1,
-    "attendanceRate": 0.95,
-    "passRate": 1,
-    "submitRate": 1,
-    "year": 1,
-    "semester": "SEM 1"
-  },
-  {
-    "id": "c_u6_34",
-    "programId": "p_cu",
-    "name": "Career Development/\nPhát triển nghề nghiệp",
-    "cohort": "Sun Aug 31 2025 23:59:30 GMT+0700 (Indochina Time)",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0.95,
-    "passTarget": 0.95,
-    "submitTarget": 1,
-    "attendanceRate": 0.95,
-    "passRate": 1,
-    "submitRate": 1,
-    "year": 1,
-    "semester": "SEM 1"
-  },
-  {
-    "id": "c_u6_35",
-    "programId": "p_cu",
-    "name": "Innovation and Change/\nSáng tạo và thay đổi",
-    "cohort": "Sun Aug 31 2025 23:59:30 GMT+0700 (Indochina Time)",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0.95,
-    "passTarget": 0.95,
-    "submitTarget": 1,
-    "attendanceRate": 0.95,
-    "passRate": 0.9649,
-    "submitRate": 0.9649,
-    "year": 1,
-    "semester": "SEM 1"
-  },
-  {
-    "id": "c_u6_36",
-    "programId": "p_cu",
-    "name": "Contemporary Marketing Issues/\nCác vấn đề của Marketing đương đại",
-    "cohort": "Sun Aug 31 2025 23:59:30 GMT+0700 (Indochina Time)",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0.95,
-    "passTarget": 0.95,
-    "submitTarget": 1,
-    "attendanceRate": 0.95,
-    "passRate": 1,
-    "submitRate": 1,
-    "year": 1,
-    "semester": "SEM 1"
-  },
-  {
-    "id": "c_u6_37",
     "programId": "p_cu",
     "name": "Project",
     "cohort": "I19 MX",
@@ -665,7 +601,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u6_38",
+    "id": "c_u6_34",
     "programId": "p_cu",
     "name": "Academic Writing 3",
     "cohort": "I19 MX",
@@ -681,7 +617,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u6_39",
+    "id": "c_u6_35",
     "programId": "p_cu",
     "name": "Career Development",
     "cohort": "I19 MX",
@@ -697,7 +633,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u6_40",
+    "id": "c_u6_36",
     "programId": "p_cu",
     "name": "Responsible Business Strategy",
     "cohort": "I19 MX",
@@ -713,7 +649,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u6_41",
+    "id": "c_u6_37",
     "programId": "p_cu",
     "name": "Marketing Strategy",
     "cohort": "I19 MX",
@@ -729,39 +665,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u6_42",
-    "programId": "p_cu",
-    "name": "Người đánh giá",
-    "cohort": "I19 MX",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "Người Duyệt"
-  },
-  {
-    "id": "c_u6_43",
-    "programId": "p_cu",
-    "name": "Cán bộ quản lý trực tiếp",
-    "cohort": "I19 MX",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "Trưởng Ban"
-  },
-  {
-    "id": "c_u8_44",
+    "id": "c_u8_38",
     "programId": "p7",
     "name": "Thực tập",
     "cohort": "BBAE K64",
@@ -777,7 +681,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_45",
+    "id": "c_u8_39",
     "programId": "p7",
     "name": "Creativity & Innovation Management",
     "cohort": "BBAE K65",
@@ -793,7 +697,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_46",
+    "id": "c_u8_40",
     "programId": "p7",
     "name": "Entrepreneurial Design Thinking",
     "cohort": "BBAE K65",
@@ -809,7 +713,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_47",
+    "id": "c_u8_41",
     "programId": "p7",
     "name": "Entrepreneurial Skills",
     "cohort": "BBAE K65",
@@ -825,7 +729,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_48",
+    "id": "c_u8_42",
     "programId": "p7",
     "name": "Tư tưởng HCM",
     "cohort": "BBAE K65",
@@ -841,7 +745,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_49",
+    "id": "c_u8_43",
     "programId": "p7",
     "name": "Management of Info system",
     "cohort": "BBAE K65",
@@ -857,7 +761,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_50",
+    "id": "c_u8_44",
     "programId": "p7",
     "name": "Intercultural & Communication Mgt",
     "cohort": "BBAE K65",
@@ -873,7 +777,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_51",
+    "id": "c_u8_45",
     "programId": "p7",
     "name": "Business Decision Making 2",
     "cohort": "BBAE K66 A+B",
@@ -889,7 +793,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_52",
+    "id": "c_u8_46",
     "programId": "p7",
     "name": "Business Law",
     "cohort": "BBAE K66 A+B",
@@ -905,7 +809,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_53",
+    "id": "c_u8_47",
     "programId": "p7",
     "name": "Managerial Accounting",
     "cohort": "BBAE K66 A+B",
@@ -921,7 +825,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_54",
+    "id": "c_u8_48",
     "programId": "p7",
     "name": "Macroeconomics",
     "cohort": "BBAE K66 A+B",
@@ -937,7 +841,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_55",
+    "id": "c_u8_49",
     "programId": "p7",
     "name": "Principles of Marketing",
     "cohort": "BBAE K66 A+B",
@@ -953,7 +857,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_56",
+    "id": "c_u8_50",
     "programId": "p7",
     "name": "Business Environment",
     "cohort": "BBAE K67 A+B+C",
@@ -969,7 +873,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_57",
+    "id": "c_u8_51",
     "programId": "p7",
     "name": "Introduction to Calculus",
     "cohort": "BBAE K67 A+B+C",
@@ -985,7 +889,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_58",
+    "id": "c_u8_52",
     "programId": "p7",
     "name": "Introduction to Environmental Studies",
     "cohort": "BBAE K67 A+B+C",
@@ -1001,7 +905,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_59",
+    "id": "c_u8_53",
     "programId": "p7",
     "name": "Triết học ML",
     "cohort": "BBAE K67 A+B+C",
@@ -1017,7 +921,7 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_60",
+    "id": "c_u8_54",
     "programId": "p7",
     "name": "English 2",
     "cohort": "BBAE K67 A+B+C",
@@ -1033,151 +937,119 @@ const initialCourses: Course[] = [
     "semester": "2"
   },
   {
-    "id": "c_u8_61",
-    "programId": "p7",
-    "name": "Người đánh giá",
-    "cohort": "Người Duyệt",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "2"
-  },
-  {
-    "id": "c_u8_62",
-    "programId": "p7",
-    "name": "Cán bộ quản lý trực tiếp",
-    "cohort": "Trưởng Ban",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "2"
-  },
-  {
-    "id": "c_u5_63",
+    "id": "c_u5_55",
     "programId": "p3",
-    "name": "148",
-    "cohort": "Marketing Processes and Planning",
-    "numLecturers": 0.9516129032258065,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
+    "name": "Marketing Processes and Planning",
+    "cohort": "BTEC HND",
+    "numLecturers": 4,
+    "numStudents": 148,
+    "attendanceTarget": 0.9516129032258065,
     "passTarget": 0.8,
-    "submitTarget": 0.793,
-    "attendanceRate": 0.826,
-    "passRate": 0.936,
-    "submitRate": 1,
+    "submitTarget": 0.9,
+    "attendanceRate": 0.8,
+    "passRate": 0.793,
+    "submitRate": 0.936,
     "year": 1,
-    "semester": "4"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u5_64",
+    "id": "c_u5_56",
     "programId": "p3",
-    "name": "157",
-    "cohort": "Management of Human Resources",
-    "numLecturers": 0.9516129032258065,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.94,
-    "submitTarget": 0.537,
-    "attendanceRate": 0.747,
-    "passRate": 0.924,
-    "submitRate": 1,
+    "name": "Management of Human Resources",
+    "cohort": "BTEC HND",
+    "numLecturers": 3,
+    "numStudents": 157,
+    "attendanceTarget": 0.9516129032258065,
+    "passTarget": 0.8,
+    "submitTarget": 0.9,
+    "attendanceRate": 0.94,
+    "passRate": 0.537,
+    "submitRate": 0.924,
     "year": 1,
-    "semester": "3"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u5_65",
+    "id": "c_u5_57",
     "programId": "p3",
-    "name": "83",
-    "cohort": "Leadership and Management",
-    "numLecturers": 0.9516129032258065,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
-    "passTarget": 1,
-    "submitTarget": 0.891,
-    "attendanceRate": 0.895,
-    "passRate": 0.945,
-    "submitRate": 1.1138,
+    "name": "Leadership and Management",
+    "cohort": "BTEC HND",
+    "numLecturers": 3,
+    "numStudents": 83,
+    "attendanceTarget": 0.9516129032258065,
+    "passTarget": 0.8,
+    "submitTarget": 0.9,
+    "attendanceRate": 1,
+    "passRate": 0.891,
+    "submitRate": 0.945,
     "year": 1,
-    "semester": "3"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u5_66",
+    "id": "c_u5_58",
     "programId": "p3",
-    "name": "64",
-    "cohort": "Digital Marketing",
-    "numLecturers": 0.951612903225806,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.92,
-    "submitTarget": 0.841,
-    "attendanceRate": 0.924,
-    "passRate": 0.908,
-    "submitRate": 1.0513,
+    "name": "Digital Marketing",
+    "cohort": "BTEC HND",
+    "numLecturers": 2,
+    "numStudents": 64,
+    "attendanceTarget": 0.951612903225806,
+    "passTarget": 0.8,
+    "submitTarget": 0.9,
+    "attendanceRate": 0.92,
+    "passRate": 0.841,
+    "submitRate": 0.908,
     "year": 1,
-    "semester": "2"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u5_67",
+    "id": "c_u5_59",
     "programId": "p3",
-    "name": "55",
-    "cohort": "Integrated Marketing Communications",
-    "numLecturers": 0.951612903225806,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.88,
-    "submitTarget": 0.899,
-    "attendanceRate": 0.971,
-    "passRate": 0.973,
-    "submitRate": 1.1238,
+    "name": "Integrated Marketing Communications",
+    "cohort": "BTEC HND",
+    "numLecturers": 2,
+    "numStudents": 55,
+    "attendanceTarget": 0.951612903225806,
+    "passTarget": 0.8,
+    "submitTarget": 0.9,
+    "attendanceRate": 0.88,
+    "passRate": 0.899,
+    "submitRate": 0.973,
     "year": 1,
-    "semester": "2"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u5_68",
+    "id": "c_u5_60",
     "programId": "p3",
-    "name": "54",
-    "cohort": "Managing and Leading change",
-    "numLecturers": 0.951612903225806,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.95,
-    "submitTarget": 0.91,
-    "attendanceRate": 0.931,
-    "passRate": 0.925,
-    "submitRate": 1.1375,
+    "name": "Managing and Leading change",
+    "cohort": "BTEC HND",
+    "numLecturers": 2,
+    "numStudents": 54,
+    "attendanceTarget": 0.951612903225806,
+    "passTarget": 0.8,
+    "submitTarget": 0.9,
+    "attendanceRate": 0.95,
+    "passRate": 0.91,
+    "submitRate": 0.925,
     "year": 1,
-    "semester": "2"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u5_69",
+    "id": "c_u5_61",
     "programId": "p3",
-    "name": "51",
-    "cohort": "Global Business Environment",
-    "numLecturers": 0.951612903225806,
-    "numStudents": 0.8,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.6666666667,
-    "submitTarget": 0.881,
-    "attendanceRate": 0.91,
-    "passRate": 0.902,
-    "submitRate": 1.1013,
+    "name": "Global Business Environment",
+    "cohort": "BTEC HND",
+    "numLecturers": 2,
+    "numStudents": 51,
+    "attendanceTarget": 0.951612903225806,
+    "passTarget": 0.8,
+    "submitTarget": 0.9,
+    "attendanceRate": 0.6667,
+    "passRate": 0.881,
+    "submitRate": 0.902,
     "year": 1,
-    "semester": "2"
+    "semester": "SEM 2"
   },
   {
-    "id": "c_u4_70",
+    "id": "c_u4_62",
     "programId": "p_nhtc",
     "name": "Principles and Practices of Banking",
     "cohort": "BScBF I19",
@@ -1193,7 +1065,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_71",
+    "id": "c_u4_63",
     "programId": "p_nhtc",
     "name": "Economic Research Methods",
     "cohort": "BScBF I19",
@@ -1209,7 +1081,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_72",
+    "id": "c_u4_64",
     "programId": "p_nhtc",
     "name": "Investment Banking",
     "cohort": "BScBF I19",
@@ -1225,7 +1097,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_73",
+    "id": "c_u4_65",
     "programId": "p_nhtc",
     "name": "Governance and Ethics in Banking",
     "cohort": "BScBF I19",
@@ -1241,7 +1113,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_74",
+    "id": "c_u4_66",
     "programId": "p_nhtc",
     "name": "Contemporary Issues in Banking and Finance",
     "cohort": "BScBF I18",
@@ -1257,7 +1129,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_75",
+    "id": "c_u4_67",
     "programId": "p_nhtc",
     "name": "Project",
     "cohort": "BScBF I18",
@@ -1266,14 +1138,14 @@ const initialCourses: Course[] = [
     "attendanceTarget": 0.9,
     "passTarget": 0.85,
     "submitTarget": 1,
-    "attendanceRate": 0.95,
+    "attendanceRate": 0.9,
     "passRate": 0.97,
     "submitRate": 1,
     "year": 1,
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_76",
+    "id": "c_u4_68",
     "programId": "p_nhtc",
     "name": "Economics of International Financial Markets",
     "cohort": "BScBF I18",
@@ -1289,7 +1161,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_77",
+    "id": "c_u4_69",
     "programId": "p_nhtc",
     "name": "Investment Management",
     "cohort": "BScBF I18",
@@ -1305,39 +1177,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u4_78",
-    "programId": "p_nhtc",
-    "name": "Người đánh giá",
-    "cohort": "BScBF I18",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "Người Duyệt"
-  },
-  {
-    "id": "c_u4_79",
-    "programId": "p_nhtc",
-    "name": "Cán bộ quản lý trực tiếp",
-    "cohort": "BScBF I18",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0.95,
-    "submitTarget": 0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "Trưởng Ban"
-  },
-  {
-    "id": "c_u7_80",
+    "id": "c_u7_70",
     "programId": "p_au",
     "name": "Introduction to Environmental Studies",
     "cohort": "AU2",
@@ -1353,7 +1193,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_81",
+    "id": "c_u7_71",
     "programId": "p_au",
     "name": "Introduction to Calculus",
     "cohort": "AU2",
@@ -1369,7 +1209,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_82",
+    "id": "c_u7_72",
     "programId": "p_au",
     "name": "College Writing II",
     "cohort": "AU2",
@@ -1385,7 +1225,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_83",
+    "id": "c_u7_73",
     "programId": "p_au",
     "name": "Orientation to Human Services",
     "cohort": "AU2",
@@ -1401,7 +1241,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_84",
+    "id": "c_u7_74",
     "programId": "p_au",
     "name": "Written Communication in Business",
     "cohort": "AU2",
@@ -1417,7 +1257,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_85",
+    "id": "c_u7_75",
     "programId": "p_au",
     "name": "Information Systems: Theory & Application",
     "cohort": "AU1",
@@ -1433,7 +1273,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_86",
+    "id": "c_u7_76",
     "programId": "p_au",
     "name": "Macroeconomics",
     "cohort": "AU1",
@@ -1449,7 +1289,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_87",
+    "id": "c_u7_77",
     "programId": "p_au",
     "name": "Principles of Marketing",
     "cohort": "AU1",
@@ -1465,7 +1305,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_88",
+    "id": "c_u7_78",
     "programId": "p_au",
     "name": "Business Law",
     "cohort": "AU1",
@@ -1481,7 +1321,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_89",
+    "id": "c_u7_79",
     "programId": "p_au",
     "name": "Self Defense (1)",
     "cohort": "AU1",
@@ -1497,7 +1337,7 @@ const initialCourses: Course[] = [
     "semester": "SEM 2"
   },
   {
-    "id": "c_u7_90",
+    "id": "c_u7_80",
     "programId": "p_au",
     "name": "Enjoyment of Music",
     "cohort": "AU1",
@@ -1511,42 +1351,10 @@ const initialCourses: Course[] = [
     "submitRate": 1,
     "year": 1,
     "semester": "SEM 2"
-  },
-  {
-    "id": "c_u7_91",
-    "programId": "p_au",
-    "name": "Người đánh giá",
-    "cohort": "Người Duyệt",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0,
-    "submitTarget": 1,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "SEM 2"
-  },
-  {
-    "id": "c_u7_92",
-    "programId": "p_au",
-    "name": "Cán bộ quản lý trực tiếp",
-    "cohort": "Trưởng Ban",
-    "numLecturers": 0,
-    "numStudents": 0,
-    "attendanceTarget": 0,
-    "passTarget": 0,
-    "submitTarget": 1,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "year": 1,
-    "semester": "SEM 2"
   }
 ];
 
-export let courses: Course[] = getSaved<Course[]>('isme_courses_v5', initialCourses);
+export let courses: Course[] = getSaved<Course[]>('isme_courses_v6', initialCourses);
 
 export function updateCourseValue(courseId: string, updates: Partial<Course>) {
   courses = courses.map(c => c.id === courseId ? { ...c, ...updates } : c);
@@ -2969,7 +2777,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
   }
 ];
 
-export let kpiSnapshots: KPISnapshot[] = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v5', initialKpiSnapshots);
+export let kpiSnapshots: KPISnapshot[] = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v6', initialKpiSnapshots);
 
 export function updateSnapshotValue(snapshotId: string, updates: Partial<KPISnapshot>) {
   kpiSnapshots = kpiSnapshots.map(s => s.id === snapshotId ? { ...s, ...updates } : s);

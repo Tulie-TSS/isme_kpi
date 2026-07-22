@@ -17,9 +17,14 @@ export default function Sidebar() {
   // Build links based on multi-role permissions
   const links: NavLink[] = [
     { href: '/', label: 'Tổng quan', icon: LayoutDashboard },
-    { href: '/kpi', label: 'KPI Công việc', icon: BarChart3 },
-    { href: '/kpi/courses', label: 'KPI Môn học', icon: Table2 },
   ];
+
+  // Show "KPI Công việc" only for staff who have individual KPI targets
+  if (currentRole === 'staff') {
+    links.push({ href: '/kpi', label: 'KPI Công việc', icon: BarChart3 });
+  }
+
+  links.push({ href: '/kpi/courses', label: 'KPI Môn học', icon: Table2 });
 
   // Manager/Leader/Coordinator_Director can see heatmap
   const isLeader = hasAnyRole('institute_leader');

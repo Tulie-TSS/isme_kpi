@@ -52,6 +52,32 @@ export default function KPIPage() {
 
   const isStaff = user?.role === 'staff';
 
+  if (!isStaff || snapshots.length === 0) {
+    return (
+      <div className="animate-fade-in" style={{ padding: '60px 20px', textAlign: 'center', maxWidth: 600, margin: '0 auto' }}>
+        <div className="card" style={{ padding: 40, borderRadius: 16 }}>
+          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <Users size={32} />
+          </div>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--gray-900)', marginBottom: 8 }}>
+            Tài khoản không có chỉ tiêu KPI cá nhân
+          </h2>
+          <p style={{ fontSize: 14, color: 'var(--gray-500)', lineHeight: 1.6, marginBottom: 24 }}>
+            Tài khoản <b>{user?.name || 'Quản trị viên'}</b> thuộc nhóm Quản lý / Admin hệ thống. Mục này dành riêng cho Cán bộ & Điều phối viên có chỉ tiêu KPI cá nhân.
+          </p>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+            <a href="/" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+              Về Trang Tổng Quan
+            </a>
+            <a href="/kpi/heatmap" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+              Xem KPI Heatmap
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Find program managed by coordinator
   const managedProgram = programs.find(p => p.managerId === currentUserId);
   const activeCourses = managedProgram 

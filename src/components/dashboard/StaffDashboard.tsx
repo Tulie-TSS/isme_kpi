@@ -176,9 +176,9 @@ export default function StaffDashboard() {
 
       {/* ── Submission workflow bar ── */}
       {isCoordinator && (
-        <div className="card" style={{ padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+        <div style={{ padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 14,
           background: status === 'approved' ? 'rgba(16,185,129,0.08)' : status === 'submitted' ? 'rgba(245,158,11,0.08)' : 'rgba(155,27,48,0.05)',
-          borderLeft: `4px solid ${status === 'approved' ? '#10B981' : status === 'submitted' ? '#F59E0B' : 'var(--isme-red)'}`
+          border: `1px solid ${status === 'approved' ? 'rgba(16,185,129,0.2)' : status === 'submitted' ? 'rgba(245,158,11,0.2)' : 'rgba(155,27,48,0.2)'}`
         }}>
           <div>
             <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--gray-800)' }}>

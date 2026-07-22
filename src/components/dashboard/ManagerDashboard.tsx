@@ -602,7 +602,7 @@ export default function ManagerDashboard() {
 
       {/* ── Pending Submissions Panel (NEW) ── */}
       {pendingSubmissions.length > 0 && (
-        <div className="card text-white" style={{ background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)', color: 'white', padding: '20px 24px', marginBottom: 24, borderLeft: '4px solid #F59E0B' }}>
+        <div className="card text-white" style={{ background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)', color: 'white', padding: '20px 24px', marginBottom: 24, border: '1px solid rgba(245,158,11,0.3)', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <CheckSquare size={20} color="#F59E0B" />
             <span style={{ fontSize: 15, fontWeight: 800 }}>Yêu cầu phê duyệt tự đánh giá KPI ({pendingSubmissions.length})</span>

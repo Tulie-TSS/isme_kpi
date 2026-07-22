@@ -582,31 +582,63 @@ export default function KPICoursePage() {
       </div>
 
       {/* Widget Thống kê Tổng % Hoàn thành các Khóa */}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${1 + cohortAverages.length}, 1fr)`, gap: 16, marginBottom: 20 }}>
-        <div className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: '4px solid var(--isme-red)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(220px, 1fr))`, gap: 16, marginBottom: 20 }}>
+        <div style={{ 
+          background: 'white', 
+          borderRadius: 14, 
+          padding: '18px 20px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          border: '1px solid var(--gray-200)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'var(--isme-red)' }} />
           <div>
-            <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>KPI Môn học trung bình đang xem</div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--isme-red)', marginTop: 4 }}>{totalAvgScore}%</div>
+            <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>KPI Môn học đang xem</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--isme-red)', marginTop: 4 }}>
+              {isNaN(totalAvgScore) ? 0 : totalAvgScore}%
+            </div>
           </div>
-          <div style={{ background: 'rgba(239,68,68,0.06)', borderRadius: 10, padding: 8 }}>
-            <BookOpen size={20} color="var(--isme-red)" />
+          <div style={{ background: 'rgba(239,68,68,0.08)', borderRadius: 12, padding: 10 }}>
+            <BookOpen size={22} color="var(--isme-red)" />
           </div>
         </div>
 
         {cohortAverages.map((cohAvg, cIdx) => {
           const colors = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B'];
-          const bgs = ['rgba(59,130,246,0.06)', 'rgba(16,185,129,0.06)', 'rgba(124,58,237,0.06)', 'rgba(245,158,11,0.06)'];
+          const bgs = ['rgba(59,130,246,0.08)', 'rgba(16,185,129,0.08)', 'rgba(124,58,237,0.08)', 'rgba(245,158,11,0.08)'];
           const color = colors[cIdx % colors.length];
           const bg = bgs[cIdx % bgs.length];
 
+          const displayScore = isNaN(cohAvg.avg) ? 0 : cohAvg.avg;
+
           return (
-            <div key={cohAvg.cohort} className="card" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderLeft: `4px solid ${color}` }}>
+            <div key={cohAvg.cohort} style={{ 
+              background: 'white', 
+              borderRadius: 14, 
+              padding: '18px 20px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              border: '1px solid var(--gray-200)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: color }} />
               <div>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Toàn khóa {cohAvg.cohort} (Tích lũy)</div>
-                <div style={{ fontSize: 24, fontWeight: 900, color: color, marginTop: 4 }}>{cohAvg.avg}%</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Toàn khóa {cohAvg.cohort} (Tích lũy)
+                </div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: color, marginTop: 4 }}>
+                  {displayScore}%
+                </div>
               </div>
-              <div style={{ background: bg, borderRadius: 10, padding: 8 }}>
-                <Award size={20} color={color} />
+              <div style={{ background: bg, borderRadius: 12, padding: 10 }}>
+                <Award size={22} color={color} />
               </div>
             </div>
           );

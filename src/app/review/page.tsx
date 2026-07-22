@@ -509,7 +509,7 @@ export default function ReviewPage() {
                       <div>
                         <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-800)' }}>Điểm đánh giá kỷ luật lao động</div>
                         <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>Dựa trên việc tuân thủ nội quy, giờ giấc và tác phong làm việc.</div>
-                        {laborRec?.note && <div style={{ marginTop: 12, padding: '8px 12px', background: 'white', borderRadius: 8, borderLeft: '4px solid var(--isme-red)', fontSize: 13, fontStyle: 'italic' }}>"{laborRec.note}"</div>}
+                        {laborRec?.note && <div style={{ marginTop: 12, padding: '10px 14px', background: 'white', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontStyle: 'italic', color: 'var(--gray-700)' }}>"{laborRec.note}"</div>}
                       </div>
                       <div style={{ textAlign: 'center', minWidth: 120 }}>
                         <div style={{ fontSize: 48, fontWeight: 900, color: getScoreColor(score), lineHeight: 1 }}>{score}</div>

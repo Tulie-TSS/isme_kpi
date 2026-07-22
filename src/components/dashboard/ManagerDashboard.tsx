@@ -50,6 +50,70 @@ import { useApp } from '@/lib/context';
 function getScoreColor(s: number) { return s >= 90 ? '#047857' : s >= 75 ? '#D97706' : '#DC2626'; }
 function getScoreBg(s: number) { return s >= 90 ? '#D1FAE5' : s >= 75 ? '#FEF3C7' : '#FEE2E2'; }
 
+// ── Custom Stepper & Auto-Expanding Textarea Components ──
+function ScoreStepper({ value, onChange }: { value: number; onChange: (val: number) => void }) {
+  return (
+    <div style={{ display: 'inline-flex', alignItems: 'center', background: '#F8FAFC', borderRadius: 8, border: '1px solid var(--gray-300)', padding: 3 }}>
+      <button 
+        type="button"
+        onClick={() => onChange(Math.max(0, value - 1))}
+        style={{ 
+          width: 30, height: 30, borderRadius: 6, border: '1px solid var(--gray-200)', background: 'white', 
+          cursor: 'pointer', fontWeight: 700, fontSize: 15, color: 'var(--gray-700)', display: 'flex', 
+          alignItems: 'center', justifyContent: 'center', userSelect: 'none', transition: 'all 0.15s',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+        }}
+        onMouseOver={e => e.currentTarget.style.background = 'var(--gray-100)'}
+        onMouseOut={e => e.currentTarget.style.background = 'white'}
+      >-</button>
+      <input 
+        type="number" min="0" max="100"
+        value={value}
+        onChange={e => onChange(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
+        style={{ 
+          width: 48, border: 'none', background: 'transparent', textAlign: 'center', 
+          fontSize: 14, fontWeight: 700, outline: 'none', color: 'var(--gray-900)'
+        }}
+      />
+      <button 
+        type="button"
+        onClick={() => onChange(Math.min(100, value + 1))}
+        style={{ 
+          width: 30, height: 30, borderRadius: 6, border: '1px solid var(--gray-200)', background: 'white', 
+          cursor: 'pointer', fontWeight: 700, fontSize: 15, color: 'var(--gray-700)', display: 'flex', 
+          alignItems: 'center', justifyContent: 'center', userSelect: 'none', transition: 'all 0.15s',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+        }}
+        onMouseOver={e => e.currentTarget.style.background = 'var(--gray-100)'}
+        onMouseOut={e => e.currentTarget.style.background = 'white'}
+      >+</button>
+    </div>
+  );
+}
+
+function AutoResizeTextarea({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
+  return (
+    <textarea 
+      ref={el => {
+        if (el) {
+          el.style.height = 'auto';
+          el.style.height = `${Math.max(76, el.scrollHeight)}px`;
+        }
+      }}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      placeholder={placeholder}
+      style={{
+        width: '100%', minHeight: 76, padding: '10px 12px', borderRadius: 8, border: '1px solid var(--gray-200)',
+        fontSize: 12, outline: 'none', resize: 'none', fontFamily: 'inherit', lineHeight: 1.5,
+        overflow: 'hidden', transition: 'border-color 0.15s'
+      }}
+      onFocus={e => e.target.style.borderColor = 'var(--isme-red)'}
+      onBlur={e => e.target.style.borderColor = 'var(--gray-200)'}
+    />
+  );
+}
+
 // ── Ask Question Dialog ──
 function AskQuestionDialog({ toUserId, context, managerId, onClose }: {
   toUserId: string; context: string; managerId: string; onClose: () => void;
@@ -300,12 +364,12 @@ export default function ManagerDashboard() {
             <thead>
               <tr style={{ background: '#F8FAFC', borderBottom: '2px solid var(--gray-200)' }}>
                 <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, width: 50 }}>STT</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, width: 220 }}>Chỉ tiêu</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700 }}>Tiêu chí đo lường</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, width: 80 }}>Đơn vị</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, width: 90 }}>Tự chấm (%)</th>
-                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, width: 100 }}>Trưởng ban chấm (0-100)</th>
-                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, width: 420 }}>Đánh giá của Trưởng ban (Note 100-200 từ)</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, minWidth: 160 }}>Chỉ tiêu</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, minWidth: 200 }}>Tiêu chí đo lường</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, width: 70 }}>Đơn vị</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, minWidth: 90, whiteSpace: 'nowrap' }}>Tự chấm (%)</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, fontWeight: 700, minWidth: 160, whiteSpace: 'nowrap' }}>Trưởng ban chấm (0-100)</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, minWidth: 360 }}>Đánh giá của Trưởng ban (Note 100-200 từ)</th>
               </tr>
             </thead>
             <tbody>
@@ -334,31 +398,18 @@ export default function ManagerDashboard() {
                       
                       {/* Leader Score Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                        <input 
-                          type="number" min="0" max="100"
+                        <ScoreStepper 
                           value={tempScores[snap.kpiDefinitionId] !== undefined ? tempScores[snap.kpiDefinitionId] : snap.score}
-                          onChange={e => {
-                            const val = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
-                            setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }));
-                          }}
-                          style={{
-                            width: 65, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)',
-                            fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none'
-                          }}
+                          onChange={val => setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                         />
                       </td>
 
                       {/* Leader Note Textarea & Word Counter */}
                       <td style={{ padding: '12px 16px' }}>
-                        <textarea 
+                        <AutoResizeTextarea 
                           value={tempNotes[snap.kpiDefinitionId] || ''}
-                          onChange={e => setTempNotes(prev => ({ ...prev, [snap.kpiDefinitionId]: e.target.value }))}
+                          onChange={val => setTempNotes(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                           placeholder="Nhập nhận xét đánh giá chi tiết chỉ tiêu này..."
-                          rows={3}
-                          style={{
-                            width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--gray-200)',
-                            fontSize: 12, outline: 'none', resize: 'vertical', fontFamily: 'inherit', lineHeight: 1.4
-                          }}
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: getWordCountColor(wordCount) }}>
@@ -414,31 +465,18 @@ export default function ManagerDashboard() {
                       
                       {/* Leader Score Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                        <input 
-                          type="number" min="0" max="100"
+                        <ScoreStepper 
                           value={tempScores[snap.kpiDefinitionId] !== undefined ? tempScores[snap.kpiDefinitionId] : snap.score}
-                          onChange={e => {
-                            const val = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
-                            setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }));
-                          }}
-                          style={{
-                            width: 65, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)',
-                            fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none'
-                          }}
+                          onChange={val => setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                         />
                       </td>
 
                       {/* Leader Note Textarea & Word Counter */}
                       <td style={{ padding: '12px 16px' }}>
-                        <textarea 
+                        <AutoResizeTextarea 
                           value={tempNotes[snap.kpiDefinitionId] || ''}
-                          onChange={e => setTempNotes(prev => ({ ...prev, [snap.kpiDefinitionId]: e.target.value }))}
+                          onChange={val => setTempNotes(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                           placeholder="Nhập nhận xét đánh giá chi tiết chỉ tiêu này..."
-                          rows={3}
-                          style={{
-                            width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--gray-200)',
-                            fontSize: 12, outline: 'none', resize: 'vertical', fontFamily: 'inherit', lineHeight: 1.4
-                          }}
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: getWordCountColor(wordCount) }}>
@@ -495,31 +533,18 @@ export default function ManagerDashboard() {
                       
                       {/* Leader Score Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                        <input 
-                          type="number" min="0" max="100"
+                        <ScoreStepper 
                           value={tempScores[snap.kpiDefinitionId] !== undefined ? tempScores[snap.kpiDefinitionId] : snap.score}
-                          onChange={e => {
-                            const val = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
-                            setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }));
-                          }}
-                          style={{
-                            width: 65, padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)',
-                            fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none'
-                          }}
+                          onChange={val => setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                         />
                       </td>
 
                       {/* Leader Note Textarea & Word Counter */}
                       <td style={{ padding: '12px 16px' }}>
-                        <textarea 
+                        <AutoResizeTextarea 
                           value={tempNotes[snap.kpiDefinitionId] || ''}
-                          onChange={e => setTempNotes(prev => ({ ...prev, [snap.kpiDefinitionId]: e.target.value }))}
+                          onChange={val => setTempNotes(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                           placeholder="Nhập nhận xét đánh giá chi tiết chỉ tiêu này..."
-                          rows={3}
-                          style={{
-                            width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--gray-200)',
-                            fontSize: 12, outline: 'none', resize: 'vertical', fontFamily: 'inherit', lineHeight: 1.4
-                          }}
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: getWordCountColor(wordCount) }}>

@@ -557,7 +557,7 @@ export default function KPICoursePage() {
             background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' 
           }}>
             <BookOpen size={14} color="var(--isme-red)" />
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Đang xem:</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>TB Bảng đang chọn:</span>
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--isme-red)' }}>
               {isNaN(totalAvgScore) ? 0 : totalAvgScore}%
             </span>
@@ -573,10 +573,12 @@ export default function KPICoursePage() {
             return (
               <div key={cohAvg.cohort} style={{ 
                 display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 8, 
-                background: bg, border: `1px solid ${color}25` 
+                background: cohAvg.isUnstarted ? 'var(--gray-50)' : bg, border: `1px solid ${cohAvg.isUnstarted ? 'var(--gray-200)' : color + '25'}` 
               }}>
                 <Award size={14} color={cohAvg.isUnstarted ? 'var(--gray-400)' : color} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>{cohAvg.cohort}:</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>
+                  {cohAvg.isUnstarted ? `${cohAvg.cohort}:` : `TB Tích lũy ${cohAvg.cohort}:`}
+                </span>
                 <span style={{ fontSize: 13, fontWeight: 700, color: cohAvg.isUnstarted ? 'var(--gray-400)' : color }}>
                   {cohAvg.isUnstarted ? 'Chưa diễn ra' : `${displayScore}%`}
                 </span>

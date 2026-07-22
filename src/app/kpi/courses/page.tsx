@@ -328,6 +328,21 @@ export default function KPICoursePage() {
   const program = programs.find(p => p.id === selectedProgram);
   const coordinator = program ? getUserById(program.managerId) : null;
 
+  // Cohort academic status helpers
+  const checkCourseFuture = (c: Course): boolean => {
+    if (c.cohort.includes('AU1')) return c.year > 2;
+    if (c.cohort.includes('AU2')) return c.year > 1; // AU2 is currently in Year 1 (2025-2026)
+    if (c.cohort.includes('AU3')) return true; // AU3 starts 2026-2027
+    return c.year > 1;
+  };
+
+  const checkCourseCurrent = (c: Course): boolean => {
+    if (c.cohort.includes('AU1')) return c.year === 2 && c.semester === 'SEM 2';
+    if (c.cohort.includes('AU2')) return c.year === 1 && c.semester === 'SEM 2';
+    if (c.cohort.includes('AU3')) return false;
+    return c.year === 1 && c.semester === 'SEM 2';
+  };
+
   // Get unique cohorts in this program
   const uniqueCohorts = Array.from(new Set(courses.filter(c => c.programId === selectedProgram).map(c => c.cohort))).sort();
   
@@ -336,24 +351,25 @@ export default function KPICoursePage() {
   
   // Apply year/semester filter
   if (filterSemester === 'current') {
-    programCourses = programCourses.filter(c => c.semester === 'SEM 2' && c.year <= 2);
+    programCourses = programCourses.filter(c => checkCourseCurrent(c));
   } else if (filterSemester.startsWith('year')) {
     const yearNum = parseInt(filterSemester.replace('year', ''));
     programCourses = programCourses.filter(c => c.year === yearNum);
   }
 
-  // Calculate averages for each cohort (accumulated, only past and current semesters: year <= 2)
+  // Calculate averages for each cohort (only for started/active courses, ignore future ones)
   const cohortAverages = uniqueCohorts.map(coh => {
-    const cohCourses = courses.filter(c => c.programId === selectedProgram && c.cohort === coh && c.year <= 2);
-    const avg = cohCourses.length > 0
-      ? Math.round(cohCourses.reduce((sum, c) => {
+    const activeCourses = courses.filter(c => c.programId === selectedProgram && c.cohort === coh && !checkCourseFuture(c));
+    const isUnstarted = activeCourses.length === 0;
+    const avg = !isUnstarted
+      ? Math.round(activeCourses.reduce((sum, c) => {
           const attendComp = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
           const passComp = Math.min((c.passRate / c.passTarget) * 100, 100);
           const submitComp = Math.min((c.submitRate / c.submitTarget) * 100, 100);
           return sum + (attendComp + passComp + submitComp) / 3;
-        }, 0) / cohCourses.length)
+        }, 0) / activeCourses.length)
       : 0;
-    return { cohort: coh, avg };
+    return { cohort: coh, avg, isUnstarted };
   });
 
   // Apply cohort filter
@@ -361,8 +377,8 @@ export default function KPICoursePage() {
     programCourses = programCourses.filter(c => c.cohort === selectedCohort);
   }
 
-  // Calculate average completion rate of the currently filtered courses (only started ones: year <= 2)
-  const completedCourses = programCourses.filter(c => c.year <= 2);
+  // Calculate average completion rate of the currently filtered courses (only active ones)
+  const completedCourses = programCourses.filter(c => !checkCourseFuture(c));
   const totalAvgScore = completedCourses.length > 0
     ? Math.round(completedCourses.reduce((sum, c) => {
         const attendComp = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
@@ -559,10 +575,10 @@ export default function KPICoursePage() {
                 display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 8, 
                 background: bg, border: `1px solid ${color}25` 
               }}>
-                <Award size={14} color={color} />
+                <Award size={14} color={cohAvg.isUnstarted ? 'var(--gray-400)' : color} />
                 <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>{cohAvg.cohort}:</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: color }}>
-                  {displayScore}%
+                <span style={{ fontSize: 13, fontWeight: 700, color: cohAvg.isUnstarted ? 'var(--gray-400)' : color }}>
+                  {cohAvg.isUnstarted ? 'Chưa diễn ra' : `${displayScore}%`}
                 </span>
               </div>
             );
@@ -612,9 +628,8 @@ export default function KPICoursePage() {
               </tr>
             ) : (
               programCourses.map((c, ci) => {
-                const isFuture = c.year > 2;
-                const isPast = c.year < 2 || (c.year === 2 && c.semester === 'SEM 1');
-                const isCurrent = c.semester === 'SEM 2' && c.year <= 2;
+                const isFuture = checkCourseFuture(c);
+                const isCurrent = checkCourseCurrent(c);
 
                 const attendComp = isFuture ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 100);
                 const passComp = isFuture ? null : Math.round((c.passRate / c.passTarget) * 100);

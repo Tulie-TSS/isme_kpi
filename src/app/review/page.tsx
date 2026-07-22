@@ -172,9 +172,9 @@ export default function ReviewPage() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th style={{ width: 36, textAlign: 'center' }}>#</th>
-                    <th style={{ minWidth: 160, whiteSpace: 'nowrap' }}>Nhân viên</th>
-                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>KPI Tổng</th>
+                    <th style={{ width: 36, textAlign: 'center', position: 'sticky', left: 0, zIndex: 10, background: '#F8FAFC' }}>#</th>
+                    <th style={{ width: 180, minWidth: 180, whiteSpace: 'nowrap', position: 'sticky', left: 36, zIndex: 10, background: '#F8FAFC' }}>Nhân viên</th>
+                    <th style={{ width: 80, minWidth: 80, textAlign: 'center', whiteSpace: 'nowrap', position: 'sticky', left: 216, zIndex: 10, background: '#F8FAFC', boxShadow: '4px 0 8px -2px rgba(0,0,0,0.08)' }}>KPI Tổng</th>
                     <th style={{ textAlign: 'center', minWidth: 80, whiteSpace: 'nowrap' }}>Xếp loại</th>
                     {kpiDefinitions.map(k => (
                       <th key={k.id} style={{ textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap', padding: '8px 10px' }}>{k.shortName}</th>
@@ -187,16 +187,28 @@ export default function ReviewPage() {
                 <tbody>
                   {allUserData.map((d, rank) => {
                     const isExpanded = expandedUser === d.user.id;
+                    const rowBg = isExpanded ? '#F8FAFC' : '#FFFFFF';
                     return (
                       <>
                         <tr key={d.user.id} onClick={() => setExpandedUser(isExpanded ? null : d.user.id)}
-                          style={{ cursor: 'pointer', background: isExpanded ? 'var(--gray-50)' : 'transparent', transition: 'background 0.15s' }}
-                          onMouseEnter={e => { if (!isExpanded) e.currentTarget.style.background = 'rgba(0,0,0,0.015)'; }}
-                          onMouseLeave={e => { if (!isExpanded) e.currentTarget.style.background = 'transparent'; }}>
-                          <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: rank < 3 ? '#F59E0B' : 'var(--gray-400)' }}>
+                          style={{ cursor: 'pointer', background: rowBg, transition: 'background 0.15s' }}
+                          onMouseEnter={e => {
+                            const targetBg = isExpanded ? '#F1F5F9' : '#F8FAFC';
+                            e.currentTarget.style.background = targetBg;
+                            Array.from(e.currentTarget.children).forEach((child: any) => {
+                              if (child.style.position === 'sticky') child.style.background = targetBg;
+                            });
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.background = rowBg;
+                            Array.from(e.currentTarget.children).forEach((child: any) => {
+                              if (child.style.position === 'sticky') child.style.background = rowBg;
+                            });
+                          }}>
+                          <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: rank < 3 ? '#F59E0B' : 'var(--gray-400)', position: 'sticky', left: 0, zIndex: 5, background: rowBg }}>
                             {rank < 3 ? ['🥇', '🥈', '🥉'][rank] : rank + 1}
                           </td>
-                          <td style={{ whiteSpace: 'nowrap' }}>
+                          <td style={{ whiteSpace: 'nowrap', position: 'sticky', left: 36, zIndex: 5, background: rowBg, width: 180, minWidth: 180 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               {isExpanded ? <ChevronDown size={12} color="var(--gray-400)" /> : <ChevronRight size={12} color="var(--gray-400)" />}
                               <div>
@@ -205,7 +217,7 @@ export default function ReviewPage() {
                               </div>
                             </div>
                           </td>
-                          <td style={{ textAlign: 'center' }}>
+                          <td style={{ textAlign: 'center', position: 'sticky', left: 216, zIndex: 5, background: rowBg, width: 80, minWidth: 80, boxShadow: '4px 0 8px -2px rgba(0,0,0,0.08)' }}>
                             <span style={{ fontSize: 13, fontWeight: 700, color: getScoreColor(d.overall) }}>{d.overall}</span>
                           </td>
                           <td style={{ textAlign: 'center' }}>

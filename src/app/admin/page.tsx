@@ -1188,15 +1188,11 @@ export default function AdminPortal() {
 
       {/* A. User Modal */}
       {userModalOpen && (
-        <div className="modal-overlay" style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
-          overflowY: 'auto', padding: '40px 16px'
-        }} onClick={() => setUserModalOpen(false)}>
+        <div className="modal-overlay" onClick={() => setUserModalOpen(false)}>
           <div className="modal-content" style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 640, padding: 32,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)'
+            border: '1px solid var(--gray-100)', margin: 'auto'
           }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
@@ -1461,15 +1457,11 @@ export default function AdminPortal() {
 
       {/* B. Program Modal */}
       {programModalOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
-          overflowY: 'auto', padding: '40px 16px'
-        }} onClick={() => setProgramModalOpen(false)}>
-          <div style={{
+        <div className="modal-overlay" onClick={() => setProgramModalOpen(false)}>
+          <div className="modal-content" style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 520, padding: 32,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)'
+            border: '1px solid var(--gray-100)', margin: 'auto'
           }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
@@ -1575,15 +1567,11 @@ export default function AdminPortal() {
 
       {/* C. Course Modal */}
       {courseModalOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
-          overflowY: 'auto', padding: '40px 16px'
-        }} onClick={() => setCourseModalOpen(false)}>
-          <div style={{
+        <div className="modal-overlay" onClick={() => setCourseModalOpen(false)}>
+          <div className="modal-content" style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)'
+            border: '1px solid var(--gray-100)', margin: 'auto'
           }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
@@ -1717,15 +1705,11 @@ export default function AdminPortal() {
 
       {/* D. KPI Group Modal */}
       {groupModalOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
-          overflowY: 'auto', padding: '40px 16px'
-        }} onClick={() => setGroupModalOpen(false)}>
-          <div style={{
+        <div className="modal-overlay" onClick={() => setGroupModalOpen(false)}>
+          <div className="modal-content" style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 450, padding: 32,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)'
+            border: '1px solid var(--gray-100)', margin: 'auto'
           }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>Chỉnh sửa Phân loại KPI</h3>
@@ -1772,15 +1756,11 @@ export default function AdminPortal() {
 
       {/* E. KPI Definition Modal */}
       {defModalOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-start', 
-          justifyContent: 'center', background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(10px)',
-          overflowY: 'auto', padding: '40px 16px'
-        }} onClick={() => setDefModalOpen(false)}>
-          <div style={{
+        <div className="modal-overlay" onClick={() => setDefModalOpen(false)}>
+          <div className="modal-content" style={{
             background: 'white', borderRadius: 24, width: '100%', maxWidth: 580, padding: 32,
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', animation: 'fadeInUp 0.3s ease',
-            border: '1px solid var(--gray-100)'
+            border: '1px solid var(--gray-100)', margin: 'auto'
           }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>

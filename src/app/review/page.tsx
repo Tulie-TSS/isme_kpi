@@ -82,45 +82,55 @@ export default function ReviewPage() {
         <>
           {/* ── Summary Stats ── */}
           <div className="stagger-children" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16, marginBottom: 24 }}>
-            <div className="summary-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ fontSize: 18 }}>📊</span></div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>KPI Trung bình</div>
+            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <BarChart3 size={18} color="#2563EB" />
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>KPI Trung bình</div>
               </div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: getScoreColor(avgKPI) }}>{avgKPI}<span style={{ fontSize: 14, fontWeight: 500 }}>/100</span></div>
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>{getRank(avgKPI)}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: getScoreColor(avgKPI) }}>{avgKPI}<span style={{ fontSize: 13, fontWeight: 500, color: 'var(--gray-400)' }}>/100</span></div>
+              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>Xếp loại: <strong>{getRank(avgKPI)}</strong></div>
             </div>
-            <div className="summary-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ fontSize: 18 }}>🏆</span></div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Cao nhất</div>
+            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Award size={18} color="#059669" />
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Cao nhất</div>
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#059669' }}>{topUser?.overall}</div>
-              <div style={{ fontSize: 11, color: '#059669', marginTop: 2 }}>{topUser?.user.name}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: '#059669' }}>{topUser?.overall}</div>
+              <div style={{ fontSize: 11, color: '#059669', marginTop: 4, fontWeight: 600 }}>{topUser?.user.name}</div>
             </div>
-            <div className="summary-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FEE2E2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ fontSize: 18 }}>⚠️</span></div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Thấp nhất</div>
+            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <AlertTriangle size={18} color="#DC2626" />
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Thấp nhất</div>
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#DC2626' }}>{bottomUser?.overall}</div>
-              <div style={{ fontSize: 11, color: '#DC2626', marginTop: 2 }}>{bottomUser?.user.name}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: '#DC2626' }}>{bottomUser?.overall}</div>
+              <div style={{ fontSize: 11, color: '#DC2626', marginTop: 4, fontWeight: 600 }}>{bottomUser?.user.name}</div>
             </div>
-            <div className="summary-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #FEF2F2, #FFE4E6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ fontSize: 18 }}>🔥</span></div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Task quá hạn</div>
+            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FFF1F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Clock size={18} color="#E11D48" />
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Task quá hạn</div>
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: totalOverdue > 0 ? '#DC2626' : '#10B981' }}>{totalOverdue}</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>toàn team</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: totalOverdue > 0 ? '#DC2626' : '#10B981' }}>{totalOverdue}</div>
+              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>toàn bộ team</div>
             </div>
-            <div className="summary-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ fontSize: 18 }}>📋</span></div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 500 }}>Chờ duyệt</div>
+            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FileText size={18} color="#D97706" />
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Chờ duyệt</div>
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#F59E0B' }}>{userReviews.filter(r => r.submittedAt && !r.reviewedAt).length}</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>/{staffUsers.length} nhân viên</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: '#F59E0B' }}>{userReviews.filter(r => r.submittedAt && !r.reviewedAt).length}</div>
+              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>/{staffUsers.length} nhân viên</div>
             </div>
           </div>
 
@@ -135,15 +145,15 @@ export default function ReviewPage() {
                 <thead>
                   <tr>
                     <th style={{ width: 36, textAlign: 'center' }}>#</th>
-                    <th>Nhân viên</th>
-                    <th style={{ textAlign: 'center' }}>KPI Tổng</th>
-                    <th style={{ textAlign: 'center', minWidth: 80 }}>Xếp loại</th>
+                    <th style={{ minWidth: 170, whiteSpace: 'nowrap' }}>Nhân viên</th>
+                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>KPI Tổng</th>
+                    <th style={{ textAlign: 'center', minWidth: 80, whiteSpace: 'nowrap' }}>Xếp loại</th>
                     {kpiDefinitions.map(k => (
-                      <th key={k.id} style={{ textAlign: 'center', fontSize: 10, minWidth: 55 }}>{k.shortName}</th>
+                      <th key={k.id} style={{ textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap', padding: '10px 12px' }}>{k.shortName}</th>
                     ))}
-                    <th style={{ textAlign: 'center' }}>Task</th>
-                    <th style={{ textAlign: 'center' }}>Quá hạn</th>
-                    <th style={{ textAlign: 'center' }}>Trạng thái</th>
+                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>Task</th>
+                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>Quá hạn</th>
+                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>Trạng thái</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -158,17 +168,17 @@ export default function ReviewPage() {
                           <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: rank < 3 ? '#F59E0B' : 'var(--gray-400)' }}>
                             {rank < 3 ? ['🥇', '🥈', '🥉'][rank] : rank + 1}
                           </td>
-                          <td>
+                          <td style={{ whiteSpace: 'nowrap' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                               {isExpanded ? <ChevronDown size={12} color="var(--gray-400)" /> : <ChevronRight size={12} color="var(--gray-400)" />}
                               <div>
-                                <div style={{ fontWeight: 600, fontSize: 13 }}>{d.user.name}</div>
+                                <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--gray-800)' }}>{d.user.name}</div>
                                 <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{d.user.position}</div>
                               </div>
                             </div>
                           </td>
                           <td style={{ textAlign: 'center' }}>
-                            <span style={{ fontSize: 18, fontWeight: 800, color: getScoreColor(d.overall) }}>{d.overall}</span>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: getScoreColor(d.overall) }}>{d.overall}</span>
                           </td>
                           <td style={{ textAlign: 'center' }}>
                             <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, color: getRankColor(d.overall), background: getScoreBg(d.overall), whiteSpace: 'nowrap', display: 'inline-block' }}>
@@ -179,12 +189,18 @@ export default function ReviewPage() {
                             const snap = d.snaps.find(s => s.kpiDefinitionId === k.id);
                             const score = snap ? Math.min(snap.score, 100) : 0;
                             const hasDetails = snap ? getKPIDetailsBySnapshot(snap.id).length > 0 : false;
+                            const isZero = !snap || snap.score === 0;
+
                             return (
                               <td key={k.id} style={{ textAlign: 'center' }}>
-                                <span onClick={e => { e.stopPropagation(); if (snap && hasDetails) handleScoreClick(snap.id, k.name, snap.rawNumerator, snap.rawDenominator); }}
-                                  style={{ fontSize: 12, fontWeight: 600, color: getScoreColor(score), cursor: hasDetails ? 'pointer' : 'default', textDecoration: hasDetails && score < 100 ? 'underline dotted' : 'none' }}>
-                                  {score}
-                                </span>
+                                {isZero ? (
+                                  <span style={{ fontSize: 12, color: 'var(--gray-300)' }}>-</span>
+                                ) : (
+                                  <span onClick={e => { e.stopPropagation(); if (snap && hasDetails) handleScoreClick(snap.id, k.name, snap.rawNumerator, snap.rawDenominator); }}
+                                    style={{ fontSize: 13, fontWeight: 600, color: getScoreColor(score), cursor: hasDetails ? 'pointer' : 'default', textDecoration: hasDetails && score < 100 ? 'underline dotted' : 'none' }}>
+                                    {score}
+                                  </span>
+                                )}
                               </td>
                             );
                           })}

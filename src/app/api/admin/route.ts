@@ -44,6 +44,32 @@ export async function GET() {
       ADD COLUMN IF NOT EXISTS semester VARCHAR(20) NOT NULL DEFAULT 'SEM 2'
     `);
 
+    // Ensure all 8 official programs exist in DB
+    const defaultPrograms = [
+      { id: 'p_au', name: 'Andrews University', type: 'degree', status: 'active', shortName: 'Andrews', managerId: 'u7' },
+      { id: 'p7', name: 'BBAE', type: 'degree', status: 'active', shortName: 'BBAE', managerId: 'u8' },
+      { id: 'p3', name: 'BTEC HND', type: 'certificate', status: 'active', shortName: 'BTEC', managerId: 'u5' },
+      { id: 'p_dm', name: 'Digital Marketing', type: 'degree', status: 'active', shortName: 'DM', managerId: 'u10' },
+      { id: 'p_uwe', name: 'Top-up UWE', type: 'degree', status: 'active', shortName: 'UWE', managerId: 'u2' },
+      { id: 'p_nam1', name: 'Chương trình Năm 1', type: 'degree', status: 'active', shortName: 'Năm 1', managerId: 'u11' },
+      { id: 'p_cu', name: 'Top-up CU', type: 'degree', status: 'active', shortName: 'CU', managerId: 'u6' },
+      { id: 'p_nhtc', name: 'Ngân hàng Tài chính', type: 'degree', status: 'active', shortName: 'NHTC', managerId: 'u4' },
+    ];
+
+    for (const p of defaultPrograms) {
+      await query(
+        `INSERT INTO programs (id, name, type, status, short_name, manager_id)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         ON CONFLICT (id) DO UPDATE SET
+           name = EXCLUDED.name,
+           type = EXCLUDED.type,
+           status = EXCLUDED.status,
+           short_name = EXCLUDED.short_name,
+           manager_id = COALESCE(programs.manager_id, EXCLUDED.manager_id)`,
+        [p.id, p.name, p.type, p.status, p.shortName, p.managerId]
+      );
+    }
+
     // 2. Query all tables
     const usersRes = await query(`SELECT * FROM users ORDER BY name ASC`);
     const programsRes = await query(`SELECT * FROM programs ORDER BY name ASC`);

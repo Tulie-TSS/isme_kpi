@@ -505,11 +505,11 @@ export default function KPICoursePage() {
         {/* Mode Tabs */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
           {[
-            { id: 'current', label: 'Kỳ 2 (2026)' },
+            { id: 'current', label: 'Kỳ 2 (2025-2026)' },
             { id: 'year1', label: 'Năm 1' },
             { id: 'year2', label: 'Năm 2' },
-            { id: 'year3', label: 'Năm 3 (Dự kiến)' },
-            { id: 'year4', label: 'Năm 4 (Dự kiến)' },
+            { id: 'year3', label: 'Năm 3' },
+            { id: 'year4', label: 'Năm 4' },
             { id: 'all', label: 'Toàn khóa' },
           ].map(tab => (
             <button 

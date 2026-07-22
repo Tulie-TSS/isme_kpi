@@ -391,7 +391,7 @@ export default function ReviewPage() {
                                   {snap.actualValue}
                                 </span>
                               </td>
-                              <td style={{ textAlign: 'center', fontWeight: 800, fontSize: 14, color: getScoreColor(snap.score) }}>{snap.score}%</td>
+                              <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: getScoreColor(snap.score) }}>{snap.score}%</td>
                             </tr>
                           );
                         })}

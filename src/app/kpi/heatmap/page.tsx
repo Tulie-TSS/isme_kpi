@@ -123,12 +123,12 @@ export default function HeatmapPage() {
                       <td key={g.id} style={{ padding: 4 }}>
                         <div
                           style={{
-                            height: 40,
+                            height: 36,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             borderRadius: 6,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: 700,
                             background: getScoreBg(score),
                             color: getScoreColor(score),
@@ -146,13 +146,13 @@ export default function HeatmapPage() {
                   })}
                   <td style={{ padding: 4, background: '#F8FAFC' }}>
                     <div style={{
-                      height: 40,
+                      height: 36,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderRadius: 6,
-                      fontSize: 16,
-                      fontWeight: 900,
+                      fontSize: 13,
+                      fontWeight: 700,
                       background: getScoreBg(overall),
                       color: getScoreColor(overall),
                       border: '1px solid currentColor'

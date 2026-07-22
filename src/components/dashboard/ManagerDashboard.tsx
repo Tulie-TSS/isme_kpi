@@ -693,7 +693,10 @@ export default function ManagerDashboard() {
                     </td>
                   ))}
                   <td style={{ padding: '14px 20px', textAlign: 'center', background: '#F8FAFC' }}>
-                    <div style={{ fontSize: 16, fontWeight: 900, color: getScoreColor(row.overall) }}>{row.overall}%</div>
+                    <div style={{ 
+                      display: 'inline-block', padding: '4px 10px', borderRadius: 6, fontSize: 13, fontWeight: 700,
+                      color: getScoreColor(row.overall), background: getScoreBg(row.overall), minWidth: 40
+                    }}>{row.overall}%</div>
                   </td>
                   <td style={{ padding: '14px 20px', textAlign: 'right', display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                     <button onClick={() => handleOpenReviewDetail(row.user.id)}

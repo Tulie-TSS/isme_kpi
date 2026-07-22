@@ -242,7 +242,7 @@ export default function KPIPage() {
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>100%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>-</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 14, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center' }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{getScoreLabel(studentResultsScore)}</span>
               </td>

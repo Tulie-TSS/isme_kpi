@@ -58,87 +58,114 @@ export default function ReviewPage() {
 
   return (
     <div className="animate-fade-in">
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Đánh giá</h1>
-        <p style={{ fontSize: 14, color: 'var(--gray-500)' }}>Hệ thống đánh giá theo kỳ</p>
-      </div>
+      {/* Page Header & Cycle Pills */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Đánh giá</h1>
+          <p style={{ fontSize: 12, color: 'var(--gray-500)', margin: '2px 0 0 0' }}>Hệ thống đánh giá KPI theo kỳ</p>
+        </div>
 
-      {/* Cycle selector */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-        {reviewCycles.map(rc => (
-          <button key={rc.id} onClick={() => setSelectedCycle(rc)} className="card card-compact"
-            style={{ cursor: 'pointer', border: selectedCycle?.id === rc.id ? '2px solid var(--isme-red)' : '1px solid var(--gray-200)', padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, transition: 'all 0.15s' }}>
-            <div style={{ width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', background: rc.status === 'open' ? 'var(--success-light)' : 'var(--gray-100)' }}>
-              {rc.status === 'open' ? <Clock size={18} color="var(--success)" /> : <CheckCircle size={18} color="var(--gray-400)" />}
-            </div>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>{rc.name}</div>
-              <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{rc.status === 'open' ? 'Đang mở' : 'Đã đóng'} · Hạn: {new Date(rc.reviewDeadline).toLocaleDateString('vi-VN')}</div>
-            </div>
-          </button>
-        ))}
+        {/* Compact Cycle Selector Pills */}
+        <div style={{ display: 'flex', gap: 6, background: 'var(--gray-100)', padding: 4, borderRadius: 10 }}>
+          {reviewCycles.map(rc => {
+            const isSelected = selectedCycle?.id === rc.id;
+            return (
+              <button
+                key={rc.id}
+                onClick={() => setSelectedCycle(rc)}
+                style={{
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '6px 14px',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  background: isSelected ? 'white' : 'transparent',
+                  color: isSelected ? 'var(--gray-900)' : 'var(--gray-500)',
+                  boxShadow: isSelected ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  transition: 'all 0.15s'
+                }}
+              >
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: rc.status === 'open' ? '#10B981' : 'var(--gray-400)' }} />
+                {rc.name} ({rc.status === 'open' ? 'Đang mở' : 'Đã đóng'})
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {isManager ? (
         <>
-          {/* ── Summary Stats ── */}
-          <div className="stagger-children" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16, marginBottom: 24 }}>
-            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <BarChart3 size={18} color="#2563EB" />
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>KPI Trung bình</div>
+          {/* High-density Single-Row Summary Stat Bar */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
+            <div style={{ background: 'white', border: '1px solid var(--gray-200)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <BarChart3 size={16} color="#2563EB" />
               </div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: getScoreColor(avgKPI) }}>{avgKPI}<span style={{ fontSize: 13, fontWeight: 500, color: 'var(--gray-400)' }}>/100</span></div>
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>Xếp loại: <strong>{getRank(avgKPI)}</strong></div>
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>KPI Trung bình</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: getScoreColor(avgKPI), lineHeight: 1.2 }}>
+                  {avgKPI}<span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-400)' }}>/100 · {getRank(avgKPI)}</span>
+                </div>
+              </div>
             </div>
-            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Award size={18} color="#059669" />
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Cao nhất</div>
+
+            <div style={{ background: 'white', border: '1px solid var(--gray-200)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Award size={16} color="#059669" />
               </div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: '#059669' }}>{topUser?.overall}</div>
-              <div style={{ fontSize: 11, color: '#059669', marginTop: 4, fontWeight: 600 }}>{topUser?.user.name}</div>
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Cao nhất</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#059669', lineHeight: 1.2 }}>
+                  {topUser?.overall} <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>({topUser?.user.name})</span>
+                </div>
+              </div>
             </div>
-            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <AlertTriangle size={18} color="#DC2626" />
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Thấp nhất</div>
+
+            <div style={{ background: 'white', border: '1px solid var(--gray-200)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#FEF2F2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <AlertTriangle size={16} color="#DC2626" />
               </div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: '#DC2626' }}>{bottomUser?.overall}</div>
-              <div style={{ fontSize: 11, color: '#DC2626', marginTop: 4, fontWeight: 600 }}>{bottomUser?.user.name}</div>
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Thấp nhất</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#DC2626', lineHeight: 1.2 }}>
+                  {bottomUser?.overall} <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>({bottomUser?.user.name})</span>
+                </div>
+              </div>
             </div>
-            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FFF1F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Clock size={18} color="#E11D48" />
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Task quá hạn</div>
+
+            <div style={{ background: 'white', border: '1px solid var(--gray-200)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#FFF1F2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Clock size={16} color="#E11D48" />
               </div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: totalOverdue > 0 ? '#DC2626' : '#10B981' }}>{totalOverdue}</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>toàn bộ team</div>
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Task quá hạn</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: totalOverdue > 0 ? '#DC2626' : 'var(--gray-600)', lineHeight: 1.2 }}>
+                  {totalOverdue} <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-400)' }}>toàn team</span>
+                </div>
+              </div>
             </div>
-            <div className="card" style={{ padding: '16px 20px', borderRadius: 16 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <FileText size={18} color="#D97706" />
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>Chờ duyệt</div>
+
+            <div style={{ background: 'white', border: '1px solid var(--gray-200)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#FFFBEB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <FileText size={16} color="#D97706" />
               </div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: '#F59E0B' }}>{userReviews.filter(r => r.submittedAt && !r.reviewedAt).length}</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 4 }}>/{staffUsers.length} nhân viên</div>
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Chờ duyệt</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#F59E0B', lineHeight: 1.2 }}>
+                  {userReviews.filter(r => r.submittedAt && !r.reviewedAt).length}<span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-400)' }}>/{staffUsers.length} nv</span>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* ── Main Table with expandable rows ── */}
-          <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: 15, fontWeight: 700 }}>Đánh giá nhân viên — {selectedCycle?.name}</h3>
+          <div className="card" style={{ padding: 0, overflow: 'hidden', borderRadius: 14 }}>
+            <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>Đánh giá nhân viên — {selectedCycle?.name}</h3>
               <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>{staffUsers.length} nhân viên · KPI TB: <strong style={{ color: getScoreColor(avgKPI) }}>{avgKPI}</strong></div>
             </div>
             <div style={{ overflowX: 'auto' }}>
@@ -146,15 +173,15 @@ export default function ReviewPage() {
                 <thead>
                   <tr>
                     <th style={{ width: 36, textAlign: 'center' }}>#</th>
-                    <th style={{ minWidth: 170, whiteSpace: 'nowrap' }}>Nhân viên</th>
+                    <th style={{ minWidth: 160, whiteSpace: 'nowrap' }}>Nhân viên</th>
                     <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>KPI Tổng</th>
                     <th style={{ textAlign: 'center', minWidth: 80, whiteSpace: 'nowrap' }}>Xếp loại</th>
                     {kpiDefinitions.map(k => (
-                      <th key={k.id} style={{ textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap', padding: '10px 12px' }}>{k.shortName}</th>
+                      <th key={k.id} style={{ textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap', padding: '8px 10px' }}>{k.shortName}</th>
                     ))}
                     <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>Task</th>
                     <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>Quá hạn</th>
-                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>Trạng thái</th>
+                    <th style={{ textAlign: 'center', whiteSpace: 'nowrap', minWidth: 90 }}>Trạng thái</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -209,11 +236,13 @@ export default function ReviewPage() {
                             <span style={{ fontSize: 12, color: 'var(--gray-600)' }}>{d.uDone.length}/{d.uTasks.length}</span>
                           </td>
                           <td style={{ textAlign: 'center' }}>
-                            <span style={{ fontSize: 12, fontWeight: 700, color: d.uOverdue.length > 0 ? '#DC2626' : '#10B981' }}>{d.uOverdue.length}</span>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: d.uOverdue.length > 0 ? '#DC2626' : 'var(--gray-400)' }}>{d.uOverdue.length}</span>
                           </td>
                           <td style={{ textAlign: 'center' }}>
-                            <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600,
-                              ...(d.review?.reviewedAt ? { color: '#047857', background: '#D1FAE5' } : d.review?.submittedAt ? { color: '#D97706', background: '#FEF3C7' } : { color: 'var(--gray-500)', background: 'var(--gray-100)' }) }}>
+                            <span style={{ 
+                              padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap', display: 'inline-block',
+                              ...(d.review?.reviewedAt ? { color: '#047857', background: '#D1FAE5' } : d.review?.submittedAt ? { color: '#D97706', background: '#FEF3C7' } : { color: 'var(--gray-500)', background: 'var(--gray-100)' }) 
+                            }}>
                               {d.review?.reviewedAt ? 'Đã duyệt' : d.review?.submittedAt ? 'Chờ duyệt' : 'Chưa nộp'}
                             </span>
                           </td>

@@ -448,35 +448,46 @@ export default function KPICoursePage() {
 
   return (
     <div className="animate-fade-in" style={{ position: 'relative', paddingBottom: 40 }}>
-      {/* Title Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-        <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Bảng theo dõi KPI Môn học</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4, flexWrap: 'wrap' }}>
-            <p style={{ fontSize: 14, color: 'var(--gray-500)', margin: 0 }}>
-              Giám sát chất lượng: Chuyên cần, Kết quả học tập và Nộp bài đúng hạn của sinh viên.
-            </p>
-            {coordinator && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--gray-100)', padding: '3px 10px', borderRadius: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-600)' }}>Coordinator: {coordinator.name}</span>
-                <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, 
-                  background: assessmentStatus === 'approved' ? '#D1FAE5' : assessmentStatus === 'submitted' ? '#FEF3C7' : '#F3F4F6',
-                  color: assessmentStatus === 'approved' ? '#065F46' : assessmentStatus === 'submitted' ? '#B45309' : '#374151'
-                }}>
-                  {assessmentStatus === 'approved' ? 'Đã duyệt' : assessmentStatus === 'submitted' ? 'Chờ duyệt' : 'Chưa nộp'}
-                </span>
-              </div>
-            )}
-          </div>
+      {/* Compact Header Bar */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <h1 style={{ fontSize: 20, fontWeight: 800, margin: 0, color: 'var(--gray-900)' }}>Bảng KPI Môn học</h1>
+          {coordinator && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--gray-100)', padding: '4px 10px', borderRadius: 6, border: '1px solid var(--gray-200)' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-700)' }}>Coordinator: {coordinator.name}</span>
+              <span style={{ 
+                fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, 
+                background: assessmentStatus === 'approved' ? '#D1FAE5' : assessmentStatus === 'submitted' ? '#FEF3C7' : '#F3F4F6',
+                color: assessmentStatus === 'approved' ? '#065F46' : assessmentStatus === 'submitted' ? '#B45309' : '#374151'
+              }}>
+                {assessmentStatus === 'approved' ? 'Đã duyệt' : assessmentStatus === 'submitted' ? 'Chờ duyệt' : 'Chưa nộp'}
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Action controls */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        {/* Top Right Controls */}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Cohort / Class Dropdown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 10px' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Lớp:</span>
+            <select 
+              value={selectedCohort} 
+              onChange={e => setSelectedCohort(e.target.value)}
+              style={{ border: 'none', background: 'transparent', fontSize: 12, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
+            >
+              <option value="all">Tất cả các lớp</option>
+              {uniqueCohorts.map(coh => (
+                <option key={coh} value={coh}>Lớp {coh}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Program Select */}
           <select 
             value={selectedProgram} 
             onChange={e => setSelectedProgram(e.target.value)}
-            style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 600, cursor: 'pointer', background: 'white' }}
+            style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: 'white', color: 'var(--gray-900)' }}
           >
             {programs.filter(p => p.status === 'active').map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -484,165 +495,80 @@ export default function KPICoursePage() {
           </select>
 
           {/* Export button */}
-          <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 12, padding: '8px 16px' }}>
-            <Download size={14} /> Xuất Excel
+          <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 12, padding: '7px 14px' }}>
+            <Download size={13} /> Xuất Excel
           </button>
         </div>
       </div>
 
-      {/* Filter View Selector */}
-      <div className="card" style={{ padding: '16px 20px', marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)' }}>Chế độ hiển thị:</span>
-            <div className="tab-bar" style={{ display: 'flex', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
-              {[
-                { id: 'current', label: 'Kỳ hiện tại (Sem 2 2026)' },
-                { id: 'year1', label: 'Năm 1' },
-                { id: 'year2', label: 'Năm 2' },
-                { id: 'year3', label: 'Năm 3 (Dự kiến)' },
-                { id: 'year4', label: 'Năm 4 (Dự kiến)' },
-                { id: 'all', label: 'Toàn khóa' },
-              ].map(tab => (
-                <button 
-                  key={tab.id}
-                  className={`tab-item ${filterSemester === tab.id ? 'active' : ''}`}
-                  onClick={() => setFilterSemester(tab.id as any)}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: 6,
-                    border: 'none',
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    background: filterSemester === tab.id ? 'white' : 'transparent',
-                    color: filterSemester === tab.id ? 'var(--isme-red)' : 'var(--gray-500)',
-                    boxShadow: filterSemester === tab.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <HelpCircle size={14} /> 
-            {filterSemester === 'current' && 'Đang hiển thị 12 môn học đang diễn ra trong Kỳ 2 năm 2026.'}
-            {filterSemester === 'year1' && 'Đang hiển thị toàn bộ môn học thuộc lộ trình Năm 1.'}
-            {filterSemester === 'year2' && 'Đang hiển thị toàn bộ môn học thuộc lộ trình Năm 2.'}
-            {filterSemester === 'year3' && 'Đang hiển thị các môn học dự kiến ở Năm 3 (Chưa bắt đầu).'}
-            {filterSemester === 'year4' && 'Đang hiển thị các môn học dự kiến ở Năm 4 (Chưa bắt đầu).'}
-            {filterSemester === 'all' && 'Đang hiển thị lộ trình học tập trọn khóa (Năm 1 - Năm 4) của chương trình.'}
-          </div>
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)' }}>Lọc theo Lớp/Khóa:</span>
-          <div style={{ display: 'flex', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
-            <button
-              onClick={() => setSelectedCohort('all')}
+      {/* Unified Compact Toolbar: Mode Tabs + Inline Stat Badges */}
+      <div className="card" style={{ padding: '10px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, background: 'white', border: '1px solid var(--gray-200)' }}>
+        {/* Mode Tabs */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
+          {[
+            { id: 'current', label: 'Kỳ 2 (2026)' },
+            { id: 'year1', label: 'Năm 1' },
+            { id: 'year2', label: 'Năm 2' },
+            { id: 'year3', label: 'Năm 3 (Dự kiến)' },
+            { id: 'year4', label: 'Năm 4 (Dự kiến)' },
+            { id: 'all', label: 'Toàn khóa' },
+          ].map(tab => (
+            <button 
+              key={tab.id}
+              className={`tab-item ${filterSemester === tab.id ? 'active' : ''}`}
+              onClick={() => setFilterSemester(tab.id as any)}
               style={{
-                padding: '6px 12px',
+                padding: '5px 11px',
                 borderRadius: 6,
                 border: 'none',
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer',
-                background: selectedCohort === 'all' ? 'white' : 'transparent',
-                color: selectedCohort === 'all' ? 'var(--isme-red)' : 'var(--gray-500)',
-                boxShadow: selectedCohort === 'all' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                background: filterSemester === tab.id ? 'white' : 'transparent',
+                color: filterSemester === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
+                boxShadow: filterSemester === tab.id ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
                 transition: 'all 0.15s ease'
               }}
             >
-              Tất cả các lớp
+              {tab.label}
             </button>
-            {uniqueCohorts.map(coh => (
-              <button
-                key={coh}
-                onClick={() => setSelectedCohort(coh)}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: 6,
-                  border: 'none',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  background: selectedCohort === coh ? 'white' : 'transparent',
-                  color: selectedCohort === coh ? 'var(--isme-red)' : 'var(--gray-500)',
-                  boxShadow: selectedCohort === coh ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                Lớp {coh}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
-      </div>
 
-      {/* Widget Thống kê Tổng % Hoàn thành các Khóa */}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(220px, 1fr))`, gap: 16, marginBottom: 20 }}>
-        <div style={{ 
-          background: 'white', 
-          borderRadius: 14, 
-          padding: '18px 20px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          border: '1px solid var(--gray-200)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'var(--isme-red)' }} />
-          <div>
-            <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>KPI Môn học đang xem</div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--isme-red)', marginTop: 4 }}>
+        {/* Inline Compact Stat Badges */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ 
+            display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 8, 
+            background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' 
+          }}>
+            <BookOpen size={14} color="var(--isme-red)" />
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Đang xem:</span>
+            <span style={{ fontSize: 13, fontWeight: 900, color: 'var(--isme-red)' }}>
               {isNaN(totalAvgScore) ? 0 : totalAvgScore}%
-            </div>
+            </span>
           </div>
-          <div style={{ background: 'rgba(239,68,68,0.08)', borderRadius: 12, padding: 10 }}>
-            <BookOpen size={22} color="var(--isme-red)" />
-          </div>
-        </div>
 
-        {cohortAverages.map((cohAvg, cIdx) => {
-          const colors = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B'];
-          const bgs = ['rgba(59,130,246,0.08)', 'rgba(16,185,129,0.08)', 'rgba(124,58,237,0.08)', 'rgba(245,158,11,0.08)'];
-          const color = colors[cIdx % colors.length];
-          const bg = bgs[cIdx % bgs.length];
+          {cohortAverages.map((cohAvg, cIdx) => {
+            const colors = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B'];
+            const bgs = ['rgba(59,130,246,0.06)', 'rgba(16,185,129,0.06)', 'rgba(124,58,237,0.06)', 'rgba(245,158,11,0.06)'];
+            const color = colors[cIdx % colors.length];
+            const bg = bgs[cIdx % bgs.length];
+            const displayScore = isNaN(cohAvg.avg) ? 0 : cohAvg.avg;
 
-          const displayScore = isNaN(cohAvg.avg) ? 0 : cohAvg.avg;
-
-          return (
-            <div key={cohAvg.cohort} style={{ 
-              background: 'white', 
-              borderRadius: 14, 
-              padding: '18px 20px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between', 
-              border: '1px solid var(--gray-200)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: color }} />
-              <div>
-                <div style={{ fontSize: 11, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  Toàn khóa {cohAvg.cohort} (Tích lũy)
-                </div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: color, marginTop: 4 }}>
+            return (
+              <div key={cohAvg.cohort} style={{ 
+                display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 8, 
+                background: bg, border: `1px solid ${color}25` 
+              }}>
+                <Award size={14} color={color} />
+                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>{cohAvg.cohort}:</span>
+                <span style={{ fontSize: 13, fontWeight: 900, color: color }}>
                   {displayScore}%
-                </div>
+                </span>
               </div>
-              <div style={{ background: bg, borderRadius: 12, padding: 10 }}>
-                <Award size={22} color={color} />
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
 

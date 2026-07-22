@@ -585,10 +585,10 @@ export default function KPICoursePage() {
               <th rowSpan={2} style={{ ...thStyle, minWidth: 200, textAlign: 'left' }}>Môn học</th>
               <th rowSpan={2} style={thStyle}>Số GV</th>
               <th rowSpan={2} style={thStyle}>Số SV</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#1E3A8A' }}>MỤC TIÊU ĐẦU KỲ (%)</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#065F46' }}>KẾT QUẢ THỰC TẾ (%)</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#5B21B6' }}>MỨC ĐỘ HOÀN THÀNH (%)</th>
-              <th rowSpan={2} style={{ ...thStyle, background: '#475569' }}>MỨC HOÀN THÀNH CHUNG</th>
+              <th colSpan={3} style={{ ...thStyle, background: '#1E3A8A' }}>Mục tiêu đầu kỳ (%)</th>
+              <th colSpan={3} style={{ ...thStyle, background: '#065F46' }}>Kết quả thực tế (%)</th>
+              <th colSpan={3} style={{ ...thStyle, background: '#5B21B6' }}>Mức độ hoàn thành (%)</th>
+              <th rowSpan={2} style={{ ...thStyle, background: '#475569' }}>Mức hoàn thành chung</th>
             </tr>
             <tr style={{ background: '#334155', color: 'white' }}>
               <th style={subThStyle}>Chuyên cần</th>

@@ -487,8 +487,8 @@ export default function ReviewPage() {
                           </tr>
                         ))}
                         <tr style={{ background: 'var(--gray-50)' }}>
-                          <td colSpan={5} style={{ fontWeight: 700, textAlign: 'right' }}>ĐIỂM CHUYỂN ĐỔI (Trung bình cộng):</td>
-                          <td style={{ textAlign: 'center', fontWeight: 800, fontSize: 16, color: getScoreColor(score) }}>{score}%</td>
+                          <td colSpan={5} style={{ fontWeight: 700, textAlign: 'right' }}>Điểm chuyển đổi (Trung bình cộng):</td>
+                          <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 15, color: getScoreColor(score) }}>{score}%</td>
                         </tr>
                       </tbody>
                     </table>

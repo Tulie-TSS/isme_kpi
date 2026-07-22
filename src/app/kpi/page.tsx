@@ -140,10 +140,10 @@ export default function KPIPage() {
             
             {/* 1. OPERATIONS (50%) */}
             <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 800, fontSize: 13, color: '#1E293B' }}>
+              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <TargetIcon size={16} color="var(--isme-red)" />
-                  I. CHỈ TIÊU OPERATIONS (Trọng số 50%)
+                  I. Chỉ tiêu Vận hành (Operations - Trọng số 50%)
                 </div>
               </td>
             </tr>
@@ -159,10 +159,10 @@ export default function KPIPage() {
 
             {/* 2. ACADEMIC SUPPORT (20%) */}
             <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 800, fontSize: 13, color: '#1E293B' }}>
+              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <UsersIcon size={16} color="var(--isme-red)" />
-                  II. CHỈ TIÊU HOẠT ĐỘNG HỖ TRỢ HỌC TẬP (Trọng số 20%)
+                  II. Hoạt động Hỗ trợ học tập (Trọng số 20%)
                 </div>
               </td>
             </tr>
@@ -183,7 +183,7 @@ export default function KPIPage() {
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{def.unit}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.targetValue}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.actualValue}</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: getScoreColor(snap.score) }}>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(snap.score) }}>
                     {snap.score}%
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center' }}>
@@ -195,10 +195,10 @@ export default function KPIPage() {
 
             {/* 3. STUDENT RESULTS (20%) */}
             <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 800, fontSize: 13, color: '#1E293B' }}>
+              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <AwardIcon size={16} color="var(--isme-red)" />
-                  III. KẾT QUẢ HỌC TẬP & KỶ LUẬT CỦA SINH VIÊN (Trọng số 20%)
+                  III. Kết quả học tập & kỷ luật sinh viên (Trọng số 20%)
                 </div>
               </td>
             </tr>
@@ -225,7 +225,7 @@ export default function KPIPage() {
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap' }}>
                     CC KQ: {Math.round(c.attendanceRate * 100)}% <br/> Pass KQ: {Math.round(c.passRate * 100)}% <br/> Nộp bài KQ: {Math.round(c.submitRate * 100)}%
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: getScoreColor(avgComp) }}>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(avgComp) }}>
                     {avgComp}%
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center' }}>
@@ -242,7 +242,7 @@ export default function KPIPage() {
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>100%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>-</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 14, fontWeight: 900, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 14, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center' }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{getScoreLabel(studentResultsScore)}</span>
               </td>
@@ -250,10 +250,10 @@ export default function KPIPage() {
 
             {/* 4. OTHER ACTIVITIES (10%) */}
             <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 800, fontSize: 13, color: '#1E293B' }}>
+              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <BookIcon size={16} color="var(--isme-red)" />
-                  IV. CÁC HOẠT ĐỘNG KHÁC (Trọng số 10%)
+                  IV. Các hoạt động khác (Trọng số 10%)
                 </div>
               </td>
             </tr>

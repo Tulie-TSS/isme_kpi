@@ -312,7 +312,7 @@ export default function ManagerDashboard() {
             <tbody>
               {/* Operations Group */}
               <tr style={{ background: '#F1F5F9' }}>
-                <td colSpan={7} style={{ padding: '8px 16px', fontWeight: 800, fontSize: 12, color: '#1E293B' }}>I. CHỈ TIÊU VẬN HÀNH (OPERATIONS - 50%)</td>
+                <td colSpan={7} style={{ padding: '8px 16px', fontWeight: 700, fontSize: 12, color: '#1E293B' }}>I. Chỉ tiêu Vận hành (Operations - 50%)</td>
               </tr>
               {snaps
                 .filter(s => kpiDefinitions.find(k => k.id === s.kpiDefinitionId)?.groupId === 'operations')
@@ -393,7 +393,7 @@ export default function ManagerDashboard() {
 
               {/* Academic Support Group */}
               <tr style={{ background: '#F1F5F9' }}>
-                <td colSpan={7} style={{ padding: '8px 16px', fontWeight: 800, fontSize: 12, color: '#1E293B' }}>II. HOẠT ĐỘNG HỖ TRỢ HỌC TẬP (ACADEMIC SUPPORT - 20%)</td>
+                <td colSpan={7} style={{ padding: '8px 16px', fontWeight: 700, fontSize: 12, color: '#1E293B' }}>II. Hoạt động Hỗ trợ học tập (Academic Support - 20%)</td>
               </tr>
               {snaps
                 .filter(s => kpiDefinitions.find(k => k.id === s.kpiDefinitionId)?.groupId === 'academic_support')
@@ -473,7 +473,7 @@ export default function ManagerDashboard() {
 
               {/* Other Activities Group */}
               <tr style={{ background: '#F1F5F9' }}>
-                <td colSpan={7} style={{ padding: '8px 16px', fontWeight: 800, fontSize: 12, color: '#1E293B' }}>III. CÁC HOẠT ĐỘNG KHÁC (OTHER ACTIVITIES - 10%)</td>
+                <td colSpan={7} style={{ padding: '8px 16px', fontWeight: 700, fontSize: 12, color: '#1E293B' }}>III. Các hoạt động khác (Other Activities - 10%)</td>
               </tr>
               {snaps
                 .filter(s => kpiDefinitions.find(k => k.id === s.kpiDefinitionId)?.groupId === 'other_activities')
@@ -655,13 +655,13 @@ export default function ManagerDashboard() {
             <thead>
               <tr style={{ background: '#F1F5F9' }}>
                 <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)', width: 50 }}>#</th>
-                <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)', minWidth: 180 }}>NHÂN VIÊN</th>
+                <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)', minWidth: 180 }}>Nhân viên</th>
                 <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>Trạng thái tự đánh giá</th>
-                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>OPERATIONS (50%)</th>
-                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>HỖ TRỢ HT (20%)</th>
-                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>KẾT QUẢ SV (20%)</th>
-                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>HĐ KHÁC (10%)</th>
-                <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 12, fontWeight: 800, background: '#E2E8F0' }}>TỔNG HỢP</th>
+                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>Operations (50%)</th>
+                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>Hỗ trợ học tập (20%)</th>
+                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>Kết quả sinh viên (20%)</th>
+                <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-500)' }}>Hoạt động khác (10%)</th>
+                <th style={{ padding: '12px 20px', textAlign: 'center', fontSize: 11, fontWeight: 700, background: '#E2E8F0' }}>Tổng hợp</th>
                 <th style={{ padding: '12px 20px', width: 220 }}></th>
               </tr>
             </thead>

@@ -38,6 +38,8 @@ export interface Program {
 export interface Course {
   id: string;
   programId: string;
+  coordinatorId?: string;      // ID of coordinator managing this specific course
+  coordinatorName?: string;    // Name of coordinator
   name: string;
   cohort: string;
   numLecturers: number;
@@ -45,11 +47,14 @@ export interface Course {
   // Kỷ luật
   attendanceRate: number;      // Tỉ lệ đi học trung bình
   attendanceTarget: number;    // Mục tiêu kỷ luật
+  isAttendanceNA?: boolean;    // N/A flag for attendance target
   // Học tập
   passRate: number;            // Tỉ lệ pass trung bình
   submitRate: number;          // Tỉ lệ nộp bài lần đầu đúng hạn
   passTarget: number;          // Mục tiêu học tập
+  isPassNA?: boolean;          // N/A flag for pass target
   submitTarget: number;        // Mục tiêu nộp bài đúng hạn
+  isSubmitNA?: boolean;        // N/A flag for submit target
   year: number;                // Năm học (1, 2, 3, 4)
   semester: string;            // Kỳ học (SEM 1, SEM 2, etc.)
   code?: string;               // Mã môn học

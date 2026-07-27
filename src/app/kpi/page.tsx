@@ -80,9 +80,10 @@ export default function KPIPage() {
 
   // Find program managed by coordinator
   const managedProgram = programs.find(p => p.managerId === currentUserId);
-  const activeCourses = managedProgram 
-    ? courses.filter(c => c.programId === managedProgram.id && c.semester === 'SEM 2') 
-    : [];
+  const activeCourses = courses.filter(c => 
+    (c.coordinatorId === currentUserId || (managedProgram && c.programId === managedProgram.id && !c.coordinatorId))
+    && c.semester === 'SEM 2'
+  );
 
   const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;
 

@@ -22,17 +22,16 @@ import { useState, useEffect } from 'react';
 import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award } from 'lucide-react';
 
 function getScoreColor(val: number) {
-  if (val >= 100) return '#047857'; // Excellent
-  if (val >= 90) return '#059669';  // Good
-  if (val >= 75) return '#D97706';  // Warning
-  return '#DC2626';                 // Critical
+  if (val >= 100) return '#059669'; // Clean Emerald
+  if (val >= 90) return '#0D9488';  // Teal
+  if (val >= 75) return '#D97706';  // Amber
+  return '#DC2626';                 // Red
 }
 
 function getBgColor(val: number) {
-  if (val >= 100) return 'rgba(16,185,129,0.1)';
-  if (val >= 90) return 'rgba(16,185,129,0.05)';
-  if (val >= 75) return 'rgba(245,158,11,0.08)';
-  return 'rgba(220,38,38,0.08)';
+  if (val >= 90) return 'transparent'; // Clean transparent for good grades
+  if (val >= 75) return 'rgba(245,158,11,0.08)'; // Subtle warning
+  return 'rgba(220,38,38,0.08)'; // Subtle critical
 }
 
 function formatRate(val: number, isNA?: boolean): string {
@@ -738,72 +737,64 @@ export default function KPICoursePage() {
 
   return (
     <div className="animate-fade-in" style={{ position: 'relative', paddingBottom: 40 }}>
-      {/* Compact Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+      {/* 1. Ultra-Clean Top Bar: Title + Context Info & Filters */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Bảng KPI Môn học</h1>
           {coordinator && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--gray-100)', padding: '4px 10px', borderRadius: 6, border: '1px solid var(--gray-200)' }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-700)' }}>Coordinator: {coordinator.name}</span>
-              <span style={{ 
-                fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 4, 
-                background: assessmentStatus === 'approved' ? '#D1FAE5' : assessmentStatus === 'submitted' ? '#FEF3C7' : '#F3F4F6',
-                color: assessmentStatus === 'approved' ? '#065F46' : assessmentStatus === 'submitted' ? '#B45309' : '#374151'
-              }}>
-                {assessmentStatus === 'approved' ? 'Đã duyệt' : assessmentStatus === 'submitted' ? 'Chờ duyệt' : 'Chưa nộp'}
-              </span>
-            </div>
+            <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-600)', background: 'var(--gray-100)', padding: '3px 8px', borderRadius: 4 }}>
+              {coordinator.name} {program ? `(${program.shortName || program.name})` : ''}
+            </span>
           )}
+          <span style={{ 
+            fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 4, 
+            background: assessmentStatus === 'approved' ? '#ECFDF5' : assessmentStatus === 'submitted' ? '#FFFBEB' : '#F8FAFC',
+            color: assessmentStatus === 'approved' ? '#059669' : assessmentStatus === 'submitted' ? '#D97706' : '#64748B',
+            border: `1px solid ${assessmentStatus === 'approved' ? '#A7F3D0' : assessmentStatus === 'submitted' ? '#FDE68A' : '#E2E8F0'}`
+          }}>
+            {assessmentStatus === 'approved' ? 'Đã duyệt' : assessmentStatus === 'submitted' ? 'Chờ duyệt' : 'Chưa nộp'}
+          </span>
         </div>
 
-        {/* Top Right Controls: Hệ / Ngành + Người phụ trách + Chương trình + Lớp */}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-          {/* Lọc theo Hệ / Ngành */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ:</span>
-            <select
-              value={selectedHe}
-              onChange={e => {
-                const newHe = e.target.value;
-                setSelectedHe(newHe);
-                const progsInHe = programs.filter(p => p.status === 'active' && (newHe === 'all' || p.type === newHe));
-                if (progsInHe.length > 0 && !progsInHe.some(p => p.id === selectedProgram)) {
-                  setSelectedProgram(progsInHe[0].id);
-                }
-              }}
-              style={{ border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: 'var(--isme-red)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
-            >
-              <option value="all">Tất cả các hệ</option>
-              <option value="degree">Cử nhân Chính quy</option>
-              <option value="topup">Chuyển tiếp (Top-up)</option>
-              <option value="certificate">Cao đẳng Quốc tế (BTEC)</option>
-            </select>
-          </div>
+        {/* Filters & Export Button */}
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+          <select
+            value={selectedHe}
+            onChange={e => {
+              const newHe = e.target.value;
+              setSelectedHe(newHe);
+              const progsInHe = programs.filter(p => p.status === 'active' && (newHe === 'all' || p.type === newHe));
+              if (progsInHe.length > 0 && !progsInHe.some(p => p.id === selectedProgram)) {
+                setSelectedProgram(progsInHe[0].id);
+              }
+            }}
+            style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 500, background: 'white', color: 'var(--gray-800)', cursor: 'pointer', outline: 'none' }}
+          >
+            <option value="all">Tất cả hệ</option>
+            <option value="degree">Cử nhân Chính quy</option>
+            <option value="topup">Chuyển tiếp (Top-up)</option>
+            <option value="certificate">Cao đẳng Quốc tế (BTEC)</option>
+          </select>
 
-          {/* Lọc theo Người phụ trách */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ:</span>
-            <select
-              value={coordinator?.id || ''}
-              onChange={e => {
-                const coord = coordinatorList.find(c => c.id === e.target.value);
-                if (coord) {
-                  setSelectedProgram(coord.programId);
-                  if (coord.he) setSelectedHe(coord.he);
-                }
-              }}
-              style={{ border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
-            >
-              <option value="">Chọn cán bộ...</option>
-              {filteredCoordinators.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.name} ({c.programName})
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={coordinator?.id || ''}
+            onChange={e => {
+              const coord = coordinatorList.find(c => c.id === e.target.value);
+              if (coord) {
+                setSelectedProgram(coord.programId);
+                if (coord.he) setSelectedHe(coord.he);
+              }
+            }}
+            style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 500, background: 'white', color: 'var(--gray-800)', cursor: 'pointer', outline: 'none' }}
+          >
+            <option value="">Cán bộ phụ trách...</option>
+            {filteredCoordinators.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name} ({c.programName})
+              </option>
+            ))}
+          </select>
 
-          {/* Program Select */}
           <select 
             value={selectedProgram} 
             onChange={e => {
@@ -814,39 +805,34 @@ export default function KPICoursePage() {
                 setSelectedHe(prog.type);
               }
             }}
-            style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 700, cursor: 'pointer', background: 'white', color: 'var(--gray-900)' }}
+            style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 600, background: 'white', color: 'var(--gray-900)', cursor: 'pointer', outline: 'none' }}
           >
             {filteredPrograms.map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
 
-          {/* Cohort / Class Dropdown */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Lớp:</span>
-            <select 
-              value={selectedCohort} 
-              onChange={e => setSelectedCohort(e.target.value)}
-              style={{ border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
-            >
-              <option value="all">Tất cả các lớp</option>
-              {uniqueCohorts.map(coh => (
-                <option key={coh} value={coh}>{coh}</option>
-              ))}
-            </select>
-          </div>
+          <select 
+            value={selectedCohort} 
+            onChange={e => setSelectedCohort(e.target.value)}
+            style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 500, background: 'white', color: 'var(--gray-800)', cursor: 'pointer', outline: 'none' }}
+          >
+            <option value="all">Tất cả lớp</option>
+            {uniqueCohorts.map(coh => (
+              <option key={coh} value={coh}>{coh}</option>
+            ))}
+          </select>
 
-          {/* Export button */}
-          <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 13, padding: '7px 14px' }}>
+          <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 13, padding: '6px 12px', height: 32, gap: 5 }}>
             <Download size={13} /> Xuất Excel
           </button>
         </div>
       </div>
 
-      {/* Unified Compact Toolbar: Mode Tabs + Inline Stat Badges */}
-      <div className="card" style={{ padding: '8px 12px', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, boxShadow: 'none' }}>
-        {/* Mode Tabs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--gray-100)', padding: 2, borderRadius: 6 }}>
+      {/* 2. Flat Tabs & Stats Strip (NO enclosing card, NO bulky pills) */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 10 }}>
+        {/* Segmented Control Tabs */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 2, background: 'var(--gray-200)', padding: 2, borderRadius: 6 }}>
           {[
             { id: 'current', label: 'Kỳ 2 (2025-2026)' },
             { id: 'year1', label: 'Năm 1' },
@@ -857,18 +843,17 @@ export default function KPICoursePage() {
           ].map(tab => (
             <button 
               key={tab.id}
-              className={`tab-item ${filterSemester === tab.id ? 'active' : ''}`}
               onClick={() => setFilterSemester(tab.id as any)}
               style={{
                 padding: '4px 10px',
                 borderRadius: 5,
-                border: filterSemester === tab.id ? '1px solid var(--gray-200)' : '1px solid transparent',
+                border: 'none',
                 fontSize: 13,
-                fontWeight: 600,
+                fontWeight: filterSemester === tab.id ? 600 : 500,
                 cursor: 'pointer',
                 background: filterSemester === tab.id ? 'white' : 'transparent',
-                color: filterSemester === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
-                boxShadow: 'none',
+                color: filterSemester === tab.id ? 'var(--gray-900)' : 'var(--gray-600)',
+                boxShadow: filterSemester === tab.id ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -877,41 +862,23 @@ export default function KPICoursePage() {
           ))}
         </div>
 
-        {/* Inline Compact Stat Badges */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <div style={{ 
-            display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 8, 
-            background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' 
-          }}>
-            <BookOpen size={14} color="var(--isme-red)" />
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>TB Bảng đang chọn:</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--isme-red)' }}>
+        {/* Clean Inline Stats (Text metrics) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 13, color: 'var(--gray-600)' }}>
+          <div>
+            <span>TB Bảng: </span>
+            <strong style={{ color: 'var(--gray-900)', fontWeight: 700 }}>
               {isNaN(totalAvgScore) ? 0 : totalAvgScore}%
-            </span>
+            </strong>
           </div>
-
-          {cohortAverages.map((cohAvg, cIdx) => {
-            const colors = ['#2563EB', '#10B981', '#7C3AED', '#F59E0B'];
-            const bgs = ['rgba(59,130,246,0.06)', 'rgba(16,185,129,0.06)', 'rgba(124,58,237,0.06)', 'rgba(245,158,11,0.06)'];
-            const color = colors[cIdx % colors.length];
-            const bg = bgs[cIdx % bgs.length];
-            const displayScore = isNaN(cohAvg.avg) ? 0 : cohAvg.avg;
-
-            return (
-              <div key={cohAvg.cohort} style={{ 
-                display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 8, 
-                background: cohAvg.isUnstarted ? 'var(--gray-50)' : bg, border: `1px solid ${cohAvg.isUnstarted ? 'var(--gray-200)' : color + '25'}` 
-              }}>
-                <Award size={14} color={cohAvg.isUnstarted ? 'var(--gray-400)' : color} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>
-                  {cohAvg.isUnstarted ? `${cohAvg.cohort}:` : `TB Tích lũy ${cohAvg.cohort}:`}
-                </span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: cohAvg.isUnstarted ? 'var(--gray-400)' : color }}>
-                  {cohAvg.isUnstarted ? 'Chưa diễn ra' : `${displayScore}%`}
-                </span>
-              </div>
-            );
-          })}
+          {cohortAverages.filter(c => !c.isUnstarted).map(cohAvg => (
+            <div key={cohAvg.cohort} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: 'var(--gray-300)' }}>•</span>
+              <span>{cohAvg.cohort}: </span>
+              <strong style={{ color: '#2563EB', fontWeight: 700 }}>
+                {isNaN(cohAvg.avg) ? 0 : cohAvg.avg}%
+              </strong>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -925,26 +892,26 @@ export default function KPICoursePage() {
             <tr style={{ background: '#1E293B', color: 'white' }}>
               <th rowSpan={2} style={thStyle}>Lớp</th>
               <th rowSpan={2} style={thStyle}>Kỳ</th>
-              <th rowSpan={2} style={{ ...thStyle, minWidth: 200, textAlign: 'left' }}>Môn học</th>
+              <th rowSpan={2} style={{ ...thStyle, minWidth: 220, textAlign: 'left' }}>Môn học</th>
               <th rowSpan={2} style={thStyle}>Số GV</th>
               <th rowSpan={2} style={thStyle}>Số SV</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#1E3A8A' }}>Mục tiêu đầu kỳ (%)</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#065F46' }}>Kết quả thực tế (%)</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#5B21B6' }}>Mức độ hoàn thành (%)</th>
-              <th rowSpan={2} style={{ ...thStyle, background: '#475569' }}>Mức hoàn thành chung</th>
+              <th colSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Mục tiêu đầu kỳ (%)</th>
+              <th colSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Kết quả thực tế (%)</th>
+              <th colSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Mức độ hoàn thành (%)</th>
+              <th rowSpan={2} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Hoàn thành chung</th>
             </tr>
-            <tr style={{ background: '#334155', color: 'white' }}>
+            <tr style={{ background: '#243247', color: 'rgba(255,255,255,0.9)' }}>
               <th style={subThStyle}>Chuyên cần</th>
               <th style={subThStyle}>Pass lần 1</th>
-              <th style={subThStyle}>Nộp bài đúng hạn</th>
+              <th style={subThStyle}>Nộp đúng hạn</th>
               
-              <th style={subThStyle}>Chuyên cần</th>
+              <th style={{ ...subThStyle, borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Chuyên cần</th>
               <th style={subThStyle}>Pass lần 1</th>
-              <th style={subThStyle}>Nộp bài đúng hạn</th>
+              <th style={subThStyle}>Nộp đúng hạn</th>
               
-              <th style={subThStyle}>Chuyên cần</th>
+              <th style={{ ...subThStyle, borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Chuyên cần</th>
               <th style={subThStyle}>Pass lần 1</th>
-              <th style={subThStyle}>Nộp bài đúng hạn</th>
+              <th style={subThStyle}>Nộp đúng hạn</th>
             </tr>
           </thead>
           <tbody>
@@ -1083,20 +1050,25 @@ export default function KPICoursePage() {
         </table>
       </div>
 
-      {/* Legend Guidance */}
-      <div style={{ display: 'flex', gap: 16, marginTop: 16, flexWrap: 'wrap' }}>
-        {[
-          { color: '#047857', bg: 'rgba(16,185,129,0.1)', label: 'Đạt / Vượt mục tiêu (≥100%)' },
-          { color: '#D97706', bg: 'rgba(245,158,11,0.08)', label: 'Gần đạt (90% - 99%)' },
-          { color: '#DC2626', bg: 'rgba(220,38,38,0.08)', label: 'Chưa đạt (<90%)' },
-          { color: 'var(--isme-red)', bg: 'white', label: '✏️ Bấm bút để sửa số liệu (Số GV, Số SV, tỷ lệ %, chọn N/A)' },
-          { color: '#F59E0B', bg: 'white', label: '⏳ Có yêu cầu thay đổi đang chờ duyệt' },
-        ].map(l => (
-          <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-600)' }}>
-            <span style={{ width: 14, height: 14, borderRadius: 4, background: l.bg, border: `1px solid ${l.color}`, display: 'inline-block' }} />
-            <span>{l.label}</span>
-          </div>
-        ))}
+      {/* Minimal Legend */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, flexWrap: 'wrap', gap: 10, fontSize: 11, color: 'var(--gray-500)', padding: '0 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#059669', display: 'inline-block' }} />
+            Đạt (≥100%)
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#D97706', display: 'inline-block' }} />
+            Gần đạt (90 - 99%)
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#DC2626', display: 'inline-block' }} />
+            Chưa đạt (&lt;90%)
+          </span>
+        </div>
+        <span style={{ color: 'var(--gray-400)' }}>
+          * Nhấp biểu tượng bút để chỉnh sửa chỉ tiêu hoặc số liệu môn học
+        </span>
       </div>
 
       {/* Edit Dialog */}

@@ -368,11 +368,29 @@ function EditableCell({ course, field, fieldLabel, value, displayVal, isNA, isSt
 // ── Main page ──
 export default function KPICoursePage() {
   const { currentRole, currentUserId, selectedProgramId, setSelectedProgramId } = useApp();
+  const [selectedHe, setSelectedHe] = useState<string>('all'); // 'all' | 'degree' | 'topup' | 'certificate'
   const [selectedProgram, setSelectedProgram] = useState(selectedProgramId !== 'all' ? selectedProgramId : 'p_au');
   const [filterSemester, setFilterSemester] = useState<'current' | 'year1' | 'year2' | 'year3' | 'year4' | 'all'>('current');
   const [selectedCohort, setSelectedCohort] = useState<string>('all');
   const [editTarget, setEditTarget] = useState<{ course: Course; field: CourseEditField; fieldLabel: string; value: number; isNA?: boolean } | null>(null);
   const [, forceUpdate] = useState(0);
+
+  // List of active programs filtered by Hệ
+  const filteredPrograms = programs.filter(p => p.status === 'active' && (selectedHe === 'all' || p.type === selectedHe));
+
+  // List of coordinators
+  const coordinatorList = [
+    { id: 'u11', name: 'Bùi Thị Quỳnh Trang', programId: 'p_nam1', programName: 'Năm 1', he: 'degree' },
+    { id: 'u6', name: 'Nguyễn Giang Khánh Huyền', programId: 'p_cu', programName: 'Top-up CU', he: 'topup' },
+    { id: 'u2', name: 'Vũ Minh Nhật', programId: 'p_uwe', programName: 'Top-up UWE', he: 'topup' },
+    { id: 'u4', name: 'Trần Thị Bích Ngọc', programId: 'p_nhtc', programName: 'NHTC', he: 'degree' },
+    { id: 'u5', name: 'Trần Hương Thảo', programId: 'p3', programName: 'BTEC', he: 'certificate' },
+    { id: 'u7', name: 'Đào Ngọc Diệp', programId: 'p_au', programName: 'Andrews', he: 'degree' },
+    { id: 'u8', name: 'Nguyễn Minh Tuấn', programId: 'p7', programName: 'BBAE', he: 'degree' },
+    { id: 'u10', name: 'Bùi Thu Trang', programId: 'p_dm', programName: 'DM', he: 'degree' },
+  ];
+
+  const filteredCoordinators = coordinatorList.filter(c => selectedHe === 'all' || c.he === selectedHe);
 
   // Auto-detect user's managed program if none selected globally
   useEffect(() => {
@@ -674,10 +692,73 @@ export default function KPICoursePage() {
           )}
         </div>
 
-        {/* Top Right Controls */}
+        {/* Top Right Controls: Hệ / Ngành + Người phụ trách + Chương trình + Lớp */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* Lọc theo Hệ / Ngành */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ:</span>
+            <select
+              value={selectedHe}
+              onChange={e => {
+                const newHe = e.target.value;
+                setSelectedHe(newHe);
+                const progsInHe = programs.filter(p => p.status === 'active' && (newHe === 'all' || p.type === newHe));
+                if (progsInHe.length > 0 && !progsInHe.some(p => p.id === selectedProgram)) {
+                  setSelectedProgram(progsInHe[0].id);
+                }
+              }}
+              style={{ border: 'none', background: 'transparent', fontSize: 12, fontWeight: 700, color: 'var(--isme-red)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
+            >
+              <option value="all">Tất cả các hệ</option>
+              <option value="degree">Cử nhân Chính quy</option>
+              <option value="topup">Chuyển tiếp (Top-up)</option>
+              <option value="certificate">Cao đẳng Quốc tế (BTEC)</option>
+            </select>
+          </div>
+
+          {/* Lọc theo Người phụ trách */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ:</span>
+            <select
+              value={coordinator?.id || ''}
+              onChange={e => {
+                const coord = coordinatorList.find(c => c.id === e.target.value);
+                if (coord) {
+                  setSelectedProgram(coord.programId);
+                  if (coord.he) setSelectedHe(coord.he);
+                }
+              }}
+              style={{ border: 'none', background: 'transparent', fontSize: 12, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
+            >
+              <option value="">Chọn cán bộ...</option>
+              {filteredCoordinators.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.name} ({c.programName})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Program Select */}
+          <select 
+            value={selectedProgram} 
+            onChange={e => {
+              const newProgId = e.target.value;
+              setSelectedProgram(newProgId);
+              const prog = programs.find(p => p.id === newProgId);
+              if (prog?.type && selectedHe !== 'all' && prog.type !== selectedHe) {
+                setSelectedHe(prog.type);
+              }
+            }}
+            style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: 'white', color: 'var(--gray-900)' }}
+          >
+            {filteredPrograms.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+
           {/* Cohort / Class Dropdown */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Lớp:</span>
             <select 
               value={selectedCohort} 
@@ -690,17 +771,6 @@ export default function KPICoursePage() {
               ))}
             </select>
           </div>
-
-          {/* Program Select */}
-          <select 
-            value={selectedProgram} 
-            onChange={e => setSelectedProgram(e.target.value)}
-            style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: 'white', color: 'var(--gray-900)' }}
-          >
-            {programs.filter(p => p.status === 'active').map(p => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-          </select>
 
           {/* Export button */}
           <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 12, padding: '7px 14px' }}>

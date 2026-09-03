@@ -13,7 +13,8 @@ import {
   getUserRoleLabel,
   courses,
   getSubmissionStatus,
-  programs
+  programs,
+  users
 } from '@/lib/mock-data';
 import { KPISnapshot, KPIDefinition, Course } from '@/lib/types';
 import { ChevronDown, ChevronRight, CheckCircle2, AlertTriangle, Edit3, Clock, Target, Users, Award, BookOpen, ShieldCheck } from 'lucide-react';
@@ -37,11 +38,13 @@ function getScoreColor(s: number) { return s >= 90 ? '#10B981' : s >= 75 ? '#F59
 function getScoreLabel(s: number) { return s >= 100 ? 'Xuất sắc' : s >= 90 ? 'Tốt' : s >= 75 ? 'Khá' : 'Cần cải thiện'; }
 
 export default function KPIPage() {
-  const { currentUserId } = useApp();
-  const user = getUserById(currentUserId);
+  const { currentUserId, currentRole } = useApp();
   const period = 'Kỳ 2 2025-2026';
-  const snapshots = getKPISnapshotsByUser(currentUserId, period);
-  const overall = calculateOverallKPI(currentUserId, period);
+  const isManagerOrAdmin = currentRole === 'manager' || currentRole === 'admin';
+  const staffUsers = users.filter(u => u.role === 'staff' && u.active);
+
+  const [selectedStaffId, setSelectedStaffId] = useState<string>(isManagerOrAdmin ? 'u11' : currentUserId);
+  const [selectedHe, setSelectedHe] = useState<string>('all'); // 'all' | 'degree' | 'topup' | 'certificate'
   const [editingSnapshot, setEditingSnapshot] = useState<KPISnapshot | null>(null);
   const [, forceUpdate] = useState(0);
 
@@ -50,36 +53,22 @@ export default function KPIPage() {
     return unsub;
   }, []);
 
-  const isStaff = user?.role === 'staff';
+  // Filter staff list by selected Hệ / Ngành
+  const filteredStaffList = staffUsers.filter(s => {
+    if (selectedHe === 'all') return true;
+    const prog = programs.find(p => p.managerId === s.id || p.secondaryManagerId === s.id);
+    return prog?.type === selectedHe;
+  });
 
-  if (!isStaff || snapshots.length === 0) {
-    return (
-      <div className="animate-fade-in" style={{ padding: '60px 20px', textAlign: 'center', maxWidth: 600, margin: '0 auto' }}>
-        <div className="card" style={{ padding: 40, borderRadius: 16 }}>
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-            <Users size={32} />
-          </div>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--gray-900)', marginBottom: 8 }}>
-            Tài khoản không có chỉ tiêu KPI cá nhân
-          </h2>
-          <p style={{ fontSize: 14, color: 'var(--gray-500)', lineHeight: 1.6, marginBottom: 24 }}>
-            Tài khoản <b>{user?.name || 'Quản trị viên'}</b> thuộc nhóm Quản lý / Admin hệ thống. Mục này dành riêng cho Cán bộ & Điều phối viên có chỉ tiêu KPI cá nhân.
-          </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-            <a href="/" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-              Về Trang Tổng Quan
-            </a>
-            <a href="/kpi/heatmap" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
-              Xem KPI Heatmap
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Determine active viewing user
+  const viewingUserId = isManagerOrAdmin ? selectedStaffId : currentUserId;
+  const viewingUser = getUserById(viewingUserId);
+  const isStaff = viewingUser?.role === 'staff';
+  const snapshots = getKPISnapshotsByUser(viewingUserId, period);
+  const overall = calculateOverallKPI(viewingUserId, period);
 
   // Find program managed by coordinator
-  const managedProgram = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
+  const managedProgram = programs.find(p => p.managerId === viewingUserId || p.secondaryManagerId === viewingUserId);
   
   const isCurrentActiveCourse = (c: Course): boolean => {
     if (c.cohort.includes('dự kiến') || c.cohort === 'I22 MT' || c.cohort === 'I23 MX' || c.cohort === 'I19 MT' || c.cohort === 'I20 MX' || c.cohort === 'I20 MT') return false;
@@ -99,26 +88,89 @@ export default function KPIPage() {
   };
 
   const activeCourses = courses.filter(c => {
-    const isOwner = c.coordinatorId === currentUserId || (managedProgram && c.programId === managedProgram.id);
+    const isOwner = c.coordinatorId === viewingUserId || (managedProgram && c.programId === managedProgram.id);
     return isOwner && isCurrentActiveCourse(c);
   });
 
   const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;
 
   // Check coordinator submission status
-  const assessmentStatus = getSubmissionStatus(currentUserId, period);
+  const assessmentStatus = getSubmissionStatus(viewingUserId, period);
 
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 60 }}>
+      {/* Leadership / Admin Filter Bar: Chọn Hệ/Ngành & Người phụ trách */}
+      {isManagerOrAdmin && (
+        <div className="card" style={{ padding: '12px 18px', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, background: 'white', border: '1px solid var(--gray-200)' }}>
+          {/* Lọc theo Hệ / Ngành */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ / Ngành:</span>
+            <div style={{ display: 'flex', background: 'var(--gray-100)', padding: 3, borderRadius: 8, gap: 4 }}>
+              {[
+                { id: 'all', label: 'Tất cả các hệ' },
+                { id: 'degree', label: 'Cử nhân Chính quy' },
+                { id: 'topup', label: 'Chuyển tiếp (Top-up)' },
+                { id: 'certificate', label: 'Cao đẳng (BTEC)' },
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setSelectedHe(tab.id);
+                    const staffInHe = staffUsers.filter(s => {
+                      if (tab.id === 'all') return true;
+                      const prog = programs.find(p => p.managerId === s.id || p.secondaryManagerId === s.id);
+                      return prog?.type === tab.id;
+                    });
+                    if (staffInHe.length > 0 && !staffInHe.some(s => s.id === selectedStaffId)) {
+                      setSelectedStaffId(staffInHe[0].id);
+                    }
+                  }}
+                  style={{
+                    padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                    background: selectedHe === tab.id ? 'white' : 'transparent',
+                    color: selectedHe === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
+                    boxShadow: selectedHe === tab.id ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                  }}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Chọn Người phụ trách */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ phụ trách:</span>
+            <select
+              value={selectedStaffId}
+              onChange={e => setSelectedStaffId(e.target.value)}
+              style={{
+                padding: '7px 14px', borderRadius: 8, border: '2px solid var(--isme-red)',
+                fontSize: 13, fontWeight: 700, color: 'var(--gray-900)', background: 'white', cursor: 'pointer', outline: 'none'
+              }}
+            >
+              {filteredStaffList.map(s => {
+                const prog = programs.find(p => p.managerId === s.id || p.secondaryManagerId === s.id);
+                return (
+                  <option key={s.id} value={s.id}>
+                    {s.name} — {prog ? prog.name : s.position}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>Bảng Theo dõi Kết quả KPI</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--isme-red)' }}>{user?.name}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--isme-red)' }}>{viewingUser?.name}</span>
             <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>
-            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{user?.position}</span>
+            <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>{viewingUser?.position}</span>
             <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)' }}>{period}</span>
             <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>

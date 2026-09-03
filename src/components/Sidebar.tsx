@@ -58,18 +58,18 @@ export default function Sidebar() {
         <div className="overlay md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
       <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, padding: '0 6px' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, padding: '0 4px' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', width: '100%' }}>
             <img 
               src="/isme-logo.png" 
               alt="Viện Đào tạo Quốc tế ISME - NEU" 
-              style={{ height: 38, width: 'auto', maxWidth: 180, objectFit: 'contain' }} 
+              style={{ width: '100%', maxWidth: 215, height: 'auto', maxHeight: 68, objectFit: 'contain', display: 'block' }} 
             />
           </Link>
           <button
             className="mobile-menu-btn md:hidden"
             onClick={() => setSidebarOpen(false)}
-            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+            style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
             aria-label="Đóng menu"
           >
             <X size={20} color="var(--gray-400)" />

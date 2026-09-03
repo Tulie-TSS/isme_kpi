@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context';
-import { LayoutDashboard, ClipboardList, BarChart3, FileText, Settings, GraduationCap, X, Grid3X3, CheckSquare, Table2, Calendar, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, BarChart3, FileText, Settings, X, Grid3X3, CheckSquare, Table2, Calendar, ShieldCheck } from 'lucide-react';
 
 interface NavLink {
   href: string;
@@ -58,18 +58,19 @@ export default function Sidebar() {
         <div className="overlay md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
       <nav className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 40, padding: '0 8px' }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--isme-red)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <GraduationCap size={22} color="white" />
-          </div>
-          <div>
-            <div style={{ color: 'white', fontWeight: 700, fontSize: 13 }}>ISME Ops</div>
-            <div style={{ color: 'var(--gray-500)', fontSize: 11, fontWeight: 500 }}>Operations & KPI</div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, padding: '0 6px' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <img 
+              src="/isme-logo.png" 
+              alt="Viện Đào tạo Quốc tế ISME - NEU" 
+              style={{ height: 38, width: 'auto', maxWidth: 180, objectFit: 'contain' }} 
+            />
+          </Link>
           <button
             className="mobile-menu-btn md:hidden"
             onClick={() => setSidebarOpen(false)}
             style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+            aria-label="Đóng menu"
           >
             <X size={20} color="var(--gray-400)" />
           </button>

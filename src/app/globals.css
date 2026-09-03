@@ -43,11 +43,11 @@
   --surface-page: #F8FAFB;
   --surface-card: #FFFFFF;
   
-  /* Radius System */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  /* Radius System — Unified Strict Flat Minimal (6px - 8px standard) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 8px;
   --radius-full: 9999px;
   
   /* Shadows — Clean Flat Minimal UI (No heavy box-shadows) */
@@ -348,15 +348,15 @@ input[type=number] {
 .kpi-bg-warning { background: var(--warning-light); }
 .kpi-bg-critical { background: var(--danger-light); }
 
-/* Buttons */
+/* Buttons — Unified 6px border-radius */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 6px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.15s ease;
   border: none;
@@ -384,9 +384,9 @@ input[type=number] {
 .btn-ghost:hover { background: var(--gray-100); }
 
 .btn-sm {
-  padding: 6px 14px;
-  font-size: 13px;
-  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 6px;
 }
 
 /* Progress bar — Enhanced */
@@ -444,9 +444,9 @@ input[type=number] {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13.5px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 500;
   color: #94A3B8;
   text-decoration: none;

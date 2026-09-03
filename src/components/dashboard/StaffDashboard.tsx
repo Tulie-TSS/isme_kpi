@@ -156,37 +156,40 @@ export default function StaffDashboard() {
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 40 }}>
-      {/* ── Hero Greeting ── */}
+      {/* ── Clean Hero Summary Banner ── */}
       <div style={{
-        background: 'linear-gradient(135deg, #0F172A 0%, #162036 40%, #1E293B 100%)',
-        borderRadius: 20, padding: '32px 36px', marginBottom: 24, color: 'white',
-        position: 'relative', overflow: 'hidden',
-        boxShadow: '0 8px 32px rgba(15, 23, 42, 0.25)',
+        background: 'white',
+        borderRadius: 8,
+        padding: '16px 20px',
+        marginBottom: 16,
+        border: '1px solid var(--gray-200)',
       }}>
-        <div style={{ position: 'absolute', top: -60, right: -30, width: 200, height: 200, borderRadius: '50%', background: 'rgba(155, 27, 48, 0.12)', filter: 'blur(60px)' }} />
-        <div style={{ position: 'absolute', bottom: -30, right: 120, width: 140, height: 140, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.08)', filter: 'blur(50px)' }} />
-        <div style={{ position: 'relative' }}>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 6 }}>{greeting}! 👋</div>
-          <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{user?.name}</div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{user?.position} · {period}</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+          <div>
+            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 2 }}>{greeting}! 👋</div>
+            <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)', margin: 0 }}>{user?.name}</h1>
+            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>{user?.position} · <span style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{period}</span></div>
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: 24, marginTop: 24, flexWrap: 'wrap' }}>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
           {[
             { label: 'KPI Tổng hợp', value: `${overall}%`, color: getScoreColor(overall), icon: BarChart3 },
             { label: 'Chỉ tiêu cần cải thiện', value: lowKpis.length, color: lowKpis.length > 0 ? '#EF4444' : '#10B981', icon: AlertTriangle },
-            { label: 'Câu hỏi của quản lý', value: openQuestions.length, color: openQuestions.length > 0 ? '#F59E0B' : 'white', icon: MessageCircleQuestion },
-            { label: 'Thông báo mới', value: unreadNotifs.length, color: unreadNotifs.length > 0 ? '#F59E0B' : 'white', icon: Bell },
+            { label: 'Câu hỏi của quản lý', value: openQuestions.length, color: openQuestions.length > 0 ? '#F59E0B' : 'var(--gray-700)', icon: MessageCircleQuestion },
+            { label: 'Thông báo mới', value: unreadNotifs.length, color: unreadNotifs.length > 0 ? '#3B82F6' : 'var(--gray-700)', icon: Bell },
           ].map((s, i) => (
             <div key={i} style={{
-              background: 'rgba(255,255,255,0.06)', borderRadius: 12, padding: '12px 20px',
-              backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.06)',
-              minWidth: 140,
+              background: '#F8FAFC',
+              borderRadius: 6,
+              padding: '10px 14px',
+              border: '1px solid var(--gray-200)',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                <s.icon size={12} color="rgba(255,255,255,0.45)" />
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>{s.label}</div>
+                <s.icon size={13} color="var(--gray-500)" />
+                <div style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 600 }}>{s.label}</div>
               </div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: s.color as string }}>{s.value}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: s.color as string }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -194,7 +197,7 @@ export default function StaffDashboard() {
 
       {/* ── Submission workflow bar ── */}
       {isCoordinator && (
-        <div style={{ padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 14,
+        <div style={{ padding: '12px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8,
           background: status === 'approved' ? 'rgba(16,185,129,0.08)' : status === 'submitted' ? 'rgba(245,158,11,0.08)' : 'rgba(155,27,48,0.05)',
           border: `1px solid ${status === 'approved' ? 'rgba(16,185,129,0.2)' : status === 'submitted' ? 'rgba(245,158,11,0.2)' : 'rgba(155,27,48,0.2)'}`
         }}>
@@ -209,7 +212,7 @@ export default function StaffDashboard() {
             </div>
           </div>
           {status === 'open' && (
-            <button className="btn btn-primary" onClick={handleSubmitting} style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button className="btn btn-primary" onClick={handleSubmitting} style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, borderRadius: 6, padding: '7px 14px' }}>
               <Send size={14} /> Nộp phê duyệt
             </button>
           )}

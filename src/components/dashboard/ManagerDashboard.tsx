@@ -624,25 +624,25 @@ export default function ManagerDashboard() {
         </div>
       </div>
 
-      {/* ── Pending Submissions Panel (NEW) ── */}
+      {/* ── Pending Submissions Panel (Clean Flat Design) ── */}
       {pendingSubmissions.length > 0 && (
-        <div className="card text-white" style={{ background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)', color: 'white', padding: '20px 24px', marginBottom: 24, border: '1px solid rgba(245,158,11,0.3)', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <CheckSquare size={20} color="#F59E0B" />
-            <span style={{ fontSize: 15, fontWeight: 800 }}>Yêu cầu phê duyệt tự đánh giá KPI ({pendingSubmissions.length})</span>
+        <div className="card" style={{ background: 'white', padding: '16px 20px', marginBottom: 16, border: '1px solid #FCD34D', borderRadius: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <CheckSquare size={18} color="#D97706" />
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>Yêu cầu phê duyệt tự đánh giá KPI ({pendingSubmissions.length})</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {pendingSubmissions.map(sub => (
-              <div key={sub.user.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.06)', padding: '10px 16px', borderRadius: 8 }}>
+              <div key={sub.user.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#FFFDF5', border: '1px solid #FEF3C7', padding: '10px 14px', borderRadius: 6 }}>
                 <div>
-                  <strong style={{ fontSize: 14 }}>{sub.user.name}</strong>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginLeft: 8 }}>({sub.user.position})</span>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>Tự chấm tổng hợp: <b>{sub.overall}%</b> · Kỳ: {period}</div>
+                  <strong style={{ fontSize: 13, color: 'var(--gray-900)' }}>{sub.user.name}</strong>
+                  <span style={{ fontSize: 11, color: 'var(--gray-500)', marginLeft: 8 }}>({sub.user.position})</span>
+                  <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>Tự chấm tổng hợp: <b style={{ color: 'var(--gray-800)' }}>{sub.overall}%</b> · Kỳ: {period}</div>
                 </div>
                 <button 
                   className="btn btn-primary btn-sm" 
                   onClick={() => handleOpenReviewDetail(sub.user.id)}
-                  style={{ background: '#10B981', color: 'white', border: 'none' }}
+                  style={{ background: '#10B981', color: 'white', border: 'none', borderRadius: 6, fontSize: 11, fontWeight: 600, padding: '4px 10px' }}
                 >
                   Đánh giá chi tiết
                 </button>

@@ -112,12 +112,12 @@ export default function Header() {
         {(authUser?.role === 'admin' || isImpersonating || authUser?.id === 'u0') && (
           <div style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            background: isImpersonating ? '#FEF3C7' : 'white',
-            border: `1px solid ${isImpersonating ? '#F59E0B' : 'var(--gray-200)'}`,
-            padding: '3px 8px', borderRadius: 6, height: 32
+            background: isImpersonating ? '#EFF6FF' : 'white',
+            border: `1px solid ${isImpersonating ? '#93C5FD' : 'var(--gray-200)'}`,
+            padding: '2px 8px', borderRadius: 6, height: 32
           }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: isImpersonating ? '#B45309' : 'var(--gray-600)', whiteSpace: 'nowrap' }}>
-              👁️ {isImpersonating ? 'Đang test:' : 'Xem theo User:'}
+            <span style={{ fontSize: 11, fontWeight: 600, color: isImpersonating ? '#1D4ED8' : 'var(--gray-500)', whiteSpace: 'nowrap' }}>
+              {isImpersonating ? '👁️ Đang test:' : '👁️ Xem theo:'}
             </span>
             <select
               value={authUser?.id || ''}
@@ -134,10 +134,10 @@ export default function Header() {
                 border: 'none',
                 fontSize: 13,
                 fontWeight: 600,
-                color: isImpersonating ? '#92400E' : 'var(--gray-800)',
+                color: isImpersonating ? '#1E40AF' : 'var(--gray-800)',
                 cursor: 'pointer',
                 outline: 'none',
-                maxWidth: 190,
+                maxWidth: 180,
               }}
               title="Truy cập nhanh xem giao diện theo từng cán bộ"
             >
@@ -163,16 +163,18 @@ export default function Header() {
               <button
                 onClick={() => stopImpersonating()}
                 style={{
-                  background: '#DC2626',
-                  color: 'white',
-                  border: 'none',
+                  background: 'var(--gray-100)',
+                  color: 'var(--gray-700)',
+                  border: '1px solid var(--gray-300)',
                   borderRadius: 4,
-                  padding: '2px 8px',
+                  padding: '2px 7px',
                   fontSize: 11,
                   fontWeight: 600,
                   cursor: 'pointer',
                   whiteSpace: 'nowrap'
                 }}
+                onMouseOver={e => { e.currentTarget.style.background = '#FEE2E2'; e.currentTarget.style.color = '#DC2626'; }}
+                onMouseOut={e => { e.currentTarget.style.background = 'var(--gray-100)'; e.currentTarget.style.color = 'var(--gray-700)'; }}
                 title="Quay lại tài khoản Admin gốc"
               >
                 Thoát test

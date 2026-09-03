@@ -67,9 +67,9 @@ export default function Sidebar() {
             <div style={{ color: 'var(--gray-500)', fontSize: 11, fontWeight: 500 }}>Operations & KPI</div>
           </div>
           <button
-            className="md:hidden"
+            className="mobile-menu-btn md:hidden"
             onClick={() => setSidebarOpen(false)}
-            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer' }}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
           >
             <X size={20} color="var(--gray-400)" />
           </button>

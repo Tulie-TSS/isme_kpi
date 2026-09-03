@@ -372,6 +372,7 @@ export default function KPICoursePage() {
   const [selectedProgram, setSelectedProgram] = useState(selectedProgramId !== 'all' ? selectedProgramId : 'p_au');
   const [filterSemester, setFilterSemester] = useState<'current' | 'year1' | 'year2' | 'year3' | 'year4' | 'all'>('current');
   const [selectedCohort, setSelectedCohort] = useState<string>('all');
+  const [uweSubFilter, setUweSubFilter] = useState<'all' | 'IBM' | 'BM'>('all');
   const [editTarget, setEditTarget] = useState<{ course: Course; field: CourseEditField; fieldLabel: string; value: number; isNA?: boolean } | null>(null);
   const [, forceUpdate] = useState(0);
 
@@ -424,6 +425,9 @@ export default function KPICoursePage() {
     activeYear?: number;
     activeSemester?: string;
     expected?: boolean;
+    specialization?: string;
+    academicYear?: string;
+    targetSemester?: string;
   };
 
   const programCohortPlans: Record<string, CohortPlan[]> = {
@@ -450,10 +454,64 @@ export default function KPICoursePage() {
       { label: 'BScBF I21 (dự kiến)', expected: true },
     ],
     p_uwe: [
-      { label: 'I18 MT - IBM', sourceCohort: 'I18 MT - IBM', activeYear: 4, activeSemester: 'SEM 2' },
-      { label: 'I19 MX - IBM', sourceCohort: 'I19 MX - IBM', activeYear: 4, activeSemester: 'SEM 1' },
-      { label: 'I19 MT - BM (dự kiến)', sourceCohort: 'I19 MT - BM', expected: true },
-      { label: 'I20 MX - IBM (dự kiến)', sourceCohort: 'I20 MX - IBM', expected: true },
+      { 
+        label: 'I18 MT - IBM (2025-2026 Kỳ 2)', 
+        sourceCohort: 'I18 MT - IBM', 
+        activeYear: 4, 
+        activeSemester: 'SEM 2', 
+        specialization: 'IBM',
+        academicYear: '2025 - 2026',
+        targetSemester: 'SEM 2'
+      },
+      { 
+        label: 'I19 MX - IBM (2025-2026 Kỳ 1)', 
+        sourceCohort: 'I19 MX - IBM', 
+        activeYear: 4, 
+        activeSemester: 'SEM 1', 
+        specialization: 'IBM',
+        academicYear: '2025 - 2026',
+        targetSemester: 'SEM 1'
+      },
+      { 
+        label: 'I19 MX - IBM (dự kiến 2026-2027 Kỳ 2)', 
+        sourceCohort: 'I19 MX - IBM', 
+        expected: true, 
+        specialization: 'IBM',
+        academicYear: '2026 - 2027',
+        targetSemester: 'SEM 2'
+      },
+      { 
+        label: 'I19 MT - BM (dự kiến 2026-2027 Kỳ 1)', 
+        sourceCohort: 'I19 MT - BM', 
+        expected: true, 
+        specialization: 'BM',
+        academicYear: '2026 - 2027',
+        targetSemester: 'SEM 1'
+      },
+      { 
+        label: 'I19 MT - BM (dự kiến 2026-2027 Kỳ 2)', 
+        sourceCohort: 'I19 MT - BM', 
+        expected: true, 
+        specialization: 'BM',
+        academicYear: '2026 - 2027',
+        targetSemester: 'SEM 2'
+      },
+      { 
+        label: 'I20 MX - IBM (dự kiến 2026-2027 Kỳ 1)', 
+        sourceCohort: 'I20 MX - IBM', 
+        expected: true, 
+        specialization: 'IBM',
+        academicYear: '2026 - 2027',
+        targetSemester: 'SEM 1'
+      },
+      { 
+        label: 'I20 MX - IBM (dự kiến 2027-2028 Kỳ 2)', 
+        sourceCohort: 'I20 MX - IBM', 
+        expected: true, 
+        specialization: 'IBM',
+        academicYear: '2027 - 2028',
+        targetSemester: 'SEM 2'
+      },
     ],
     p_cu: [
       { label: 'I19 MX', sourceCohort: 'I19 MX', activeYear: 4, activeSemester: 'SEM 2' },
@@ -473,10 +531,13 @@ export default function KPICoursePage() {
   };
 
   const rawCurriculum = courses.filter(c => c.programId === selectedProgram);
-  const fallbackPlans = Array.from(new Set(rawCurriculum.map(c => c.cohort)))
+  const fallbackPlans: CohortPlan[] = Array.from(new Set(rawCurriculum.map(c => c.cohort)))
     .sort()
     .map(coh => ({ label: coh, sourceCohort: coh }));
-  const cohortPlans = programCohortPlans[selectedProgram] || fallbackPlans;
+  const allCohortPlans = programCohortPlans[selectedProgram] || fallbackPlans;
+  const cohortPlans = selectedProgram === 'p_uwe' && uweSubFilter !== 'all'
+    ? allCohortPlans.filter(plan => !plan.specialization || plan.specialization === uweSubFilter)
+    : allCohortPlans;
   const selectedPlans = selectedCohort === 'all'
     ? cohortPlans
     : cohortPlans.filter(plan => plan.label === selectedCohort);
@@ -499,9 +560,11 @@ export default function KPICoursePage() {
   };
 
   const courseMatchesPlan = (course: Course, plan: CohortPlan): boolean => {
-    const planName = (plan.sourceCohort || plan.label).replace(/\s*\(dự kiến.*?\)/, '').trim();
-    const courseCohort = course.cohort.replace(/\s*\(dự kiến.*?\)/, '').trim();
-    return courseCohort === planName;
+    const cleanPlan = (plan.sourceCohort || plan.label).replace(/\s*\(dự kiến.*?\)/, '').replace(/\s*\(.*?\)/, '').trim();
+    const cleanCourse = course.cohort.replace(/\s*\(dự kiến.*?\)/, '').replace(/\s*\(.*?\)/, '').trim();
+    if (cleanCourse !== cleanPlan) return false;
+    if (plan.targetSemester && course.semester !== plan.targetSemester) return false;
+    return true;
   };
 
   const isCurrentCourse = (course: Course, plan: CohortPlan): boolean => {

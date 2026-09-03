@@ -96,7 +96,7 @@ export async function GET() {
       kpiSnapshots
     });
   } catch (error: any) {
-    console.error('❌ API Admin GET Error:', error);
+    console.error('[ERROR] API Admin GET Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
@@ -296,7 +296,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ success: false, error: `Unhandled action: ${action}` }, { status: 400 });
     }
   } catch (error: any) {
-    console.error('❌ API Admin POST Error:', error);
+    console.error('[ERROR] API Admin POST Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

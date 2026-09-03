@@ -163,7 +163,7 @@ export default function KPIApprovalPanel() {
                         background: st.bg, borderRadius: 8, padding: 12, marginBottom: 8,
                       }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: st.color, marginBottom: 4 }}>
-                          {req.status === 'approved' ? '✓ Đã duyệt' : '✗ Đã từ chối'} bởi {reviewer?.name || 'N/A'} — {req.reviewedAt}
+                          {req.status === 'approved' ? 'Đã duyệt' : 'Đã từ chối'} bởi {reviewer?.name || 'N/A'} — {req.reviewedAt}
                         </div>
                         {req.reviewNote && (
                           <div style={{ fontSize: 12, color: st.color, fontStyle: 'italic' }}>"{req.reviewNote}"</div>

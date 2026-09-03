@@ -19,7 +19,7 @@ import {
 } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
-import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award } from 'lucide-react';
+import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award, Info } from 'lucide-react';
 
 function getScoreColor(val: number) {
   if (val >= 100) return '#059669'; // Clean Emerald
@@ -142,8 +142,9 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
       ) : (
         <div style={{ padding: 20 }}>
           {!isDirectEdit && (
-            <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 13, marginBottom: 16 }}>
-              💡 Bản tự đánh giá đã nộp hoặc được duyệt. Thay đổi này cần nêu rõ lý do và sẽ được áp dụng sau khi quản lý phê duyệt.
+            <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 6, padding: '10px 14px', fontSize: 13, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Info size={15} color="#2563EB" style={{ flexShrink: 0 }} />
+              <span>Bản tự đánh giá đã nộp hoặc được duyệt. Thay đổi này cần nêu rõ lý do và sẽ được áp dụng sau khi quản lý phê duyệt.</span>
             </div>
           )}
           
@@ -300,7 +301,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
                   <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Thời gian gửi: {r.requestedAt}</div>
                   {r.status !== 'pending' && (
                     <div style={{ borderRadius: 6, padding: 10, marginTop: 8, fontSize: 13, color: st.color, background: st.bg }}>
-                      {r.status === 'approved' ? '✓ Đã phê duyệt' : '✗ Đã từ chối'} bởi {reviewer?.name} — {r.reviewedAt}
+                      {r.status === 'approved' ? 'Đã phê duyệt' : 'Đã từ chối'} bởi {reviewer?.name} — {r.reviewedAt}
                       {r.reviewNote && <div style={{ fontStyle: 'italic', marginTop: 4 }}>Ghi chú: "{r.reviewNote}"</div>}
                     </div>
                   )}

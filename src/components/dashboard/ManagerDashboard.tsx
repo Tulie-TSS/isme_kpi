@@ -38,6 +38,7 @@ import {
   ArrowUpDown, 
   ShieldAlert,
   Target,
+  Check,
   Users as UsersIcon,
   Award,
   BookOpen,
@@ -349,11 +350,11 @@ export default function ManagerDashboard() {
               className="btn btn-primary" 
               onClick={() => handleSaveAndApprove(selectedStaffId)}
               style={{
-                background: 'linear-gradient(135deg, #10B981, #059669)', border: 'none',
-                padding: '10px 24px', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6
+                background: '#059669', border: 'none', borderRadius: 6,
+                padding: '8px 18px', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6
               }}
             >
-              ✓ Lưu đánh giá & Phê duyệt
+              <Check size={14} /> Lưu đánh giá & Phê duyệt
             </button>
           </div>
         </div>
@@ -413,7 +414,7 @@ export default function ManagerDashboard() {
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: getWordCountColor(wordCount) }}>
-                            Số từ: {wordCount} (Yêu cầu: 100-200 từ) {wordCount > 0 && wordCount < 100 && '⚠️ Quá ngắn'} {wordCount > 200 && '⚠️ Quá dài'}
+                            Số từ: {wordCount} (Yêu cầu: 100-200 từ) {wordCount > 0 && wordCount < 100 && '(Quá ngắn)'} {wordCount > 200 && '(Quá dài)'}
                           </span>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button 
@@ -480,7 +481,7 @@ export default function ManagerDashboard() {
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: getWordCountColor(wordCount) }}>
-                            Số từ: {wordCount} (Yêu cầu: 100-200 từ) {wordCount > 0 && wordCount < 100 && '⚠️ Quá ngắn'} {wordCount > 200 && '⚠️ Quá dài'}
+                            Số từ: {wordCount} (Yêu cầu: 100-200 từ) {wordCount > 0 && wordCount < 100 && '(Quá ngắn)'} {wordCount > 200 && '(Quá dài)'}
                           </span>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button 
@@ -548,7 +549,7 @@ export default function ManagerDashboard() {
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                           <span style={{ fontSize: 10, fontWeight: 600, color: getWordCountColor(wordCount) }}>
-                            Số từ: {wordCount} (Yêu cầu: 100-200 từ) {wordCount > 0 && wordCount < 100 && '⚠️ Quá ngắn'} {wordCount > 200 && '⚠️ Quá dài'}
+                            Số từ: {wordCount} (Yêu cầu: 100-200 từ) {wordCount > 0 && wordCount < 100 && '(Quá ngắn)'} {wordCount > 200 && '(Quá dài)'}
                           </span>
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button 
@@ -692,8 +693,16 @@ export default function ManagerDashboard() {
             <tbody>
               {sortedRanking.map((row, i) => (
                 <tr key={row.user.id} style={{ borderBottom: '1px solid var(--gray-50)', transition: 'background 0.15s' }}>
-                  <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 700, color: i < 3 && rankSort === 'desc' ? '#F59E0B' : 'var(--gray-300)' }}>
-                    {i < 3 && rankSort === 'desc' ? ['🥇', '🥈', '🥉'][i] : i + 1}
+                  <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: 22, height: 22, borderRadius: 4,
+                      fontSize: 11, fontWeight: 700,
+                      background: i === 0 && rankSort === 'desc' ? '#FEF3C7' : i === 1 && rankSort === 'desc' ? '#F1F5F9' : i === 2 && rankSort === 'desc' ? '#FFEDD5' : 'transparent',
+                      color: i === 0 && rankSort === 'desc' ? '#B45309' : i === 1 && rankSort === 'desc' ? '#475569' : i === 2 && rankSort === 'desc' ? '#C2410C' : 'var(--gray-400)'
+                    }}>
+                      {i + 1}
+                    </span>
                   </td>
                   <td style={{ padding: '14px 20px' }}>
                     <div style={{ fontWeight: 700 }}>{row.user.name}</div>

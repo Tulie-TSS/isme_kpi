@@ -2,7 +2,7 @@
 import { useApp } from '@/lib/context';
 import { useAuth } from '@/lib/auth-context';
 import { getUserById, getNotificationsByUser, users, programs } from '@/lib/mock-data';
-import { Bell, Menu, ChevronDown, AlertTriangle, CheckCircle, Info, ArrowUpRight, Clock, X, LogOut, User as UserIcon } from 'lucide-react';
+import { Bell, Menu, ChevronDown, AlertTriangle, CheckCircle, Info, ArrowUpRight, Clock, X, LogOut, User as UserIcon, Eye } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Role, Notification } from '@/lib/types';
@@ -11,10 +11,10 @@ const roleLabels: Record<Role, string> = { staff: 'Nhân viên', manager: 'Quả
 const roleColors: Record<Role, string> = { staff: '#3B82F6', manager: '#8B5CF6', admin: '#EF4444' };
 
 const priorityConfig = {
-  urgent: { bg: '#FEF2F2', border: '#FECACA', icon: '🔴', label: 'Khẩn cấp' },
-  high: { bg: '#FFF7ED', border: '#FED7AA', icon: '🟠', label: 'Quan trọng' },
-  medium: { bg: '#EFF6FF', border: '#BFDBFE', icon: '🔵', label: 'Thông thường' },
-  low: { bg: '#F0FDF4', border: '#BBF7D0', icon: '🟢', label: 'Tham khảo' },
+  urgent: { bg: '#FEF2F2', border: '#FECACA', dot: '#DC2626', label: 'Khẩn cấp' },
+  high: { bg: '#FFF7ED', border: '#FED7AA', dot: '#EA580C', label: 'Quan trọng' },
+  medium: { bg: '#EFF6FF', border: '#BFDBFE', dot: '#2563EB', label: 'Thông thường' },
+  low: { bg: '#F0FDF4', border: '#BBF7D0', dot: '#16A34A', label: 'Tham khảo' },
 };
 
 const categoryFilter = [
@@ -116,8 +116,9 @@ export default function Header() {
             border: `1px solid ${isImpersonating ? '#93C5FD' : 'var(--gray-200)'}`,
             padding: '2px 8px', borderRadius: 6, height: 32
           }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: isImpersonating ? '#1D4ED8' : 'var(--gray-500)', whiteSpace: 'nowrap' }}>
-              {isImpersonating ? '👁️ Đang test:' : '👁️ Xem theo:'}
+            <span style={{ fontSize: 11, fontWeight: 600, color: isImpersonating ? '#1D4ED8' : 'var(--gray-500)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Eye size={13} color={isImpersonating ? '#1D4ED8' : 'var(--gray-500)'} />
+              {isImpersonating ? 'Đang test:' : 'Xem theo:'}
             </span>
             <select
               value={authUser?.id || ''}
@@ -234,7 +235,7 @@ export default function Header() {
                   </button>
                   <div style={{ padding: 16, borderRadius: 12, background: priorityConfig[selectedNotif.priority]?.bg || '#F3F4F6', border: `1px solid ${priorityConfig[selectedNotif.priority]?.border || '#E5E7EB'}`, marginBottom: 16 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span>{priorityConfig[selectedNotif.priority]?.icon}</span>
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: priorityConfig[selectedNotif.priority]?.dot || '#9CA3AF', display: 'inline-block' }} />
                       <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)' }}>{priorityConfig[selectedNotif.priority]?.label}</span>
                       <span style={{ fontSize: 11, color: 'var(--gray-400)', marginLeft: 'auto' }}>{timeAgo(selectedNotif.createdAt)}</span>
                     </div>
@@ -259,7 +260,7 @@ export default function Header() {
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--gray-50)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = n.read ? 'white' : 'rgba(155,27,48,0.03)'; }}>
                         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                          <span style={{ fontSize: 13, marginTop: 2 }}>{priorityConfig[n.priority]?.icon}</span>
+                          <span style={{ width: 8, height: 8, borderRadius: '50%', background: priorityConfig[n.priority]?.dot || '#9CA3AF', display: 'inline-block', marginTop: 5, flexShrink: 0 }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
                               <span style={{ fontSize: 13, fontWeight: n.read ? 500 : 700 }}>{n.title}</span>

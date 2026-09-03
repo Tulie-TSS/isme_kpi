@@ -205,8 +205,16 @@ export default function ReviewPage() {
                               if (child.style.position === 'sticky') child.style.background = rowBg;
                             });
                           }}>
-                          <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: rank < 3 ? '#F59E0B' : 'var(--gray-400)', position: 'sticky', left: 0, zIndex: 5, background: rowBg }}>
-                            {rank < 3 ? ['🥇', '🥈', '🥉'][rank] : rank + 1}
+                          <td style={{ textAlign: 'center', position: 'sticky', left: 0, zIndex: 5, background: rowBg }}>
+                            <span style={{
+                              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                              width: 20, height: 20, borderRadius: 4,
+                              fontSize: 11, fontWeight: 700,
+                              background: rank === 0 ? '#FEF3C7' : rank === 1 ? '#F1F5F9' : rank === 2 ? '#FFEDD5' : 'transparent',
+                              color: rank === 0 ? '#B45309' : rank === 1 ? '#475569' : rank === 2 ? '#C2410C' : 'var(--gray-400)'
+                            }}>
+                              {rank + 1}
+                            </span>
                           </td>
                           <td style={{ whiteSpace: 'nowrap', position: 'sticky', left: 36, zIndex: 5, background: rowBg, width: 180, minWidth: 180 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

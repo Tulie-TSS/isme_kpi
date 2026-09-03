@@ -166,7 +166,7 @@ export default function StaffDashboard() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
           <div>
-            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 2 }}>{greeting}! 👋</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 2 }}>{greeting},</div>
             <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)', margin: 0 }}>{user?.name}</h1>
             <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>{user?.position} · <span style={{ fontWeight: 600, color: 'var(--gray-700)' }}>{period}</span></div>
           </div>
@@ -203,7 +203,7 @@ export default function StaffDashboard() {
         }}>
           <div>
             <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-800)' }}>
-              Trạng thái tự đánh giá: {status === 'approved' ? '✓ Đã phê duyệt' : status === 'submitted' ? '⏳ Đang chờ phê duyệt' : '✏️ Chưa nộp (Bản nháp)'}
+              Trạng thái tự đánh giá: {status === 'approved' ? 'Đã phê duyệt' : status === 'submitted' ? 'Đang chờ phê duyệt' : 'Chưa nộp (Bản nháp)'}
             </div>
             <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>
               {status === 'approved' && 'Bản KPI của bạn đã được quản lý phê duyệt chính thức. Để thay đổi số liệu môn học/vận hành, vui lòng gửi yêu cầu và nêu rõ lý do.'}

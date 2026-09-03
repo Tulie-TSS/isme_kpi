@@ -9,7 +9,7 @@ import {
   updateSnapshotValue, 
   addAuditLog 
 } from '@/lib/mock-data';
-import { X, Edit3, AlertTriangle } from 'lucide-react';
+import { X, Edit3, AlertTriangle, Info } from 'lucide-react';
 
 interface Props {
   snapshot: KPISnapshot;
@@ -138,46 +138,47 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
           </div>
         ) : (
           /* Edit form */
-          <div style={{ padding: '32px' }}>
+          <div style={{ padding: '24px' }}>
             {isDirectEdit && (
-              <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 12, marginBottom: 20 }}>
-                💡 Bản tự đánh giá đang ở trạng thái <b>Bản nháp</b>. Mọi thay đổi về số liệu sẽ được áp dụng ngay lập tức vào hệ thống mà không cần phê duyệt.
+              <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 6, padding: '10px 14px', fontSize: 13, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Info size={15} color="#2563EB" style={{ flexShrink: 0 }} />
+                <span>Bản tự đánh giá đang ở trạng thái <b>Bản nháp</b>. Mọi thay đổi về số liệu sẽ được áp dụng ngay lập tức vào hệ thống mà không cần phê duyệt.</span>
               </div>
             )}
             
             {/* Value Comparison Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 20 }}>
               <div style={{
-                background: 'var(--gray-50)', borderRadius: 20, padding: '20px 24px',
-                border: '1px solid var(--gray-100)',
+                background: 'var(--gray-50)', borderRadius: 8, padding: '16px 20px',
+                border: '1px solid var(--gray-200)',
               }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 12 }}>Hiện tại</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 8 }}>Hiện tại</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--gray-800)' }}>{snapshot.score}</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-400)' }}>%</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--gray-800)' }}>{snapshot.score}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)' }}>%</div>
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4, fontWeight: 600 }}>{snapshot.rawNumerator}/{snapshot.rawDenominator} hoàn thành</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 4, fontWeight: 500 }}>{snapshot.rawNumerator}/{snapshot.rawDenominator} hoàn thành</div>
               </div>
 
               <div style={{
                 background: hasChanged ? (newScore >= snapshot.score ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)') : 'var(--gray-50)',
-                borderRadius: 20, padding: '20px 24px',
-                border: hasChanged ? (newScore >= snapshot.score ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)') : '1px solid var(--gray-100)',
+                borderRadius: 8, padding: '16px 20px',
+                border: hasChanged ? (newScore >= snapshot.score ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)') : '1px solid var(--gray-200)',
                 transition: 'all 0.3s ease',
               }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 12 }}>Dự kiến</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', marginBottom: 8 }}>Dự kiến</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                  <div style={{ fontSize: 28, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-400)' }}>{newScore}</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-300)' }}>%</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-400)' }}>{newScore}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: hasChanged ? (newScore >= snapshot.score ? '#10B981' : '#EF4444') : 'var(--gray-300)' }}>%</div>
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4, fontWeight: 600 }}>{newNumerator}/{newDenominator} hoàn thành</div>
+                <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 4, fontWeight: 500 }}>{newNumerator}/{newDenominator} hoàn thành</div>
               </div>
             </div>
 
             {/* Inputs */}
             <div style={{ 
-              background: 'var(--gray-50)', borderRadius: 20, padding: 24, marginBottom: 32,
-              border: '1px solid var(--gray-100)'
+              background: 'var(--gray-50)', borderRadius: 8, padding: 18, marginBottom: 20,
+              border: '1px solid var(--gray-200)'
             }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
                 <div>

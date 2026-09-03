@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { Lock, Mail, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, ArrowRight, AlertCircle, BarChart3, ClipboardList, Award } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -86,21 +86,21 @@ export default function LoginPage() {
 
             <div className="login-features">
               <div className="login-feature">
-                <div className="login-feature-icon">📊</div>
+                <div className="login-feature-icon"><BarChart3 size={20} color="var(--isme-red)" /></div>
                 <div>
                   <h3>Quản lý KPI thông minh</h3>
                   <p>Theo dõi hiệu suất real-time cho từng nhân viên và chương trình</p>
                 </div>
               </div>
               <div className="login-feature">
-                <div className="login-feature-icon">📋</div>
+                <div className="login-feature-icon"><ClipboardList size={20} color="var(--isme-red)" /></div>
                 <div>
                   <h3>Task Management</h3>
                   <p>Kanban board, Gantt chart, và Calendar view tích hợp</p>
                 </div>
               </div>
               <div className="login-feature">
-                <div className="login-feature-icon">⭐</div>
+                <div className="login-feature-icon"><Award size={20} color="var(--isme-red)" /></div>
                 <div>
                   <h3>Đánh giá & Review</h3>
                   <p>Quy trình review minh bạch cho từng kỳ đánh giá</p>

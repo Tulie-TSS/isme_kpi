@@ -260,7 +260,7 @@ export default function KPIPage() {
                     <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
                   </td>
                   <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.4 }}>
-                    {def.criteria} <br/> <span style={{ color: '#1E40AF', fontSize: 11 }}>💡 Được lấy điểm trực tiếp từ Vận hành chỉ tiêu STT 1.</span>
+                    {def.criteria} <br/> <span style={{ color: '#1E40AF', fontSize: 11 }}>(Lấy điểm trực tiếp từ Chỉ tiêu Vận hành STT 1)</span>
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>{def.unit}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.targetValue}</td>
@@ -331,7 +331,7 @@ export default function KPIPage() {
             
             {/* 3.1 Course Aggregate Row */}
             <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--gray-200)' }}>
-              <td style={{ padding: '10px 16px', textAlign: 'center' }}>★</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', color: 'var(--gray-400)' }}>—</td>
               <td style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13 }} colSpan={2}>Mức hoàn thành trung bình Nhóm Kết quả học sinh</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>100%</td>

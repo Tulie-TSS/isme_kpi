@@ -204,28 +204,28 @@ export default function KPIPage() {
       <KPIApprovalPanel />
 
       {/* Main Excel-style Table */}
-      <div className="card" style={{ padding: 0, overflowX: 'auto', border: '1px solid var(--gray-200)' }}>
+      <div className="card" style={{ padding: 0, overflowX: 'auto', border: '1px solid var(--gray-200)', borderRadius: 8 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
           <thead>
-            <tr style={{ background: '#F8FAFC', borderBottom: '2px solid var(--gray-200)' }}>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 700, width: 40 }}>STT</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 700, width: 300 }}>Chỉ tiêu / Nội dung</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 700 }}>Tiêu chí đánh giá</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Đơn vị</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Kế hoạch</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Thực hiện</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Tỉ lệ (%)</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 120 }}>Đánh giá</th>
+            <tr style={{ background: 'white', borderBottom: '1px solid var(--gray-200)' }}>
+              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 50, textTransform: 'uppercase', letterSpacing: '0.03em' }}>STT</th>
+              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 280, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Chỉ tiêu / Nội dung</th>
+              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Tiêu chí đánh giá</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 70, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Đơn vị</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 80, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Kế hoạch</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 80, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Thực hiện</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 80, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Tỉ lệ (%)</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 110, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Đánh giá</th>
             </tr>
           </thead>
           <tbody>
             
             {/* 1. OPERATIONS (50%) */}
-            <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
+            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--gray-200)' }}>
+              <td colSpan={8} style={{ padding: '9px 16px', fontWeight: 700, fontSize: 13, color: 'var(--gray-900)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <TargetIcon size={16} color="var(--isme-red)" />
-                  I. Chỉ tiêu Vận hành (Operations - Trọng số 50%)
+                  <TargetIcon size={15} color="var(--isme-red)" />
+                  <span>I. Chỉ tiêu Vận hành (Operations - Trọng số 50%)</span>
                 </div>
               </td>
             </tr>
@@ -240,11 +240,11 @@ export default function KPIPage() {
             }
 
             {/* 2. ACADEMIC SUPPORT (20%) */}
-            <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
+            <tr style={{ background: '#F8FAFC', borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)' }}>
+              <td colSpan={8} style={{ padding: '9px 16px', fontWeight: 700, fontSize: 13, color: 'var(--gray-900)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <UsersIcon size={16} color="var(--isme-red)" />
-                  II. Hoạt động Hỗ trợ học tập (Trọng số 20%)
+                  <UsersIcon size={15} color="var(--isme-red)" />
+                  <span>II. Hoạt động Hỗ trợ học tập (Trọng số 20%)</span>
                 </div>
               </td>
             </tr>
@@ -253,7 +253,7 @@ export default function KPIPage() {
               const def = kpiDefinitions.find(k => k.id === 'op1');
               if (!snap || !def) return null;
               return (
-                <tr style={{ borderBottom: '1px solid var(--gray-100)', background: 'rgba(59,130,246,0.02)' }}>
+                <tr style={{ borderBottom: '1px solid var(--gray-100)', background: 'white' }}>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, color: 'var(--gray-400)' }}>1</td>
                   <td style={{ padding: '12px 16px', fontSize: 13 }}>
                     <div style={{ fontWeight: 700 }}>{def.name} (Hỗ trợ học tập)</div>
@@ -276,11 +276,11 @@ export default function KPIPage() {
             })()}
 
             {/* 3. STUDENT RESULTS (20%) */}
-            <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
+            <tr style={{ background: '#F8FAFC', borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)' }}>
+              <td colSpan={8} style={{ padding: '9px 16px', fontWeight: 700, fontSize: 13, color: 'var(--gray-900)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <AwardIcon size={16} color="var(--isme-red)" />
-                  III. Kết quả học tập & kỷ luật sinh viên (Trọng số 20%)
+                  <AwardIcon size={15} color="var(--isme-red)" />
+                  <span>III. Kết quả học tập & kỷ luật sinh viên (Trọng số 20%)</span>
                 </div>
               </td>
             </tr>
@@ -297,7 +297,7 @@ export default function KPIPage() {
               const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : null;
 
               return (
-                <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
+                <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)', background: 'white' }}>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>{i + 1}</td>
                   <td style={{ padding: '12px 16px', fontSize: 13 }}>
                     <div style={{ fontWeight: 700 }}>{c.name}</div>
@@ -330,7 +330,7 @@ export default function KPIPage() {
             })}
             
             {/* 3.1 Course Aggregate Row */}
-            <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--gray-200)' }}>
+            <tr style={{ background: '#F8FAFC', borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)' }}>
               <td style={{ padding: '10px 16px', textAlign: 'center', color: 'var(--gray-400)' }}>—</td>
               <td style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13 }} colSpan={2}>Mức hoàn thành trung bình Nhóm Kết quả học sinh</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>%</td>
@@ -343,11 +343,11 @@ export default function KPIPage() {
             </tr>
 
             {/* 4. OTHER ACTIVITIES (10%) */}
-            <tr style={{ background: '#F1F5F9' }}>
-              <td colSpan={8} style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13, color: '#1E293B' }}>
+            <tr style={{ background: '#F8FAFC', borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)' }}>
+              <td colSpan={8} style={{ padding: '9px 16px', fontWeight: 700, fontSize: 13, color: 'var(--gray-900)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <BookIcon size={16} color="var(--isme-red)" />
-                  IV. Các hoạt động khác (Trọng số 10%)
+                  <BookIcon size={15} color="var(--isme-red)" />
+                  <span>IV. Các hoạt động khác (Trọng số 10%)</span>
                 </div>
               </td>
             </tr>
@@ -383,7 +383,7 @@ function KPIRow({ snap, def, idx, isStaff, assessmentStatus, onEdit }: { snap: K
   const isDirectEdit = assessmentStatus === 'open';
 
   return (
-    <tr style={{ borderBottom: '1px solid var(--gray-100)', transition: 'background 0.15s' }}>
+    <tr style={{ borderBottom: '1px solid var(--gray-100)', background: 'white', transition: 'background 0.15s' }}>
       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, color: 'var(--gray-400)' }}>{idx}</td>
       <td style={{ padding: '12px 16px', fontSize: 13 }}>
         <div style={{ fontWeight: 700 }}>{def.name}</div>

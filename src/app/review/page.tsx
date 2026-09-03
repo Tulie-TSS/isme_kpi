@@ -614,73 +614,64 @@ export default function ReviewPage() {
               }
 
               if (group.id === 'other_activities') {
-                const otherRec = otherActivityRecords.find(r => r.userId === currentUserId && r.period === period);
-                const activities = [
-                  { label: '1) Tuyển sinh', active: otherRec?.admission },
-                  { label: '2) Hỗ trợ du học', active: otherRec?.studyAbroad },
-                  { label: '3) Hỗ trợ exchange', active: otherRec?.exchange },
-                  { label: '4) Các hđ khác của Viện', active: otherRec?.otherInstitute },
-                ];
-                const score = activities.filter(a => a.active).length * 25;
+                const groupSnaps = getKPISnapshotsByUser(currentUserId, period).filter(s => {
+                  const def = kpiDefinitions.find(k => k.id === s.kpiDefinitionId);
+                  return def?.groupId === 'other_activities';
+                });
+
+                const groupAvgScore = groupSnaps.length > 0 
+                  ? Math.round(groupSnaps.reduce((sum, s) => sum + s.score, 0) / groupSnaps.length)
+                  : 0;
 
                 return (
                   <div key={group.id}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--gray-200)' }}>
                       <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
                       <h4 style={{ fontSize: 13, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
                     <table className="data-table">
                       <thead>
                         <tr>
-                          <th>Hoạt động</th>
+                          <th style={{ width: 40 }}>STT</th>
+                          <th>Chỉ tiêu / Nội dung</th>
                           <th>Tiêu chí đánh giá</th>
-                          <th style={{ textAlign: 'center', width: 80 }}>Đơn vị</th>
+                          <th style={{ textAlign: 'center', width: 60 }}>Đơn vị</th>
                           <th style={{ textAlign: 'center', width: 80 }}>Kế hoạch</th>
                           <th style={{ textAlign: 'center', width: 80 }}>Thực hiện</th>
                           <th style={{ textAlign: 'center', width: 80 }}>Tỉ lệ (%)</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {activities.map((act, i) => (
-                          <tr key={i}>
-                            <td style={{ fontWeight: 700, fontSize: 13 }}>{act.label}</td>
-                            <td style={{ fontSize: 13, color: 'var(--gray-600)' }}>Tham gia các hoạt động theo phân công của Viện</td>
-                            <td style={{ textAlign: 'center', fontSize: 13 }}>Mục</td>
-                            <td style={{ textAlign: 'center', fontSize: 13, fontWeight: 600 }}>1</td>
-                            <td style={{ textAlign: 'center', fontSize: 13, fontWeight: 700 }}>{act.active ? 1 : 0}</td>
-                            <td style={{ textAlign: 'center', fontWeight: 800, fontSize: 13, color: act.active ? 'var(--success)' : 'var(--gray-300)' }}>{act.active ? 100 : 0}%</td>
-                          </tr>
-                        ))}
-                        <tr style={{ background: 'var(--gray-50)' }}>
-                          <td colSpan={5} style={{ fontWeight: 700, textAlign: 'right' }}>Điểm chuyển đổi (Trung bình cộng):</td>
-                          <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: getScoreColor(score) }}>{score}%</td>
+                        {groupSnaps.map((snap) => {
+                          const def = kpiDefinitions.find(k => k.id === snap.kpiDefinitionId);
+                          if (!def) return null;
+                          const hasDetails = getKPIDetailsBySnapshot(snap.id).length > 0;
+                          return (
+                            <tr key={snap.id}>
+                              <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--gray-400)' }}>{def.stt}</td>
+                              <td>
+                                <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-800)' }}>{def.name}</div>
+                                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def.description}</div>
+                              </td>
+                              <td style={{ fontSize: 13, color: 'var(--gray-600)' }}>{def.criteria}</td>
+                              <td style={{ textAlign: 'center', fontSize: 13 }}>{def.unit}</td>
+                              <td style={{ textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.targetValue}</td>
+                              <td style={{ textAlign: 'center' }}>
+                                <span onClick={() => hasDetails ? handleScoreClick(snap.id, def.name, snap.rawNumerator, snap.rawDenominator) : null}
+                                  style={{ fontSize: 13, fontWeight: 700, color: snap.score < 100 ? 'var(--warning)' : 'var(--success)', cursor: hasDetails ? 'pointer' : 'default', textDecoration: hasDetails && snap.score < 100 ? 'underline' : 'none' }}>
+                                  {snap.actualValue}
+                                </span>
+                              </td>
+                              <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: getScoreColor(snap.score) }}>{snap.score}%</td>
+                            </tr>
+                          );
+                        })}
+                        <tr style={{ background: 'var(--gray-50)', fontWeight: 700 }}>
+                          <td colSpan={6} style={{ textAlign: 'right', padding: '10px 16px' }}>Điểm chuyển đổi (Trung bình cộng):</td>
+                          <td style={{ textAlign: 'center', padding: '10px 16px', color: getScoreColor(groupAvgScore) }}>{groupAvgScore}%</td>
                         </tr>
                       </tbody>
                     </table>
-                  </div>
-                );
-              }
-
-              if (group.id === 'labor_discipline') {
-                const laborRec = laborDisciplineRecords.find(r => r.userId === currentUserId && r.period === period);
-                const score = laborRec?.score || 0;
-                return (
-                  <div key={group.id}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
-                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
-                      <h4 style={{ fontSize: 13, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
-                    </div>
-                    <div style={{ padding: '24px', background: 'var(--gray-50)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)' }}>Điểm đánh giá kỷ luật lao động</div>
-                        <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>Dựa trên việc tuân thủ nội quy, giờ giấc và tác phong làm việc.</div>
-                        {laborRec?.note && <div style={{ marginTop: 12, padding: '10px 14px', background: 'white', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontStyle: 'italic', color: 'var(--gray-700)' }}>"{laborRec.note}"</div>}
-                      </div>
-                      <div style={{ textAlign: 'center', minWidth: 120 }}>
-                        <div style={{ fontSize: 20, fontWeight: 900, color: getScoreColor(score), lineHeight: 1 }}>{score}</div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-400)', marginTop: 8, letterSpacing: '0.01em' }}>Điểm thực hiện</div>
-                      </div>
-                    </div>
                   </div>
                 );
               }

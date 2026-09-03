@@ -137,7 +137,7 @@ export default function Header() {
                 color: isImpersonating ? '#1E40AF' : 'var(--gray-800)',
                 cursor: 'pointer',
                 outline: 'none',
-                maxWidth: 180,
+                maxWidth: 340,
               }}
               title="Truy cập nhanh xem giao diện theo từng cán bộ"
             >

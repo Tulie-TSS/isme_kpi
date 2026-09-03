@@ -74,7 +74,6 @@ export default function ReviewPage() {
                 key={rc.id}
                 onClick={() => setSelectedCycle(rc)}
                 style={{
-                  border: 'none',
                   borderRadius: 8,
                   padding: '6px 14px',
                   fontSize: 13,
@@ -82,7 +81,8 @@ export default function ReviewPage() {
                   cursor: 'pointer',
                   background: isSelected ? 'white' : 'transparent',
                   color: isSelected ? 'var(--gray-900)' : 'var(--gray-500)',
-                  boxShadow: isSelected ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                  border: isSelected ? '1px solid var(--gray-200)' : '1px solid transparent',
+                  boxShadow: 'none',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 6,
@@ -174,7 +174,7 @@ export default function ReviewPage() {
                   <tr>
                     <th style={{ width: 36, textAlign: 'center', position: 'sticky', left: 0, zIndex: 10, background: '#F8FAFC' }}>#</th>
                     <th style={{ width: 180, minWidth: 180, whiteSpace: 'nowrap', position: 'sticky', left: 36, zIndex: 10, background: '#F8FAFC' }}>Nhân viên</th>
-                    <th style={{ width: 80, minWidth: 80, textAlign: 'center', whiteSpace: 'nowrap', position: 'sticky', left: 216, zIndex: 10, background: '#F8FAFC', boxShadow: '4px 0 8px -2px rgba(0,0,0,0.08)' }}>KPI Tổng</th>
+                    <th style={{ width: 80, minWidth: 80, textAlign: 'center', whiteSpace: 'nowrap', position: 'sticky', left: 216, zIndex: 10, background: '#F8FAFC', borderRight: '1px solid var(--gray-200)' }}>KPI Tổng</th>
                     <th style={{ textAlign: 'center', minWidth: 80, whiteSpace: 'nowrap' }}>Xếp loại</th>
                     {kpiDefinitions.map(k => (
                       <th key={k.id} style={{ textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap', padding: '8px 10px' }}>{k.shortName}</th>
@@ -217,7 +217,7 @@ export default function ReviewPage() {
                               </div>
                             </div>
                           </td>
-                          <td style={{ textAlign: 'center', position: 'sticky', left: 216, zIndex: 5, background: rowBg, width: 80, minWidth: 80, boxShadow: '4px 0 8px -2px rgba(0,0,0,0.08)' }}>
+                          <td style={{ textAlign: 'center', position: 'sticky', left: 216, zIndex: 5, background: rowBg, width: 80, minWidth: 80, borderRight: '1px solid var(--gray-200)' }}>
                             <span style={{ fontSize: 13, fontWeight: 700, color: getScoreColor(d.overall) }}>{d.overall}</span>
                           </td>
                           <td style={{ textAlign: 'center' }}>

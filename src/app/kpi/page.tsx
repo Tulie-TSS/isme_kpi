@@ -128,10 +128,10 @@ export default function KPIPage() {
                     }
                   }}
                   style={{
-                    padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                    padding: '5px 12px', borderRadius: 6, border: selectedHe === tab.id ? '1px solid var(--gray-200)' : '1px solid transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                     background: selectedHe === tab.id ? 'white' : 'transparent',
                     color: selectedHe === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
-                    boxShadow: selectedHe === tab.id ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                    boxShadow: 'none',
                   }}
                 >
                   {tab.label}

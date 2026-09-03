@@ -844,9 +844,9 @@ export default function KPICoursePage() {
       </div>
 
       {/* Unified Compact Toolbar: Mode Tabs + Inline Stat Badges */}
-      <div className="card" style={{ padding: '10px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, background: 'white', border: '1px solid var(--gray-200)' }}>
+      <div className="card" style={{ padding: '8px 12px', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, boxShadow: 'none' }}>
         {/* Mode Tabs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--gray-100)', padding: 3, borderRadius: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--gray-100)', padding: 2, borderRadius: 6 }}>
           {[
             { id: 'current', label: 'Kỳ 2 (2025-2026)' },
             { id: 'year1', label: 'Năm 1' },
@@ -860,15 +860,15 @@ export default function KPICoursePage() {
               className={`tab-item ${filterSemester === tab.id ? 'active' : ''}`}
               onClick={() => setFilterSemester(tab.id as any)}
               style={{
-                padding: '5px 11px',
-                borderRadius: 6,
-                border: 'none',
+                padding: '4px 10px',
+                borderRadius: 5,
+                border: filterSemester === tab.id ? '1px solid var(--gray-200)' : '1px solid transparent',
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: 'pointer',
                 background: filterSemester === tab.id ? 'white' : 'transparent',
                 color: filterSemester === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
-                boxShadow: filterSemester === tab.id ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                boxShadow: 'none',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -919,7 +919,7 @@ export default function KPICoursePage() {
       <CourseApprovalPanel isManager={isManager} userId={currentUserId} selectedProgramId={selectedProgram} />
 
       {/* Main Table */}
-      <div className="card" style={{ padding: 0, overflow: 'auto', borderRadius: 12, border: '1px solid var(--gray-200)' }}>
+      <div className="card" style={{ padding: 0, overflow: 'auto', borderRadius: 8, border: '1px solid var(--gray-200)', boxShadow: 'none' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1400 }}>
           <thead>
             <tr style={{ background: '#1E293B', color: 'white' }}>

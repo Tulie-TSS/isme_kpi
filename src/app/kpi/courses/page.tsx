@@ -393,15 +393,14 @@ export default function KPICoursePage() {
 
   const filteredCoordinators = coordinatorList.filter(c => selectedHe === 'all' || c.he === selectedHe);
 
-  // Auto-detect user's managed program if none selected globally
+  // Auto-detect user's managed program when currentUserId changes (support instant test view)
   useEffect(() => {
-    if (selectedProgramId === 'all') {
-      const userProg = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
-      if (userProg) {
-        setSelectedProgram(userProg.id);
-      }
+    const userProg = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
+    if (userProg) {
+      setSelectedProgram(userProg.id);
+      if (userProg.type) setSelectedHe(userProg.type);
     }
-  }, [currentUserId, selectedProgramId]);
+  }, [currentUserId]);
 
   // Sync with global program filter
   useEffect(() => {

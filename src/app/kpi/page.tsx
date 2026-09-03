@@ -99,15 +99,24 @@ export default function KPIPage() {
   const assessmentStatus = getSubmissionStatus(viewingUserId, period);
 
 
+  // Auto-sync viewing user when currentUserId changes (support instant test view from Admin)
+  useEffect(() => {
+    if (currentUserId && currentUserId !== 'u0') {
+      setSelectedStaffId(currentUserId);
+      const prog = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
+      if (prog?.type) setSelectedHe(prog.type);
+    }
+  }, [currentUserId]);
+
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 60 }}>
       {/* Leadership / Admin Filter Bar: Chọn Hệ/Ngành & Người phụ trách */}
       {isManagerOrAdmin && (
-        <div className="card" style={{ padding: '12px 18px', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, background: 'white', border: '1px solid var(--gray-200)' }}>
+        <div style={{ padding: '8px 12px', marginBottom: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 6 }}>
           {/* Lọc theo Hệ / Ngành */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ / Ngành:</span>
-            <div style={{ display: 'flex', background: 'var(--gray-100)', padding: 3, borderRadius: 8, gap: 4 }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)' }}>Hệ / Ngành:</span>
+            <div style={{ display: 'inline-flex', background: 'var(--gray-100)', padding: 2, borderRadius: 6, gap: 2 }}>
               {[
                 { id: 'all', label: 'Tất cả các hệ' },
                 { id: 'degree', label: 'Cử nhân Chính quy' },
@@ -128,10 +137,11 @@ export default function KPIPage() {
                     }
                   }}
                   style={{
-                    padding: '5px 12px', borderRadius: 6, border: selectedHe === tab.id ? '1px solid var(--gray-200)' : '1px solid transparent', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                    padding: '4px 10px', borderRadius: 5, border: 'none', fontSize: 13, fontWeight: selectedHe === tab.id ? 600 : 500, cursor: 'pointer',
                     background: selectedHe === tab.id ? 'white' : 'transparent',
-                    color: selectedHe === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
-                    boxShadow: 'none',
+                    color: selectedHe === tab.id ? 'var(--gray-900)' : 'var(--gray-600)',
+                    boxShadow: selectedHe === tab.id ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                    transition: 'all 0.15s ease'
                   }}
                 >
                   {tab.label}
@@ -141,14 +151,14 @@ export default function KPIPage() {
           </div>
 
           {/* Chọn Người phụ trách */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ phụ trách:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)' }}>Cán bộ phụ trách:</span>
             <select
               value={selectedStaffId}
               onChange={e => setSelectedStaffId(e.target.value)}
               style={{
-                padding: '7px 14px', borderRadius: 8, border: '2px solid var(--isme-red)',
-                fontSize: 13, fontWeight: 700, color: 'var(--gray-900)', background: 'white', cursor: 'pointer', outline: 'none'
+                padding: '5px 10px', borderRadius: 6, border: '1px solid var(--gray-200)',
+                fontSize: 13, fontWeight: 500, color: 'var(--gray-900)', background: 'white', cursor: 'pointer', outline: 'none'
               }}
             >
               {filteredStaffList.map(s => {

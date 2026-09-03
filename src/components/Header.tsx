@@ -26,7 +26,7 @@ const categoryFilter = [
 
 export default function Header() {
   const { currentRole, setCurrentRole, currentUserId, setCurrentUserId, setSidebarOpen } = useApp();
-  const { user: authUser, logout } = useAuth();
+  const { user: authUser, logout, impersonate, stopImpersonating, isImpersonating } = useAuth();
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [selectedNotif, setSelectedNotif] = useState<Notification | null>(null);
@@ -100,13 +100,86 @@ export default function Header() {
         {/* Role indicator */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: 6,
-          padding: '5px 12px', borderRadius: 8,
-          background: 'var(--gray-100)', fontSize: 13, fontWeight: 600,
+          padding: '4px 10px', borderRadius: 6,
+          background: 'var(--gray-100)', fontSize: 11, fontWeight: 600,
           color: roleColors[currentRole]
         }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: roleColors[currentRole] }} />
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: roleColors[currentRole] }} />
           {roleLabels[currentRole]}
         </div>
+
+        {/* Quick Impersonate Switcher for Admin (Test UI/UX) */}
+        {(authUser?.role === 'admin' || isImpersonating || authUser?.id === 'u0') && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: isImpersonating ? '#FEF3C7' : 'white',
+            border: `1px solid ${isImpersonating ? '#F59E0B' : 'var(--gray-200)'}`,
+            padding: '3px 8px', borderRadius: 6, height: 32
+          }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: isImpersonating ? '#B45309' : 'var(--gray-600)', whiteSpace: 'nowrap' }}>
+              👁️ {isImpersonating ? 'Đang test:' : 'Xem theo User:'}
+            </span>
+            <select
+              value={authUser?.id || ''}
+              onChange={e => {
+                const targetId = e.target.value;
+                if (targetId === 'u0') {
+                  stopImpersonating();
+                } else {
+                  impersonate(targetId);
+                }
+              }}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                fontSize: 13,
+                fontWeight: 600,
+                color: isImpersonating ? '#92400E' : 'var(--gray-800)',
+                cursor: 'pointer',
+                outline: 'none',
+                maxWidth: 190,
+              }}
+              title="Truy cập nhanh xem giao diện theo từng cán bộ"
+            >
+              <option value="u0">Admin System (Mặc định)</option>
+              <optgroup label="Ban Lãnh đạo & Quản lý">
+                <option value="u1">Hồ Hoàng Lan (Trưởng Ban)</option>
+                <option value="u14">Nguyễn Thùy Chinh (Phó Trưởng ban)</option>
+                <option value="u20">Lê Thanh (Lãnh đạo Viện)</option>
+                <option value="u21">Trịnh Giang (Lãnh đạo Viện)</option>
+              </optgroup>
+              <optgroup label="Cán bộ phụ trách Chương trình">
+                {users.filter(u => u.role === 'staff').map(u => {
+                  const prog = programs.find(p => p.managerId === u.id || p.secondaryManagerId === u.id);
+                  return (
+                    <option key={u.id} value={u.id}>
+                      {u.name} — {prog ? prog.shortName : u.position}
+                    </option>
+                  );
+                })}
+              </optgroup>
+            </select>
+            {isImpersonating && (
+              <button
+                onClick={() => stopImpersonating()}
+                style={{
+                  background: '#DC2626',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 4,
+                  padding: '2px 8px',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap'
+                }}
+                title="Quay lại tài khoản Admin gốc"
+              >
+                Thoát test
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Notifications */}
         <div ref={notifRef} style={{ position: 'relative' }}>

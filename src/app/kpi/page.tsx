@@ -208,14 +208,14 @@ export default function KPIPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
           <thead>
             <tr style={{ background: 'white', borderBottom: '1px solid var(--gray-200)' }}>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 50, textTransform: 'uppercase', letterSpacing: '0.03em' }}>STT</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 280, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Chỉ tiêu / Nội dung</th>
-              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.03em' }}>Tiêu chí đánh giá</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 70, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Đơn vị</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 80, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Kế hoạch</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 80, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Thực hiện</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 80, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Tỉ lệ (%)</th>
-              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', width: 110, textTransform: 'uppercase', letterSpacing: '0.03em' }}>Đánh giá</th>
+              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 50 }}>STT</th>
+              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 280 }}>Chỉ tiêu / Nội dung</th>
+              <th style={{ padding: '10px 16px', textAlign: 'left', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)' }}>Tiêu chí đánh giá</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 70 }}>Đơn vị</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 80 }}>Kế hoạch</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 80 }}>Thực hiện</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 80 }}>Tỉ lệ (%)</th>
+              <th style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)', width: 110 }}>Đánh giá</th>
             </tr>
           </thead>
           <tbody>

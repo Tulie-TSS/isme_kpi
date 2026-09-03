@@ -425,8 +425,8 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
             {selectedSlot.freeUsers.length > 0 && (
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <CheckCircle size={14} color="#059669" /> Nhân sự RẢNH ({selectedSlot.freeUsers.length})
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#059669', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <CheckCircle size={14} color="#059669" /> Nhân sự rảnh ({selectedSlot.freeUsers.length})
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
                   {selectedSlot.freeUsers.map(name => (
@@ -440,8 +440,8 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
             {selectedSlot.busyUsers.length > 0 && (
               <div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#DC2626', textTransform: 'uppercase', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <AlertTriangle size={14} color="#DC2626" /> Nhân sự BẬN ({selectedSlot.busyUsers.length})
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#DC2626', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <AlertTriangle size={14} color="#DC2626" /> Nhân sự bận ({selectedSlot.busyUsers.length})
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
                   {selectedSlot.busyUsers.map(name => (

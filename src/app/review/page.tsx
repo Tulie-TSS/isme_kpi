@@ -106,7 +106,7 @@ export default function ReviewPage() {
                 <BarChart3 size={16} color="#2563EB" />
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>KPI Trung bình</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, letterSpacing: '0.01em' }}>KPI trung bình</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: getScoreColor(avgKPI), lineHeight: 1.2 }}>
                   {avgKPI}<span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-400)' }}>/100 · {getRank(avgKPI)}</span>
                 </div>
@@ -118,7 +118,7 @@ export default function ReviewPage() {
                 <Award size={16} color="#059669" />
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Cao nhất</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, letterSpacing: '0.01em' }}>Cao nhất</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#059669', lineHeight: 1.2 }}>
                   {topUser?.overall} <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>({topUser?.user.name})</span>
                 </div>
@@ -130,7 +130,7 @@ export default function ReviewPage() {
                 <AlertTriangle size={16} color="#DC2626" />
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Thấp nhất</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, letterSpacing: '0.01em' }}>Thấp nhất</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#DC2626', lineHeight: 1.2 }}>
                   {bottomUser?.overall} <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-500)', whiteSpace: 'nowrap' }}>({bottomUser?.user.name})</span>
                 </div>
@@ -142,7 +142,7 @@ export default function ReviewPage() {
                 <Clock size={16} color="#E11D48" />
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Task quá hạn</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, letterSpacing: '0.01em' }}>Task quá hạn</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: totalOverdue > 0 ? '#DC2626' : 'var(--gray-600)', lineHeight: 1.2 }}>
                   {totalOverdue} <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-400)' }}>toàn team</span>
                 </div>
@@ -154,7 +154,7 @@ export default function ReviewPage() {
                 <FileText size={16} color="#D97706" />
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, textTransform: 'uppercase' }}>Chờ duyệt</div>
+                <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 600, letterSpacing: '0.01em' }}>Chờ duyệt</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#F59E0B', lineHeight: 1.2 }}>
                   {userReviews.filter(r => r.submittedAt && !r.reviewedAt).length}<span style={{ fontSize: 11, fontWeight: 500, color: 'var(--gray-400)' }}>/{staffUsers.length} nv</span>
                 </div>
@@ -266,32 +266,32 @@ export default function ReviewPage() {
                               <div style={{ padding: '16px 24px 20px 60px' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
                                   <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: '1px solid var(--gray-100)' }}>
-                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Operations</div>
+                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Operations</div>
                                     <div style={{ fontSize: 20, fontWeight: 800, color: getScoreColor(calculateOperationsKPI(d.user.id, period)) }}>{calculateOperationsKPI(d.user.id, period)}</div>
                                     <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>Trung bình cộng</div>
                                   </div>
                                   <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: '1px solid var(--gray-100)' }}>
-                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Tiến độ task</div>
+                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Tiến độ task</div>
                                     <div style={{ fontSize: 20, fontWeight: 800, color: getScoreColor(d.completionRate) }}>{d.completionRate}%</div>
                                     <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{d.uDone.length} done / {d.uTasks.length} total</div>
                                     <div className="progress-bar" style={{ marginTop: 6 }}><div className="progress-bar-fill" style={{ width: `${d.completionRate}%`, background: getScoreColor(d.completionRate) }} /></div>
                                   </div>
                                   <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: '1px solid var(--gray-100)' }}>
-                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Vấn đề</div>
+                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Vấn đề</div>
                                     <div style={{ display: 'flex', gap: 16 }}>
                                       <div><div style={{ fontSize: 20, fontWeight: 800, color: d.uOverdue.length > 0 ? '#DC2626' : '#10B981' }}>{d.uOverdue.length}</div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>quá hạn</div></div>
                                       <div><div style={{ fontSize: 20, fontWeight: 800, color: d.uBlocked.length > 0 ? '#F59E0B' : '#10B981' }}>{d.uBlocked.length}</div><div style={{ fontSize: 10, color: 'var(--gray-400)' }}>bị chặn</div></div>
                                     </div>
                                   </div>
                                   <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: '1px solid var(--gray-100)' }}>
-                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>KPI yếu</div>
+                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>KPI yếu</div>
                                     <div style={{ fontSize: 20, fontWeight: 800, color: d.lowKpis.length > 0 ? '#DC2626' : '#10B981' }}>{d.lowKpis.length}</div>
                                     <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>
                                       {d.lowKpis.length > 0 ? d.lowKpis.map(s => kpiDefinitions.find(k => k.id === s.kpiDefinitionId)?.shortName).filter(Boolean).join(', ') : 'Tất cả đạt'}
                                     </div>
                                   </div>
                                   <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: '1px solid var(--gray-100)' }}>
-                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Xếp hạng</div>
+                                    <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Xếp hạng</div>
                                     <div style={{ fontSize: 20, fontWeight: 800, color: getRankColor(d.overall) }}>#{rank + 1}</div>
                                     <div style={{ fontSize: 11, color: getRankColor(d.overall), fontWeight: 600 }}>{getRank(d.overall)}</div>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
@@ -315,12 +315,12 @@ export default function ReviewPage() {
                                   return (
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 12 }}>
                                       <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: '1px solid var(--gray-100)' }}>
-                                        <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Chương trình</div>
+                                        <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Chương trình</div>
                                         <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{stats.programme}</div>
                                         <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>{stats.totalStudents} SV · {stats.totalClasses} lớp · {stats.totalLecturers} GV</div>
                                       </div>
                                       <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: `1px solid ${passMet ? '#D1FAE5' : '#FEE2E2'}` }}>
-                                        <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Tỷ lệ sv Pass cuối kỳ</div>
+                                        <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Tỷ lệ sv Pass cuối kỳ</div>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                                           <div style={{ fontSize: 20, fontWeight: 800, color: passMet ? '#10B981' : '#DC2626' }}>{passActual}%</div>
                                           <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>/ Mục tiêu {passTarget}%</div>
@@ -328,7 +328,7 @@ export default function ReviewPage() {
                                         <div className="progress-bar" style={{ marginTop: 6 }}><div className="progress-bar-fill" style={{ width: `${passActual}%`, background: passMet ? '#10B981' : '#DC2626' }} /></div>
                                       </div>
                                       <div style={{ background: 'white', borderRadius: 10, padding: '12px 16px', border: `1px solid ${attMet ? '#D1FAE5' : '#FEE2E2'}` }}>
-                                        <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, textTransform: 'uppercase', marginBottom: 4 }}>Tỷ lệ sv đi học</div>
+                                        <div style={{ fontSize: 10, color: 'var(--gray-400)', fontWeight: 500, letterSpacing: '0.01em', marginBottom: 4 }}>Tỷ lệ sv đi học</div>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
                                           <div style={{ fontSize: 20, fontWeight: 800, color: attMet ? '#10B981' : '#DC2626' }}>{attActual}%</div>
                                           <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>/ Mục tiêu {attTarget}%</div>
@@ -341,7 +341,7 @@ export default function ReviewPage() {
 
                                 {/* KPI breakdown bars */}
                                 <div style={{ background: 'white', borderRadius: 10, padding: '14px 16px', border: '1px solid var(--gray-100)', marginBottom: 12 }}>
-                                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', marginBottom: 10, textTransform: 'uppercase' }}>Chi tiết KPI</div>
+                                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', marginBottom: 10, letterSpacing: '0.01em' }}>Chi tiết KPI</div>
                                   {d.snaps.map(snap => {
                                     const def = kpiDefinitions.find(k => k.id === snap.kpiDefinitionId);
                                     if (!def) return null;
@@ -362,7 +362,7 @@ export default function ReviewPage() {
                                 {/* Overdue tasks if any */}
                                 {d.uOverdue.length > 0 && (
                                   <div style={{ background: '#FEF2F2', borderRadius: 10, padding: '12px 16px', border: '1px solid #FECACA' }}>
-                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#991B1B', marginBottom: 8, textTransform: 'uppercase' }}>Task quá hạn</div>
+                                    <div style={{ fontSize: 11, fontWeight: 700, color: '#991B1B', marginBottom: 8, letterSpacing: '0.01em' }}>Task quá hạn</div>
                                     {d.uOverdue.map(t => {
                                       const days = Math.ceil((new Date().getTime() - new Date(t.dueDate).getTime()) / 86400000);
                                       const prog = getProgramById(t.programId);
@@ -571,7 +571,7 @@ export default function ReviewPage() {
                       </div>
                       <div style={{ textAlign: 'center', minWidth: 120 }}>
                         <div style={{ fontSize: 48, fontWeight: 900, color: getScoreColor(score), lineHeight: 1 }}>{score}</div>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', marginTop: 8, textTransform: 'uppercase' }}>Điểm thực hiện</div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-400)', marginTop: 8, letterSpacing: '0.01em' }}>Điểm thực hiện</div>
                       </div>
                     </div>
                   </div>
@@ -660,7 +660,7 @@ export default function ReviewPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between'
               }}>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>Tổng số đạt được</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4 }}>Tổng số đạt được</div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                     <div style={{ fontSize: 32, fontWeight: 900, color: drilldown.num < drilldown.den ? 'var(--warning)' : 'var(--success)' }}>{drilldown.num}</div>
                     <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-300)' }}>/ {drilldown.den}</div>

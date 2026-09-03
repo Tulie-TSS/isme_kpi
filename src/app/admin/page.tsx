@@ -721,11 +721,11 @@ export default function AdminPortal() {
                           <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 600, color: 'var(--gray-600)' }}>{u.position || '—'}</td>
                           <td style={{ padding: '16px 20px', fontSize: 14 }}>
                             <span style={{
-                              padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+                              padding: '4px 10px', borderRadius: 8, fontSize: 12, fontWeight: 600,
                               background: u.role === 'admin' ? '#FEE2E2' : u.role === 'manager' ? '#FEF3C7' : '#DBEAFE',
                               color: u.role === 'admin' ? '#991B1B' : u.role === 'manager' ? '#92400E' : '#1E40AF'
                             }}>
-                              {u.role}
+                              {u.role === 'admin' ? 'Admin' : u.role === 'manager' ? 'Quản lý' : 'Nhân viên'}
                             </span>
                           </td>
                           <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-600)', maxWidth: 200, wordBreak: 'break-word' }}>
@@ -1629,7 +1629,7 @@ export default function AdminPortal() {
               </div>
 
               <div style={{ background: 'var(--gray-50)', padding: 16, borderRadius: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Thiết lập KPI mục tiêu của môn học</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-600)', fontWeight: 600 }}>Thiết lập KPI mục tiêu của môn học</div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>

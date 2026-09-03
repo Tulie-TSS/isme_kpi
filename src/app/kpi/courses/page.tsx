@@ -14,7 +14,8 @@ import {
   semesterData,
   updateCourseValue,
   getSubmissionStatus,
-  addAuditLog
+  addAuditLog,
+  formatSemester
 } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
@@ -295,7 +296,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
             {isOpen && (
               <div style={{ padding: '0 20px 14px 40px', background: 'var(--gray-50)' }}>
                 <div style={{ background: 'white', borderRadius: 8, border: '1px solid var(--gray-100)', padding: '12px 14px' }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', marginBottom: 4 }}>Lý do sửa đổi</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4 }}>Lý do sửa đổi:</div>
                   <div style={{ fontSize: 13, color: 'var(--gray-700)', marginBottom: 8 }}>{r.reason}</div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Thời gian gửi: {r.requestedAt}</div>
                   {r.status !== 'pending' && (
@@ -976,7 +977,7 @@ export default function KPICoursePage() {
                       {isCurrent && <span style={{ display: 'block', fontSize: 9, color: '#2563EB', background: '#DBEAFE', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 600 }}>Kỳ này</span>}
                       {isFuture && <span style={{ display: 'block', fontSize: 9, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 500 }}>Chưa học</span>}
                     </td>
-                    <td style={{ ...tdStyle, color: 'var(--gray-500)', fontWeight: 600 }}>{c.semester}</td>
+                    <td style={{ ...tdStyle, color: 'var(--gray-600)', fontWeight: 500 }}>{formatSemester(c.semester)}</td>
                     <td style={{ ...tdStyle, textAlign: 'left', fontWeight: 500, paddingLeft: 16 }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span style={{ color: isFuture ? 'var(--gray-400)' : 'var(--gray-800)', fontSize: 13, fontWeight: isCurrent ? 700 : 500 }}>{c.name}</span>
@@ -1116,16 +1117,17 @@ export default function KPICoursePage() {
 }
 
 const thStyle: React.CSSProperties = {
-  padding: '10px 12px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap',
-  border: '1px solid rgba(255,255,255,0.12)', textAlign: 'center', minWidth: 60,
+  padding: '8px 10px', fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
+  border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', minWidth: 60,
+  letterSpacing: '0.01em',
 };
 
 const subThStyle: React.CSSProperties = {
-  padding: '8px 10px', fontSize: 10, fontWeight: 600, whiteSpace: 'nowrap',
-  border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', color: 'rgba(255,255,255,0.8)',
+  padding: '6px 8px', fontSize: 10, fontWeight: 500, whiteSpace: 'nowrap',
+  border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', color: 'rgba(255,255,255,0.85)',
 };
 
 const tdStyle: React.CSSProperties = {
-  padding: '10px 12px', fontSize: 12, textAlign: 'center',
+  padding: '7px 10px', fontSize: 12, textAlign: 'center',
   borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap',
 };

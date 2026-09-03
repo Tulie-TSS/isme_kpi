@@ -14,7 +14,8 @@ import {
   courses,
   getSubmissionStatus,
   programs,
-  users
+  users,
+  formatSemester
 } from '@/lib/mock-data';
 import { KPISnapshot, KPIDefinition, Course } from '@/lib/types';
 import { ChevronDown, ChevronRight, CheckCircle2, AlertTriangle, Edit3, Clock, Target, Users, Award, BookOpen, ShieldCheck } from 'lucide-react';
@@ -290,7 +291,7 @@ export default function KPIPage() {
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{i + 1}</td>
                   <td style={{ padding: '12px 16px', fontSize: 12 }}>
                     <div style={{ fontWeight: 700 }}>{c.name}</div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Lớp: {c.cohort} · {c.semester}</div>
+                    <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>Lớp: {c.cohort} · {formatSemester(c.semester)}</div>
                   </td>
                   <td style={{ padding: '12px 16px', fontSize: 12, lineHeight: 1.4 }}>
                     Đảm bảo chỉ tiêu chuyên cần & học tập môn học đầu kỳ.

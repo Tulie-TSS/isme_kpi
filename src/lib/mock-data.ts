@@ -23,6 +23,23 @@ function save<T>(key: string, value: T) {
   }
 }
 
+export function formatSemester(sem: string): string {
+  if (!sem) return '';
+  const s = sem.trim().toUpperCase();
+  if (s === 'SEM SPRING') return 'Sem Spring';
+  if (s === 'SEM FALL') return 'Sem Fall';
+  if (s === 'SEM FALL & SPRING' || s === 'SEM FALL &AMP; SPRING') return 'Sem Fall & Spring';
+  if (s === 'SEM SUMMER') return 'Sem Summer';
+  if (s === 'SEM 1') return 'Sem 1';
+  if (s === 'SEM 2') return 'Sem 2';
+  if (s === 'SEM AU') return 'Sem AU';
+  if (s === 'SEM SP') return 'Sem SP';
+  if (s === 'SEM SU') return 'Sem SU';
+  if (s === 'KỲ 1' || s === 'KY 1') return 'Kỳ 1';
+  if (s === 'KỲ 2' || s === 'KY 2') return 'Kỳ 2';
+  return sem.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+}
+
 // ==================== KPI GROUPS ====================
 export const kpiGroups: KPIGroup[] = [
   { id: 'operations', name: 'Nhóm KPI theo mô tả CV (Operations)', weight: 50 },

@@ -18,7 +18,8 @@ import {
   setSubmissionStatus,
   addAuditLog,
   subscribeEditRequests,
-  subscribeCourseEditRequests
+  subscribeCourseEditRequests,
+  formatSemester
 } from '@/lib/mock-data';
 import { ManagerQuestion, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
@@ -320,7 +321,7 @@ export default function StaffDashboard() {
                       <tr key={c.id} style={{ borderBottom: i < activeCourses.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
                         <td style={{ padding: '10px 16px' }}>
                           <div style={{ fontWeight: 600, color: 'var(--gray-800)' }}>{c.name}</div>
-                          <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Khóa: {c.cohort} · {c.semester}</div>
+                          <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>Khóa: {c.cohort} · {formatSemester(c.semester)}</div>
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
                           {c.isAttendanceNA ? (

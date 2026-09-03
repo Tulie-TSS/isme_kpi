@@ -5939,15 +5939,15 @@ export function calculateOverallKPI(userId: string, period: string): number {
   const opScore = calculateOperationsKPI(userId, period);
   
   // 2. HĐ hỗ trợ học tập - Academic Support (20%)
-  // Shared KPI: Linked directly to op5_as (Hoạt động ngoại khóa - Học tập)
+  // Shared KPI: Linked directly to op5_as (Hoạt động ngoại khóa - Học tập) or fallback to op1
   const snapshots = getKPISnapshotsByUser(userId, period);
-  const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as');
+  const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as') || snapshots.find(s => s.kpiDefinitionId === 'op1');
   const asScore = op5AsSnap ? op5AsSnap.score : 0;
 
   // 3. Kết quả học tập & Kỷ luật - Student Results (20%)
   // Find which program this user manages
-  const userProg = programs.find(p => p.managerId === userId);
-  const studentResultsScore = userProg ? calculateCoursesKPI(userProg.id, 'current') : 80;
+  const userProg = programs.find(p => p.managerId === userId || p.secondaryManagerId === userId);
+  const studentResultsScore = userProg ? calculateCoursesKPI(userProg.id, 'current') : 100;
 
   // 4. Các hoạt động khác - Other Activities (10%)
   const otherSnaps = snapshots.filter(s => {

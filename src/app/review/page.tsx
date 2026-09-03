@@ -1,12 +1,12 @@
 'use client';
 import { useApp } from '@/lib/context';
 import PortalModal from '@/components/common/PortalModal';
-import { reviewCycles, reviews, users, kpiDefinitions, getKPISnapshotsByUser, calculateOverallKPI, calculateOperationsKPI, getKPIDetailsBySnapshot, getTasksByUser, getOverdueTasksByUser, getProgramById, getCoordinatorStats, getUserRoleLabel, kpiGroups, courses, otherActivityRecords, laborDisciplineRecords } from '@/lib/mock-data';
+import { reviewCycles, reviews, users, kpiDefinitions, getKPISnapshotsByUser, calculateOverallKPI, calculateOperationsKPI, getKPIDetailsBySnapshot, getTasksByUser, getOverdueTasksByUser, getProgramById, getCoordinatorStats, getUserRoleLabel, kpiGroups, courses, otherActivityRecords, laborDisciplineRecords, programs, calculateCoursesKPI } from '@/lib/mock-data';
 import { tasks } from '@/lib/mock-tasks';
 import { FileText, CheckCircle, Clock, Send, X, ExternalLink, TrendingUp, TrendingDown, BarChart3, Target, AlertTriangle, Award, ChevronDown, ChevronRight, Minus } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { KPIDetailItem } from '@/lib/types';
+import type { KPIDetailItem, Course } from '@/lib/types';
 import Link from 'next/link';
 
 function getScoreColor(s: number) { return s >= 85 ? '#047857' : s >= 60 ? '#D97706' : '#DC2626'; }
@@ -24,7 +24,7 @@ export default function ReviewPage() {
   const [submitted, setSubmitted] = useState(false);
   const [drilldown, setDrilldown] = useState<{ snapshotId: string; kpiName: string; items: KPIDetailItem[]; num: number; den: number } | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
-  const period = 'Kỳ 2 2024-2025';
+  const period = selectedCycle?.name || 'Kỳ 2 2025-2026';
 
   const staffUsers = users.filter(u => u.role === 'staff');
   const userReviews = reviews.filter(r => r.cycleId === selectedCycle?.id);
@@ -412,15 +412,15 @@ export default function ReviewPage() {
             {kpiGroups.map((group, groupIdx) => {
               const roman = ['I', 'II', 'III', 'IV', 'V'][groupIdx];
               
-              if (group.id === 'operations' || group.id === 'academic_support') {
+              if (group.id === 'operations') {
                 const groupSnaps = getKPISnapshotsByUser(currentUserId, period).filter(s => {
                   const def = kpiDefinitions.find(k => k.id === s.kpiDefinitionId);
-                  return def?.groupId === group.id;
+                  return def?.groupId === 'operations';
                 });
 
                 return (
                   <div key={group.id}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--gray-200)' }}>
                       <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
                       <h4 style={{ fontSize: 13, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
@@ -467,10 +467,93 @@ export default function ReviewPage() {
                 );
               }
 
-              if (group.id === 'student_results') {
+              if (group.id === 'academic_support') {
+                const asSnap = getKPISnapshotsByUser(currentUserId, period).find(s => {
+                  const def = kpiDefinitions.find(k => k.id === s.kpiDefinitionId);
+                  return def?.groupId === 'academic_support';
+                }) || getKPISnapshotsByUser(currentUserId, period).find(s => s.kpiDefinitionId === 'op1');
+                
+                const def = asSnap ? kpiDefinitions.find(k => k.id === asSnap.kpiDefinitionId) : null;
+                if (!asSnap || !def) return null;
+
                 return (
                   <div key={group.id}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '2px solid var(--gray-100)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--gray-200)' }}>
+                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
+                      <h4 style={{ fontSize: 13, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
+                    </div>
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          <th style={{ width: 40 }}>STT</th>
+                          <th>Chỉ tiêu / Nội dung</th>
+                          <th>Tiêu chí đánh giá</th>
+                          <th style={{ textAlign: 'center', width: 60 }}>Đơn vị</th>
+                          <th style={{ textAlign: 'center', width: 80 }}>Kế hoạch</th>
+                          <th style={{ textAlign: 'center', width: 80 }}>Thực hiện</th>
+                          <th style={{ textAlign: 'center', width: 80 }}>Tỉ lệ (%)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--gray-400)' }}>1</td>
+                          <td>
+                            <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-800)' }}>{def.name} (Hỗ trợ học tập)</div>
+                            <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
+                          </td>
+                          <td style={{ fontSize: 13, color: 'var(--gray-600)' }}>
+                            {def.criteria} <br/><span style={{ color: '#1E40AF', fontSize: 11 }}>(Lấy điểm trực tiếp từ Chỉ tiêu Vận hành STT 1)</span>
+                          </td>
+                          <td style={{ textAlign: 'center', fontSize: 13 }}>{def.unit}</td>
+                          <td style={{ textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{asSnap.targetValue}</td>
+                          <td style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, color: asSnap.score < 100 ? 'var(--warning)' : 'var(--success)' }}>
+                            {asSnap.actualValue}
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 700, fontSize: 13, color: getScoreColor(asSnap.score) }}>{asSnap.score}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }
+
+              if (group.id === 'student_results') {
+                const userProgram = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
+                
+                const isCurrentActiveCourse = (c: Course): boolean => {
+                  if (c.cohort.includes('dự kiến') || c.cohort === 'I22 MT' || c.cohort === 'I23 MX' || c.cohort === 'I19 MT' || c.cohort === 'I20 MX' || c.cohort === 'I20 MT') return false;
+                  if (c.programId === 'p_nam1') {
+                    return (c.semester === 'SEM SPRING' || c.semester === 'SEM FALL & SPRING' || c.semester === 'SEM 2');
+                  }
+                  if (c.programId === 'p_cu') {
+                    return c.cohort === 'I19 MX' && c.semester === 'SEM 2';
+                  }
+                  if (c.programId === 'p_nhtc') {
+                    return (c.cohort === 'BScBF I19' || c.cohort === 'BScBF I18') && c.semester === 'SEM 2';
+                  }
+                  if (c.programId === 'p_uwe') {
+                    return (c.cohort === 'I18 MT - IBM' && c.semester === 'SEM 2') || (c.cohort === 'I19 MX - IBM' && c.semester === 'SEM 1');
+                  }
+                  return c.semester === 'SEM 2' && c.year <= 2;
+                };
+
+                let activeUserCourses = courses.filter(c => {
+                  const isOwner = c.coordinatorId === currentUserId || (userProgram && c.programId === userProgram.id);
+                  return isOwner && isCurrentActiveCourse(c);
+                });
+
+                if (activeUserCourses.length === 0 && userProgram) {
+                  activeUserCourses = courses.filter(c => c.programId === userProgram.id && isCurrentActiveCourse(c));
+                }
+                if (activeUserCourses.length === 0) {
+                  activeUserCourses = courses.filter(isCurrentActiveCourse);
+                }
+
+                const studentResultsScore = userProgram ? calculateCoursesKPI(userProgram.id, 'current') : 100;
+
+                return (
+                  <div key={group.id}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--gray-200)' }}>
                       <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
                       <h4 style={{ fontSize: 13, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
                     </div>
@@ -484,30 +567,46 @@ export default function ReviewPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {courses.map((c) => {
-                          const disciplineScore = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
-                          const academicScore = Math.min((c.passRate / c.passTarget) * 100, 100);
-                          const avgScore = Math.round((disciplineScore + academicScore) / 2);
+                        {activeUserCourses.map((c) => {
+                          const attendComp = c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
+                          const passComp = c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
+                          const submitComp = c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
+                          
+                          let compSum = 0;
+                          let compCount = 0;
+                          if (attendComp !== null) { compSum += attendComp; compCount++; }
+                          if (passComp !== null) { compSum += passComp; compCount++; }
+                          if (submitComp !== null) { compSum += submitComp; compCount++; }
+                          const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : 0;
+                          
                           return (
                             <tr key={c.id}>
                               <td>
                                 <div style={{ fontWeight: 700, fontSize: 13 }}>{c.name}</div>
-                                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{c.cohort}</div>
+                                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{c.cohort} · {c.semester}</div>
                               </td>
                               <td style={{ textAlign: 'center' }}>
                                 <div style={{ fontSize: 13, fontWeight: 700, color: c.attendanceRate >= c.attendanceTarget ? 'var(--success)' : 'var(--danger)' }}>
-                                  {(c.attendanceRate * 100).toFixed(1)}% / {(c.attendanceTarget * 100)}%
+                                  {c.isAttendanceNA ? 'N/A' : `${(c.attendanceRate * 100).toFixed(1)}% / ${(c.attendanceTarget * 100)}%`}
                                 </div>
                               </td>
                               <td style={{ textAlign: 'center' }}>
                                 <div style={{ fontSize: 13, fontWeight: 700, color: c.passRate >= c.passTarget ? 'var(--success)' : 'var(--danger)' }}>
-                                  {(c.passRate * 100).toFixed(1)}% / {(c.passTarget * 100)}%
+                                  {c.isPassNA ? 'N/A' : `${(c.passRate * 100).toFixed(1)}% / ${(c.passTarget * 100)}%`}
                                 </div>
                               </td>
-                              <td style={{ textAlign: 'center', fontWeight: 800, fontSize: 13, color: getScoreColor(avgScore) }}>{avgScore}%</td>
+                              <td style={{ textAlign: 'center', fontWeight: 800, fontSize: 13, color: getScoreColor(avgComp) }}>
+                                {avgComp}%
+                              </td>
                             </tr>
                           );
                         })}
+                        <tr style={{ background: 'var(--gray-50)', fontWeight: 700 }}>
+                          <td colSpan={3} style={{ textAlign: 'right', padding: '10px 16px' }}>Mức hoàn thành trung bình Nhóm Kết quả học sinh:</td>
+                          <td style={{ textAlign: 'center', padding: '10px 16px', color: getScoreColor(studentResultsScore) }}>
+                            {studentResultsScore}%
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -591,23 +690,22 @@ export default function ReviewPage() {
 
             {/* Overall Summary Row */}
             <div style={{ 
-              marginTop: 16, padding: '24px 32px', borderRadius: 16, 
-              background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)', color: 'white',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.2)'
+              marginTop: 16, padding: '20px 24px', borderRadius: 8, 
+              background: 'white', border: '1px solid var(--gray-200)',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between'
             }}>
               <div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>Tổng kết kết quả</div>
-                <div style={{ fontSize: 18, fontWeight: 700 }}>Điểm KPI Tổng hợp</div>
+                <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)', marginBottom: 4 }}>Tổng kết kết quả</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)' }}>Điểm KPI Tổng hợp</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>Xếp loại</div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Xếp loại</div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: getRankColor(calculateOverallKPI(currentUserId, period)) }}>{getRank(calculateOverallKPI(currentUserId, period))}</div>
                 </div>
-                <div style={{ width: 2, height: 40, background: 'rgba(255,255,255,0.1)' }} />
+                <div style={{ width: 1, height: 36, background: 'var(--gray-200)' }} />
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: getScoreColor(calculateOverallKPI(currentUserId, period)), lineHeight: 1 }}>{calculateOverallKPI(currentUserId, period)}<span style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>/100</span></div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: getScoreColor(calculateOverallKPI(currentUserId, period)), lineHeight: 1 }}>{calculateOverallKPI(currentUserId, period)}<span style={{ fontSize: 13, color: 'var(--gray-400)', fontWeight: 600 }}>/100</span></div>
                 </div>
               </div>
             </div>

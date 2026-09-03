@@ -204,8 +204,9 @@ export interface CourseEditRequest {
   userId: string;            // who requested
   field: CourseEditField;
   fieldLabel: string;        // human-readable field name
-  oldValue: number;
-  newValue: number;
+  oldValue: number | string;
+  newValue: number | string;
+  isNA?: boolean;
   reason: string;
   status: KPIEditStatus;     // reuse same status type
   requestedAt: string;

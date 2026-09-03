@@ -20,7 +20,7 @@ import {
   subscribeEditRequests,
   subscribeCourseEditRequests
 } from '@/lib/mock-data';
-import { ManagerQuestion } from '@/lib/types';
+import { ManagerQuestion, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
 import { 
   AlertTriangle, 
@@ -112,10 +112,27 @@ export default function StaffDashboard() {
   // Student Results & Discipline KPI Score (20% weight)
   const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;
   
-  // Active courses list for year 1/2
-  const activeCourses = managedProgram 
-    ? courses.filter(c => c.programId === managedProgram.id && c.semester === 'SEM 2') 
-    : [];
+  const isCurrentActiveCourse = (c: Course): boolean => {
+    if (c.cohort.includes('dự kiến') || c.cohort === 'I22 MT' || c.cohort === 'I23 MX' || c.cohort === 'I19 MT' || c.cohort === 'I20 MX' || c.cohort === 'I20 MT') return false;
+    if (c.programId === 'p_nam1') {
+      return (c.semester === 'SEM SPRING' || c.semester === 'SEM FALL & SPRING' || c.semester === 'SEM 2');
+    }
+    if (c.programId === 'p_cu') {
+      return c.cohort === 'I19 MX' && c.semester === 'SEM 2';
+    }
+    if (c.programId === 'p_nhtc') {
+      return (c.cohort === 'BScBF I19' || c.cohort === 'BScBF I18') && c.semester === 'SEM 2';
+    }
+    if (c.programId === 'p_uwe') {
+      return (c.cohort === 'I18 MT - IBM' && c.semester === 'SEM 2') || (c.cohort === 'I19 MX - IBM' && c.semester === 'SEM 1');
+    }
+    return c.semester === 'SEM 2' && c.year <= 2;
+  };
+
+  const activeCourses = courses.filter(c => {
+    const isOwner = c.coordinatorId === currentUserId || (managedProgram && c.programId === managedProgram.id);
+    return isOwner && isCurrentActiveCourse(c);
+  });
 
   const lowKpis = snapshots.filter(s => s.score < 90).map(s => {
     const def = kpiDefinitions.find(k => k.id === s.kpiDefinitionId);
@@ -288,10 +305,16 @@ export default function StaffDashboard() {
                       <td colSpan={5} style={{ padding: 24, textAlign: 'center', color: 'var(--gray-400)' }}>Không có môn học đang hoạt động trong kỳ này</td>
                     </tr>
                   ) : activeCourses.map((c, i) => {
-                    const attendComp = Math.round((c.attendanceRate / c.attendanceTarget) * 100);
-                    const passComp = Math.round((c.passRate / c.passTarget) * 100);
-                    const submitComp = Math.round((c.submitRate / c.submitTarget) * 100);
-                    const avgComp = Math.round((attendComp + passComp + submitComp) / 3);
+                    const attendComp = c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
+                    const passComp = c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
+                    const submitComp = c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
+                    
+                    let compSum = 0;
+                    let compCount = 0;
+                    if (attendComp !== null) { compSum += attendComp; compCount++; }
+                    if (passComp !== null) { compSum += passComp; compCount++; }
+                    if (submitComp !== null) { compSum += submitComp; compCount++; }
+                    const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : null;
 
                     return (
                       <tr key={c.id} style={{ borderBottom: i < activeCourses.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
@@ -300,25 +323,43 @@ export default function StaffDashboard() {
                           <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Khóa: {c.cohort} · {c.semester}</div>
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
-                          <div style={{ fontWeight: 600, color: c.attendanceRate >= c.attendanceTarget ? '#10B981' : '#EF4444' }}>
-                            {Math.round(c.attendanceRate * 100)}%
-                          </div>
-                          <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {c.attendanceTarget * 100}%</div>
+                          {c.isAttendanceNA ? (
+                            <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
+                          ) : (
+                            <>
+                              <div style={{ fontWeight: 600, color: c.attendanceRate >= c.attendanceTarget ? '#10B981' : '#EF4444' }}>
+                                {Math.round(c.attendanceRate * 1000) / 10}%
+                              </div>
+                              <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {Math.round(c.attendanceTarget * 1000) / 10}%</div>
+                            </>
+                          )}
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
-                          <div style={{ fontWeight: 600, color: c.passRate >= c.passTarget ? '#10B981' : '#EF4444' }}>
-                            {Math.round(c.passRate * 100)}%
-                          </div>
-                          <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {c.passTarget * 100}%</div>
+                          {c.isPassNA ? (
+                            <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
+                          ) : (
+                            <>
+                              <div style={{ fontWeight: 600, color: c.passRate >= c.passTarget ? '#10B981' : '#EF4444' }}>
+                                {Math.round(c.passRate * 1000) / 10}%
+                              </div>
+                              <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {Math.round(c.passTarget * 1000) / 10}%</div>
+                            </>
+                          )}
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
-                          <div style={{ fontWeight: 600, color: c.submitRate >= c.submitTarget ? '#10B981' : '#EF4444' }}>
-                            {Math.round(c.submitRate * 100)}%
-                          </div>
-                          <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {c.submitTarget * 100}%</div>
+                          {c.isSubmitNA ? (
+                            <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
+                          ) : (
+                            <>
+                              <div style={{ fontWeight: 600, color: c.submitRate >= c.submitTarget ? '#10B981' : '#EF4444' }}>
+                                {Math.round(c.submitRate * 1000) / 10}%
+                              </div>
+                              <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {Math.round(c.submitTarget * 1000) / 10}%</div>
+                            </>
+                          )}
                         </td>
-                        <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: getScoreColor(avgComp) }}>
-                          {avgComp}%
+                        <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: avgComp === null ? '#64748B' : getScoreColor(avgComp) }}>
+                          {avgComp === null ? <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span> : `${avgComp}%`}
                         </td>
                       </tr>
                     );

@@ -37,6 +37,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
+  // Automatic web keep-alive ping: keeps database active whenever web is opened
+  useEffect(() => {
+    try {
+      const lastPing = localStorage.getItem('isme_last_keepalive_ping');
+      const now = Date.now();
+      // Ping once per 12 hours when anyone uses the app
+      if (!lastPing || now - parseInt(lastPing, 10) > 12 * 60 * 60 * 1000) {
+        fetch('/api/health').catch(() => {});
+        localStorage.setItem('isme_last_keepalive_ping', String(now));
+      }
+    } catch (_) {}
+  }, []);
+
   const hasRole = (role: UserRole): boolean => userRoles.includes(role);
   const hasAnyRole = (...roles: UserRole[]): boolean => roles.some(r => userRoles.includes(r));
 

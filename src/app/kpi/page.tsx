@@ -15,7 +15,7 @@ import {
   getSubmissionStatus,
   programs
 } from '@/lib/mock-data';
-import { KPISnapshot, KPIDefinition } from '@/lib/types';
+import { KPISnapshot, KPIDefinition, Course } from '@/lib/types';
 import { ChevronDown, ChevronRight, CheckCircle2, AlertTriangle, Edit3, Clock, Target, Users, Award, BookOpen, ShieldCheck } from 'lucide-react';
 import KPIEditDialog from '@/components/kpi/KPIEditDialog';
 import KPIApprovalPanel from '@/components/kpi/KPIApprovalPanel';
@@ -79,11 +79,29 @@ export default function KPIPage() {
   }
 
   // Find program managed by coordinator
-  const managedProgram = programs.find(p => p.managerId === currentUserId);
-  const activeCourses = courses.filter(c => 
-    (c.coordinatorId === currentUserId || (managedProgram && c.programId === managedProgram.id && !c.coordinatorId))
-    && c.semester === 'SEM 2'
-  );
+  const managedProgram = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
+  
+  const isCurrentActiveCourse = (c: Course): boolean => {
+    if (c.cohort.includes('dự kiến') || c.cohort === 'I22 MT' || c.cohort === 'I23 MX' || c.cohort === 'I19 MT' || c.cohort === 'I20 MX' || c.cohort === 'I20 MT') return false;
+    if (c.programId === 'p_nam1') {
+      return (c.semester === 'SEM SPRING' || c.semester === 'SEM FALL & SPRING' || c.semester === 'SEM 2');
+    }
+    if (c.programId === 'p_cu') {
+      return c.cohort === 'I19 MX' && c.semester === 'SEM 2';
+    }
+    if (c.programId === 'p_nhtc') {
+      return (c.cohort === 'BScBF I19' || c.cohort === 'BScBF I18') && c.semester === 'SEM 2';
+    }
+    if (c.programId === 'p_uwe') {
+      return (c.cohort === 'I18 MT - IBM' && c.semester === 'SEM 2') || (c.cohort === 'I19 MX - IBM' && c.semester === 'SEM 1');
+    }
+    return c.semester === 'SEM 2' && c.year <= 2;
+  };
+
+  const activeCourses = courses.filter(c => {
+    const isOwner = c.coordinatorId === currentUserId || (managedProgram && c.programId === managedProgram.id);
+    return isOwner && isCurrentActiveCourse(c);
+  });
 
   const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;
 
@@ -204,10 +222,16 @@ export default function KPIPage() {
               </td>
             </tr>
             {activeCourses.map((c, i) => {
-              const attendComp = Math.round((c.attendanceRate / c.attendanceTarget) * 100);
-              const passComp = Math.round((c.passRate / c.passTarget) * 100);
-              const submitComp = Math.round((c.submitRate / c.submitTarget) * 100);
-              const avgComp = Math.round((attendComp + passComp + submitComp) / 3);
+              const attendComp = c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
+              const passComp = c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
+              const submitComp = c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
+              
+              let compSum = 0;
+              let compCount = 0;
+              if (attendComp !== null) { compSum += attendComp; compCount++; }
+              if (passComp !== null) { compSum += passComp; compCount++; }
+              if (submitComp !== null) { compSum += submitComp; compCount++; }
+              const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : null;
 
               return (
                 <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
@@ -221,16 +245,22 @@ export default function KPIPage() {
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>Môn</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)', whiteSpace: 'nowrap' }}>
-                    CC Target: {c.attendanceTarget * 100}% <br/> Pass Target: {c.passTarget * 100}% <br/> Nộp bài Target: {c.submitTarget * 100}%
+                    CC Target: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceTarget * 1000) / 10}%`} <br/>
+                    Pass Target: {c.isPassNA ? 'N/A' : `${Math.round(c.passTarget * 1000) / 10}%`} <br/>
+                    Nộp bài Target: {c.isSubmitNA ? 'N/A' : `${Math.round(c.submitTarget * 1000) / 10}%`}
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap' }}>
-                    CC KQ: {Math.round(c.attendanceRate * 100)}% <br/> Pass KQ: {Math.round(c.passRate * 100)}% <br/> Nộp bài KQ: {Math.round(c.submitRate * 100)}%
+                    CC KQ: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceRate * 1000) / 10}%`} <br/>
+                    Pass KQ: {c.isPassNA ? 'N/A' : `${Math.round(c.passRate * 1000) / 10}%`} <br/>
+                    Nộp bài KQ: {c.isSubmitNA ? 'N/A' : `${Math.round(c.submitRate * 1000) / 10}%`}
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(avgComp) }}>
-                    {avgComp}%
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: avgComp === null ? '#64748B' : getScoreColor(avgComp) }}>
+                    {avgComp === null ? <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '2px 6px', borderRadius: 4 }}>N/A</span> : `${avgComp}%`}
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(avgComp) }}>{getScoreLabel(avgComp)}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: avgComp === null ? '#64748B' : getScoreColor(avgComp) }}>
+                      {avgComp === null ? 'Không áp dụng' : getScoreLabel(avgComp)}
+                    </span>
                   </td>
                 </tr>
               );

@@ -34,40 +34,66 @@ function getBgColor(val: number) {
   return 'rgba(220,38,38,0.08)';
 }
 
+function formatRate(val: number, isNA?: boolean): string {
+  if (isNA) return 'N/A';
+  if (val === undefined || val === null) return '-';
+  const pct = Math.round(val * 1000) / 10;
+  return `${pct}%`;
+}
+
 // ── Inline edit / request cell dialog ──
 interface EditCellProps {
   course: Course;
   field: CourseEditField;
   fieldLabel: string;
-  currentValue: number; // in percentage (0-100)
+  currentValue: number;
+  isNA?: boolean;
   userId: string;
   isDirectEdit: boolean;
   onDone: () => void;
 }
-function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDirectEdit, onDone }: EditCellProps) {
-  const [val, setVal] = useState(currentValue);
+
+function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false, userId, isDirectEdit, onDone }: EditCellProps) {
+  const isCountField = field === 'numLecturers' || field === 'numStudents';
+  const [val, setVal] = useState<number>(currentValue);
+  const [isNAChecked, setIsNAChecked] = useState<boolean>(isNA);
   const [reason, setReason] = useState('');
   const [err, setErr] = useState('');
   const pending = getPendingCourseEditForField(course.id, field);
 
   const handleSubmit = () => {
-    if (val < 0 || val > 100) {
-      setErr('Giá trị phải nằm trong khoảng 0% - 100%');
+    if (!isCountField && !isNAChecked) {
+      if (val < 0 || val > 100) {
+        setErr('Giá trị phải nằm trong khoảng 0% - 100%');
+        return;
+      }
+    }
+    if (isCountField && val < 0) {
+      setErr('Số lượng phải lớn hơn hoặc bằng 0');
       return;
     }
-    if (val === currentValue) {
-      setErr('Chưa có thay đổi về trị số');
+    if (val === currentValue && isNAChecked === isNA) {
+      setErr('Chưa có thay đổi về trị số hoặc trạng thái');
       return;
     }
 
     if (isDirectEdit) {
-      // Direct update for open status
-      const valDecimal = val / 100;
-      updateCourseValue(course.id, { [field]: valDecimal });
-      addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã cập nhật trực tiếp điểm môn ${course.name} (${fieldLabel}): ${currentValue}% -> ${val}%.`);
+      if (isCountField) {
+        const intVal = Math.max(0, Math.floor(val));
+        updateCourseValue(course.id, { [field]: intVal });
+        addAuditLog(userId, 'Cập nhật môn học', `Đã cập nhật số lượng ${fieldLabel} môn ${course.name}: ${currentValue} -> ${intVal}.`);
+      } else if (isNAChecked) {
+        const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : 'isSubmitNA';
+        updateCourseValue(course.id, { [naField]: true, [field]: 0 });
+        addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã chuyển ${fieldLabel} môn ${course.name} sang trạng thái N/A.`);
+      } else {
+        const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : 'isSubmitNA';
+        const valDecimal = val / 100;
+        updateCourseValue(course.id, { [field]: valDecimal, [naField]: false });
+        addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã cập nhật trực tiếp điểm môn ${course.name} (${fieldLabel}): ${isNA ? 'N/A' : currentValue + '%'} -> ${val}%.`);
+      }
       onDone();
     } else {
-      // Change request for submitted/approved status
       if (!reason.trim() || reason.trim().length < 10) {
         setErr('Lý do chỉnh sửa bắt buộc điền và cần ít nhất 10 ký tự');
         return;
@@ -77,8 +103,9 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
         userId,
         field,
         fieldLabel: `${course.name} — ${fieldLabel}`,
-        oldValue: currentValue,
-        newValue: val,
+        oldValue: isNA ? 'N/A' : currentValue,
+        newValue: isNAChecked ? 'N/A' : isCountField ? Math.max(0, Math.floor(val)) : val,
+        isNA: isNAChecked,
         reason: reason.trim()
       });
       onDone();
@@ -86,7 +113,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
   };
 
   return (
-    <PortalModal isOpen={true} onClose={onDone} maxWidth={460}>
+    <PortalModal isOpen={true} onClose={onDone} maxWidth={480}>
       <div style={{ padding: '16px 20px', background: 'linear-gradient(135deg, var(--isme-red), var(--isme-red-light))', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
@@ -106,7 +133,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
             <div>
               <div style={{ fontWeight: 700, fontSize: 13, color: '#92400E' }}>Đã có yêu cầu đang chờ phê duyệt</div>
               <div style={{ fontSize: 12, color: '#92400E', marginTop: 4 }}>
-                Đang yêu cầu sửa: <b>{pending.oldValue}%</b> → <b>{pending.newValue}%</b>
+                Đang yêu cầu sửa: <b>{pending.oldValue}</b> → <b>{pending.newValue}</b>
               </div>
               <div style={{ fontSize: 11, color: '#B45309', marginTop: 4, fontStyle: 'italic' }}>"{pending.reason}"</div>
             </div>
@@ -120,25 +147,52 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
             </div>
           )}
           
-          <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
-            <div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị hiện tại</div>
-              <div style={{ fontSize: 24, fontWeight: 700 }}>{currentValue}%</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị hiện tại</div>
+                <div style={{ fontSize: 24, fontWeight: 700 }}>
+                  {isNA ? 'N/A' : isCountField ? currentValue : `${currentValue}%`}
+                </div>
+              </div>
+              <div style={{ fontSize: 20, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
+              <div>
+                <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>
+                  {isCountField ? 'Giá trị mới (Số lượng)' : 'Giá trị mới (%)'}
+                </div>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max={isCountField ? undefined : 100}
+                  step={isCountField ? 1 : 0.1}
+                  disabled={isNAChecked}
+                  value={isNAChecked ? '' : val} 
+                  placeholder={isNAChecked ? 'N/A' : '0'}
+                  onChange={e => setVal(parseFloat(e.target.value) || 0)}
+                  style={{ 
+                    width: 130, padding: '8px 12px', borderRadius: 8, 
+                    border: '2px solid var(--gray-200)', fontSize: 16, fontWeight: 700, 
+                    outline: 'none', background: isNAChecked ? 'var(--gray-100)' : 'white'
+                  }}
+                  onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
+                  onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
+                />
+              </div>
             </div>
-            <div style={{ fontSize: 20, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
-            <div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị mới (%)</div>
-              <input 
-                type="number" 
-                min="0" 
-                max="100" 
-                value={val} 
-                onChange={e => setVal(parseFloat(e.target.value) || 0)}
-                style={{ width: 110, padding: '8px 12px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 16, fontWeight: 700, outline: 'none' }}
-                onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
-                onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
-              />
-            </div>
+
+            {!isCountField && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer', userSelect: 'none', background: '#F8FAFC', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--gray-200)' }}>
+                <input 
+                  type="checkbox" 
+                  checked={isNAChecked} 
+                  onChange={e => setIsNAChecked(e.target.checked)}
+                  style={{ width: 16, height: 16, cursor: 'pointer', accentColor: 'var(--isme-red)' }}
+                />
+                <span style={{ fontWeight: 600, color: 'var(--gray-700)' }}>
+                  Đánh dấu N/A (Không áp dụng tiêu chí này cho môn học)
+                </span>
+              </label>
+            )}
           </div>
 
           {!isDirectEdit && (
@@ -147,7 +201,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
               <textarea 
                 value={reason} 
                 onChange={e => { setReason(e.target.value); setErr(''); }}
-                placeholder="Nhập nội dung và lý do sửa điểm môn học (tối thiểu 10 ký tự)..." 
+                placeholder="Nhập nội dung và lý do sửa thông tin môn học (tối thiểu 10 ký tự)..." 
                 rows={3}
                 style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '2px solid var(--gray-200)', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit' }}
                 onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
@@ -162,16 +216,16 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, userId, isDir
             <button onClick={onDone} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
             <button 
               onClick={handleSubmit} 
-              disabled={val === currentValue} 
+              disabled={val === currentValue && isNAChecked === isNA} 
               style={{
                 padding: '8px 20px', 
                 borderRadius: 8, 
                 border: 'none', 
                 fontSize: 12, 
                 fontWeight: 700, 
-                cursor: val !== currentValue ? 'pointer' : 'not-allowed',
-                background: val !== currentValue ? 'var(--isme-red)' : 'var(--gray-200)', 
-                color: val !== currentValue ? 'white' : 'var(--gray-400)',
+                cursor: (val !== currentValue || isNAChecked !== isNA) ? 'pointer' : 'not-allowed',
+                background: (val !== currentValue || isNAChecked !== isNA) ? 'var(--isme-red)' : 'var(--gray-200)', 
+                color: (val !== currentValue || isNAChecked !== isNA) ? 'white' : 'var(--gray-400)',
               }}
             >
               {isDirectEdit ? 'Cập nhật' : 'Gửi yêu cầu'}
@@ -209,7 +263,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
       <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(135deg, rgba(59,130,246,0.06), rgba(245,158,11,0.06))' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Edit3 size={16} color="var(--isme-red)" />
-          <span style={{ fontWeight: 700, fontSize: 14 }}>Yêu cầu sửa đổi điểm môn học</span>
+          <span style={{ fontWeight: 700, fontSize: 14 }}>Yêu cầu sửa đổi thông tin môn học</span>
           {pendingCount > 0 && <span style={{ background: '#F59E0B', color: 'white', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{pendingCount}</span>}
         </div>
       </div>
@@ -218,6 +272,10 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
         const user = getUserById(r.userId);
         const reviewer = r.reviewedBy ? getUserById(r.reviewedBy) : null;
         const isOpen = expandedId === r.id;
+        const isCount = r.field === 'numLecturers' || r.field === 'numStudents';
+        const oldDisplay = r.oldValue === 'N/A' ? 'N/A' : isCount ? r.oldValue : `${r.oldValue}%`;
+        const newDisplay = r.newValue === 'N/A' ? 'N/A' : isCount ? r.newValue : `${r.newValue}%`;
+
         return (
           <div key={r.id} style={{ borderBottom: i < filtered.length - 1 ? '1px solid var(--gray-100)' : 'none' }}>
             <div onClick={() => setExpandedId(isOpen ? null : r.id)} style={{ padding: '12px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, transition: 'background 0.15s' }}
@@ -228,9 +286,9 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
                 {isManager && <div style={{ fontSize: 11, color: 'var(--gray-400)', display: 'flex', alignItems: 'center', gap: 3 }}><User size={10} />{user?.name}</div>}
               </div>
               <span style={{ fontSize: 13, fontWeight: 700 }}>
-                <span style={{ color: 'var(--gray-400)' }}>{r.oldValue}%</span>
+                <span style={{ color: 'var(--gray-400)' }}>{oldDisplay}</span>
                 <span style={{ color: 'var(--gray-300)', margin: '0 4px' }}>→</span>
-                <span style={{ color: r.newValue > r.oldValue ? '#10B981' : '#EF4444' }}>{r.newValue}%</span>
+                <span style={{ color: '#2563EB' }}>{newDisplay}</span>
               </span>
               <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600, background: st.bg, color: st.color, marginLeft: 8 }}>{st.label}</span>
             </div>
@@ -273,26 +331,33 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
 }
 
 // ── Editable cell component ──
-function EditableCell({ course, field, fieldLabel, value, displayVal, isStaff, userId, isDirectEdit, onEdit }: {
+function EditableCell({ course, field, fieldLabel, value, displayVal, isNA, isStaff, userId, isDirectEdit, onEdit }: {
   course: Course; field: CourseEditField; fieldLabel: string;
-  value: number; displayVal: string; isStaff: boolean; userId: string; isDirectEdit: boolean;
-  onEdit: (course: Course, field: CourseEditField, fieldLabel: string, value: number) => void;
+  value: number; displayVal?: string; isNA?: boolean; isStaff: boolean; userId: string; isDirectEdit: boolean;
+  onEdit: (course: Course, field: CourseEditField, fieldLabel: string, value: number, isNA?: boolean) => void;
 }) {
   const pending = getPendingCourseEditForField(course.id, field);
+  const isCount = field === 'numLecturers' || field === 'numStudents';
+  const showText = isNA ? 'N/A' : displayVal !== undefined ? displayVal : isCount ? String(value) : `${Math.round(value * 10) / 10}%`;
+
   return (
     <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--gray-100)', position: 'relative', textAlign: 'center' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-        <span style={{ fontWeight: 500 }}>{displayVal}</span>
+        {isNA ? (
+          <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '2px 6px', borderRadius: 4 }}>N/A</span>
+        ) : (
+          <span style={{ fontWeight: isCount ? 700 : 500 }}>{showText}</span>
+        )}
         {isStaff && !pending && (
-          <button onClick={() => onEdit(course, field, fieldLabel, value)} title={isDirectEdit ? 'Sửa trực tiếp' : 'Yêu cầu sửa'}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, opacity: 0.2, transition: 'opacity 0.15s', display: 'flex' }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.2'}>
+          <button onClick={() => onEdit(course, field, fieldLabel, value, isNA)} title={isDirectEdit ? 'Sửa trực tiếp' : 'Yêu cầu sửa'}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, opacity: 0.25, transition: 'opacity 0.15s', display: 'flex' }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.25'}>
             <Edit3 size={11} color="var(--isme-red)" />
           </button>
         )}
       </div>
       {pending && (
-        <div style={{ position: 'absolute', top: 2, right: 2 }} title={`Chờ duyệt: ${pending.oldValue}% → ${pending.newValue}%`}>
+        <div style={{ position: 'absolute', top: 2, right: 2 }} title={`Chờ duyệt: ${pending.oldValue} → ${pending.newValue}`}>
           <Clock size={10} color="#F59E0B" />
         </div>
       )}
@@ -306,8 +371,18 @@ export default function KPICoursePage() {
   const [selectedProgram, setSelectedProgram] = useState(selectedProgramId !== 'all' ? selectedProgramId : 'p_au');
   const [filterSemester, setFilterSemester] = useState<'current' | 'year1' | 'year2' | 'year3' | 'year4' | 'all'>('current');
   const [selectedCohort, setSelectedCohort] = useState<string>('all');
-  const [editTarget, setEditTarget] = useState<{ course: Course; field: CourseEditField; fieldLabel: string; value: number } | null>(null);
+  const [editTarget, setEditTarget] = useState<{ course: Course; field: CourseEditField; fieldLabel: string; value: number; isNA?: boolean } | null>(null);
   const [, forceUpdate] = useState(0);
+
+  // Auto-detect user's managed program if none selected globally
+  useEffect(() => {
+    if (selectedProgramId === 'all') {
+      const userProg = programs.find(p => p.managerId === currentUserId || p.secondaryManagerId === currentUserId);
+      if (userProg) {
+        setSelectedProgram(userProg.id);
+      }
+    }
+  }, [currentUserId, selectedProgramId]);
 
   // Sync with global program filter
   useEffect(() => {
@@ -325,96 +400,207 @@ export default function KPICoursePage() {
     return unsub;
   }, []);
 
-  const program = programs.find(p => p.id === selectedProgram);
-  const coordinator = program ? getUserById(program.managerId) : null;
-
-  // Cohort academic status helpers
-  const checkCourseFuture = (c: Course): boolean => {
-    if (c.cohort.includes('AU1')) return c.year > 2;
-    if (c.cohort.includes('AU2')) return c.year > 1; // AU2 is currently in Year 1 (2025-2026)
-    if (c.cohort.includes('AU3')) return true; // AU3 starts 2026-2027
-    return c.year > 1;
+  type CohortPlan = {
+    label: string;
+    sourceCohort?: string;
+    activeYear?: number;
+    activeSemester?: string;
+    expected?: boolean;
   };
 
-  const checkCourseCurrent = (c: Course): boolean => {
-    if (c.cohort.includes('AU1')) return c.year === 2 && c.semester === 'SEM 2';
-    if (c.cohort.includes('AU2')) return c.year === 1 && c.semester === 'SEM 2';
-    if (c.cohort.includes('AU3')) return false;
-    return c.year === 1 && c.semester === 'SEM 2';
+  const programCohortPlans: Record<string, CohortPlan[]> = {
+    p7: [
+      { label: 'BBAE K67', sourceCohort: 'BBAE', activeYear: 1, activeSemester: 'SEM 2' },
+      { label: 'BBAE K66', sourceCohort: 'BBAE', activeYear: 2, activeSemester: 'SEM 2' },
+      { label: 'BBAE K65', sourceCohort: 'BBAE', activeYear: 3, activeSemester: 'SEM 2' },
+      { label: 'BBAE K64', sourceCohort: 'BBAE', activeYear: 4, activeSemester: 'SEM 2' },
+    ],
+    p_dm: [
+      { label: 'I21 - DM', sourceCohort: 'DM', activeYear: 1, activeSemester: 'SEM 2' },
+      { label: 'I20 - DM', sourceCohort: 'DM', activeYear: 2, activeSemester: 'SEM 2' },
+      { label: 'I19 - DM', sourceCohort: 'DM', activeYear: 3, activeSemester: 'SEM 2' },
+    ],
+    p_au: [
+      { label: 'AU 2', sourceCohort: 'AU', activeYear: 1, activeSemester: 'SEM 2' },
+      { label: 'AU 1', sourceCohort: 'AU', activeYear: 2, activeSemester: 'SEM 2' },
+      { label: 'AU 3 (dự kiến)', expected: true },
+    ],
+    p_nhtc: [
+      { label: 'BScBF I19', sourceCohort: 'BScBF I19', activeYear: 3, activeSemester: 'SEM 2' },
+      { label: 'BScBF I18', sourceCohort: 'BScBF I18', activeYear: 4, activeSemester: 'SEM 2' },
+      { label: 'BScBF I20 (dự kiến 26-27)', sourceCohort: 'BScBF I20', expected: false },
+      { label: 'BScBF I21 (dự kiến)', expected: true },
+    ],
+    p_uwe: [
+      { label: 'I18 MT - IBM', sourceCohort: 'I18 MT - IBM', activeYear: 4, activeSemester: 'SEM 2' },
+      { label: 'I19 MX - IBM', sourceCohort: 'I19 MX - IBM', activeYear: 4, activeSemester: 'SEM 1' },
+      { label: 'I19 MT - BM (dự kiến)', sourceCohort: 'I19 MT - BM', expected: true },
+      { label: 'I20 MX - IBM (dự kiến)', sourceCohort: 'I20 MX - IBM', expected: true },
+    ],
+    p_cu: [
+      { label: 'I19 MX', sourceCohort: 'I19 MX', activeYear: 4, activeSemester: 'SEM 2' },
+      { label: 'I19 MT (dự kiến)', sourceCohort: 'I19 MT', expected: true },
+      { label: 'I20 MX (dự kiến)', sourceCohort: 'I20 MX', expected: true },
+      { label: 'I20 MT (dự kiến)', sourceCohort: 'I20 MT', expected: true },
+    ],
+    p3: [
+      { label: 'BTEC HND', sourceCohort: 'BTEC HND', activeYear: 1, activeSemester: 'SEM 2' },
+    ],
+    p_nam1: [
+      { label: 'I21 MT', sourceCohort: 'I21 MT', activeYear: 1, activeSemester: 'SEM SPRING' },
+      { label: 'I22 MX', sourceCohort: 'I22 MX', activeYear: 1, activeSemester: 'SEM SPRING' },
+      { label: 'I22 MT (dự kiến)', sourceCohort: 'I22 MT', expected: true },
+      { label: 'I23 MX (dự kiến)', sourceCohort: 'I23 MX', expected: true },
+    ],
   };
 
-  // Get unique cohorts in this program
-  const uniqueCohorts = Array.from(new Set(courses.filter(c => c.programId === selectedProgram).map(c => c.cohort))).sort();
-  
-  // Filter courses by program
-  let programCourses = courses.filter(c => c.programId === selectedProgram);
-  
-  // Apply year/semester filter
-  if (filterSemester === 'current') {
-    programCourses = programCourses.filter(c => checkCourseCurrent(c));
-  } else if (filterSemester.startsWith('year')) {
-    const yearNum = parseInt(filterSemester.replace('year', ''));
-    programCourses = programCourses.filter(c => c.year === yearNum);
-  }
+  const rawCurriculum = courses.filter(c => c.programId === selectedProgram);
+  const fallbackPlans = Array.from(new Set(rawCurriculum.map(c => c.cohort)))
+    .sort()
+    .map(coh => ({ label: coh, sourceCohort: coh }));
+  const cohortPlans = programCohortPlans[selectedProgram] || fallbackPlans;
+  const selectedPlans = selectedCohort === 'all'
+    ? cohortPlans
+    : cohortPlans.filter(plan => plan.label === selectedCohort);
+  const uniqueCohorts = cohortPlans.map(plan => plan.label);
 
-  // Calculate averages for each cohort (only for started/active courses, ignore future ones)
-  const cohortAverages = uniqueCohorts.map(coh => {
-    const activeCourses = courses.filter(c => c.programId === selectedProgram && c.cohort === coh && !checkCourseFuture(c));
-    const isUnstarted = activeCourses.length === 0;
-    const avg = !isUnstarted
-      ? Math.round(activeCourses.reduce((sum, c) => {
-          const attendComp = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
-          const passComp = Math.min((c.passRate / c.passTarget) * 100, 100);
-          const submitComp = Math.min((c.submitRate / c.submitTarget) * 100, 100);
-          return sum + (attendComp + passComp + submitComp) / 3;
-        }, 0) / activeCourses.length)
-      : 0;
-    return { cohort: coh, avg, isUnstarted };
-  });
+  type DisplayCourse = Course & { displayCohort: string; isCurrent: boolean; isFuture: boolean };
 
-  // Apply cohort filter
-  if (selectedCohort !== 'all') {
-    programCourses = programCourses.filter(c => c.cohort === selectedCohort);
-  }
-
-  // Calculate average completion rate of the currently filtered courses (only active ones)
-  const completedCourses = programCourses.filter(c => !checkCourseFuture(c));
-  const totalAvgScore = completedCourses.length > 0
-    ? Math.round(completedCourses.reduce((sum, c) => {
-        const attendComp = Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
-        const passComp = Math.min((c.passRate / c.passTarget) * 100, 100);
-        const submitComp = Math.min((c.submitRate / c.submitTarget) * 100, 100);
-        return sum + (attendComp + passComp + submitComp) / 3;
-      }, 0) / completedCourses.length)
-    : 0;
-
-  // Sort by year, semester order, then name
   const semesterOrder: Record<string, number> = {
     'SEM 1': 1,
+    'Kỳ 1': 1,
+    'SEM FALL': 1,
     'SEM 2': 2,
+    'Kỳ 2': 2,
+    'SEM SPRING': 2,
+    'SEM FALL & SPRING': 2,
     'SEM AU': 3,
     'SEM SP': 4,
-    'SEM SU': 5
+    'SEM SU': 5,
+    'SEM SUMMER': 5,
   };
 
-  programCourses.sort((a, b) => {
-    if (a.year !== b.year) return a.year - b.year;
-    const semA = semesterOrder[a.semester] || 9;
-    const semB = semesterOrder[b.semester] || 9;
-    if (semA !== semB) return semA - semB;
-    return a.name.localeCompare(b.name);
+  const courseMatchesPlan = (course: Course, plan: CohortPlan): boolean => {
+    const planName = (plan.sourceCohort || plan.label).replace(/\s*\(dự kiến.*?\)/, '').trim();
+    const courseCohort = course.cohort.replace(/\s*\(dự kiến.*?\)/, '').trim();
+    return courseCohort === planName;
+  };
+
+  const isCurrentCourse = (course: Course, plan: CohortPlan): boolean => {
+    if (plan.expected) return false;
+    if (!plan.activeYear || !plan.activeSemester) return false;
+    if (course.year !== plan.activeYear) return false;
+    if (plan.activeSemester === 'SEM SPRING') {
+      return course.semester === 'SEM SPRING' || course.semester === 'SEM FALL & SPRING' || course.semester === 'SEM 2';
+    }
+    return course.semester === plan.activeSemester;
+  };
+
+  const isFutureCourse = (course: Course, plan: CohortPlan): boolean => {
+    if (plan.expected) return true;
+    if (!plan.activeYear || !plan.activeSemester) return true;
+    if (course.year > plan.activeYear) return true;
+    if (course.year < plan.activeYear) return false;
+    return (semesterOrder[course.semester] || 99) > (semesterOrder[plan.activeSemester] || 99);
+  };
+
+  const mapDisplayCourse = (course: Course, plan: CohortPlan): DisplayCourse => ({
+    ...course,
+    displayCohort: plan.label,
+    isCurrent: isCurrentCourse(course, plan),
+    isFuture: isFutureCourse(course, plan),
   });
+
+  let displayCourses: DisplayCourse[] = [];
+
+  selectedPlans.forEach(plan => {
+    let planCourses = rawCurriculum.filter(c => courseMatchesPlan(c, plan));
+
+    if (filterSemester === 'current') {
+      planCourses = planCourses.filter(c => isCurrentCourse(c, plan));
+    } else if (filterSemester.startsWith('year')) {
+      const targetYear = parseInt(filterSemester.replace('year', ''));
+      planCourses = planCourses.filter(c => c.year === targetYear);
+    }
+
+    displayCourses.push(...planCourses.map(c => mapDisplayCourse(c, plan)));
+  });
+
+  const cohortAverages = cohortPlans.map(plan => {
+    const activeCourses = rawCurriculum
+      .filter(c => courseMatchesPlan(c, plan))
+      .map(c => mapDisplayCourse(c, plan))
+      .filter(c => !c.isFuture);
+    const isUnstarted = activeCourses.length === 0;
+    
+    let totalScore = 0;
+    let validCount = 0;
+    activeCourses.forEach(c => {
+      let sum = 0;
+      let count = 0;
+      if (!c.isAttendanceNA && c.attendanceTarget > 0) {
+        sum += Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
+        count++;
+      }
+      if (!c.isPassNA && c.passTarget > 0) {
+        sum += Math.min((c.passRate / c.passTarget) * 100, 100);
+        count++;
+      }
+      if (!c.isSubmitNA && c.submitTarget > 0) {
+        sum += Math.min((c.submitRate / c.submitTarget) * 100, 100);
+        count++;
+      }
+      if (count > 0) {
+        totalScore += sum / count;
+        validCount++;
+      }
+    });
+
+    const avg = !isUnstarted && validCount > 0
+      ? Math.round(totalScore / validCount)
+      : 0;
+    return { cohort: plan.label, avg, isUnstarted };
+  });
+
+  const currentActiveCourses = displayCourses.filter(c => !c.isFuture);
+  let curTotal = 0;
+  let curCount = 0;
+  currentActiveCourses.forEach(c => {
+    let sum = 0;
+    let count = 0;
+    if (!c.isAttendanceNA && c.attendanceTarget > 0) {
+      sum += Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
+      count++;
+    }
+    if (!c.isPassNA && c.passTarget > 0) {
+      sum += Math.min((c.passRate / c.passTarget) * 100, 100);
+      count++;
+    }
+    if (!c.isSubmitNA && c.submitTarget > 0) {
+      sum += Math.min((c.submitRate / c.submitTarget) * 100, 100);
+      count++;
+    }
+    if (count > 0) {
+      curTotal += sum / count;
+      curCount++;
+    }
+  });
+  const totalAvgScore = curCount > 0 ? Math.round(curTotal / curCount) : 100;
+
+  const programCourses = displayCourses;
+
+  const program = programs.find(p => p.id === selectedProgram);
+  const coordinator = program ? getUserById(program.managerId) : null;
 
   const isStaff = currentRole === 'staff';
   const isManager = currentRole === 'manager' || currentRole === 'admin';
 
-  // Check if coordinator has submitted or approved their self-assessment
   const activeSemester = semesterData.currentSemester;
   const assessmentStatus = coordinator ? getSubmissionStatus(coordinator.id, activeSemester) : 'open';
   const isDirectEdit = assessmentStatus === 'open';
 
-  const handleEdit = (course: Course, field: CourseEditField, fieldLabel: string, value: number) => {
-    setEditTarget({ course, field, fieldLabel, value });
+  const handleEdit = (course: Course, field: CourseEditField, fieldLabel: string, value: number, isNA?: boolean) => {
+    setEditTarget({ course, field, fieldLabel, value, isNA });
   };
 
   const exportToExcel = () => {
@@ -429,24 +615,31 @@ export default function KPICoursePage() {
     ];
     
     const rows = programCourses.map(c => {
-      const attendComp = Math.round((c.attendanceRate / c.attendanceTarget) * 100);
-      const passComp = Math.round((c.passRate / c.passTarget) * 100);
-      const submitComp = Math.round((c.submitRate / c.submitTarget) * 100);
-      const avgComp = Math.round((attendComp + passComp + submitComp) / 3);
+      const isFuture = c.isFuture;
+      const attendComp = isFuture || c.isAttendanceNA ? 'N/A' : `${Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10}%`;
+      const passComp = isFuture || c.isPassNA ? 'N/A' : `${Math.round((c.passRate / c.passTarget) * 1000) / 10}%`;
+      const submitComp = isFuture || c.isSubmitNA ? 'N/A' : `${Math.round((c.submitRate / c.submitTarget) * 1000) / 10}%`;
+      
+      let compSum = 0;
+      let compCount = 0;
+      if (!isFuture && !c.isAttendanceNA) { compSum += (c.attendanceRate / c.attendanceTarget) * 100; compCount++; }
+      if (!isFuture && !c.isPassNA) { compSum += (c.passRate / c.passTarget) * 100; compCount++; }
+      if (!isFuture && !c.isSubmitNA) { compSum += (c.submitRate / c.submitTarget) * 100; compCount++; }
+      const avgComp = isFuture || compCount === 0 ? 'N/A' : `${Math.round((compSum / compCount) * 10) / 10}%`;
 
       return [
         program?.shortName,
-        c.cohort,
+        c.displayCohort,
         c.semester,
         c.name,
         c.numLecturers,
         c.numStudents,
-        c.attendanceTarget * 100,
-        c.passTarget * 100,
-        c.submitTarget * 100,
-        c.attendanceRate * 100,
-        c.passRate * 100,
-        c.submitRate * 100,
+        c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceTarget * 1000) / 10}%`,
+        c.isPassNA ? 'N/A' : `${Math.round(c.passTarget * 1000) / 10}%`,
+        c.isSubmitNA ? 'N/A' : `${Math.round(c.submitTarget * 1000) / 10}%`,
+        c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceRate * 1000) / 10}%`,
+        c.isPassNA ? 'N/A' : `${Math.round(c.passRate * 1000) / 10}%`,
+        c.isSubmitNA ? 'N/A' : `${Math.round(c.submitRate * 1000) / 10}%`,
         attendComp,
         passComp,
         submitComp,
@@ -493,7 +686,7 @@ export default function KPICoursePage() {
             >
               <option value="all">Tất cả các lớp</option>
               {uniqueCohorts.map(coh => (
-                <option key={coh} value={coh}>Lớp {coh}</option>
+                <option key={coh} value={coh}>{coh}</option>
               ))}
             </select>
           </div>
@@ -588,7 +781,6 @@ export default function KPICoursePage() {
         </div>
       </div>
 
-
       {/* Course Edit Approval Panel */}
       <CourseApprovalPanel isManager={isManager} userId={currentUserId} selectedProgramId={selectedProgram} />
 
@@ -630,18 +822,24 @@ export default function KPICoursePage() {
               </tr>
             ) : (
               programCourses.map((c, ci) => {
-                const isFuture = checkCourseFuture(c);
-                const isCurrent = checkCourseCurrent(c);
+                const isFuture = c.isFuture;
+                const isCurrent = c.isCurrent;
 
-                const attendComp = isFuture ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 100);
-                const passComp = isFuture ? null : Math.round((c.passRate / c.passTarget) * 100);
-                const submitComp = isFuture ? null : Math.round((c.submitRate / c.submitTarget) * 100);
-                const avgComp = isFuture ? null : Math.round((attendComp! + passComp! + submitComp!) / 3);
+                const attendComp = isFuture || c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
+                const passComp = isFuture || c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
+                const submitComp = isFuture || c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
+
+                let compSum = 0;
+                let compCount = 0;
+                if (attendComp !== null) { compSum += attendComp; compCount++; }
+                if (passComp !== null) { compSum += passComp; compCount++; }
+                if (submitComp !== null) { compSum += submitComp; compCount++; }
+                const avgComp = isFuture || compCount === 0 ? null : Math.round((compSum / compCount) * 10) / 10;
 
                 return (
-                  <tr key={c.id} style={{ background: isCurrent ? 'rgba(59,130,246,0.02)' : ci % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
+                  <tr key={c.id + '_' + ci} style={{ background: isCurrent ? 'rgba(59,130,246,0.02)' : ci % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
                     <td style={{ ...tdStyle, fontWeight: 700, color: 'var(--gray-700)' }}>
-                      {c.cohort}
+                      {c.displayCohort || c.cohort}
                       {isCurrent && <span style={{ display: 'block', fontSize: 9, color: '#2563EB', background: '#DBEAFE', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 600 }}>Kỳ này</span>}
                       {isFuture && <span style={{ display: 'block', fontSize: 9, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 500 }}>Chưa học</span>}
                     </td>
@@ -652,21 +850,46 @@ export default function KPICoursePage() {
                         {c.code && <span style={{ color: 'var(--gray-400)', fontSize: 10 }}>Mã: {c.code} · Năm {c.year}</span>}
                       </div>
                     </td>
-                    <td style={tdStyle}>{isFuture ? '-' : c.numLecturers}</td>
-                    <td style={{ ...tdStyle, fontWeight: 700, color: isFuture ? 'var(--gray-300)' : 'var(--gray-700)' }}>{isFuture ? '-' : c.numStudents}</td>
+                    
+                    {/* Số GV - Editable */}
+                    <EditableCell 
+                      course={c} 
+                      field="numLecturers" 
+                      fieldLabel="Số giảng viên" 
+                      value={c.numLecturers} 
+                      displayVal={isFuture ? '-' : String(c.numLecturers)} 
+                      isStaff={isStaff && isCurrent} 
+                      userId={currentUserId} 
+                      isDirectEdit={isDirectEdit} 
+                      onEdit={handleEdit} 
+                    />
+
+                    {/* Số SV - Editable */}
+                    <EditableCell 
+                      course={c} 
+                      field="numStudents" 
+                      fieldLabel="Số sinh viên" 
+                      value={c.numStudents} 
+                      displayVal={isFuture ? '-' : String(c.numStudents)} 
+                      isStaff={isStaff && isCurrent} 
+                      userId={currentUserId} 
+                      isDirectEdit={isDirectEdit} 
+                      onEdit={handleEdit} 
+                    />
                     
                     {/* Targets */}
-                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : `${c.attendanceTarget * 100}%`}</td>
-                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : `${c.passTarget * 100}%`}</td>
-                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : `${c.submitTarget * 100}%`}</td>
+                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : formatRate(c.attendanceTarget, c.isAttendanceNA)}</td>
+                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : formatRate(c.passTarget, c.isPassNA)}</td>
+                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
                     
                     {/* Actuals - Editable */}
                     <EditableCell 
                       course={c} 
                       field="attendanceRate" 
                       fieldLabel="Tỉ lệ đi học đầy đủ" 
-                      value={Math.round(c.attendanceRate * 100)} 
-                      displayVal={isFuture ? '-' : `${Math.round(c.attendanceRate * 100)}%`} 
+                      value={Math.round(c.attendanceRate * 1000) / 10} 
+                      displayVal={isFuture ? '-' : formatRate(c.attendanceRate, c.isAttendanceNA)} 
+                      isNA={c.isAttendanceNA}
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -676,8 +899,9 @@ export default function KPICoursePage() {
                       course={c} 
                       field="passRate" 
                       fieldLabel="Tỉ lệ pass lần 1" 
-                      value={Math.round(c.passRate * 100)} 
-                      displayVal={isFuture ? '-' : `${Math.round(c.passRate * 100)}%`} 
+                      value={Math.round(c.passRate * 1000) / 10} 
+                      displayVal={isFuture ? '-' : formatRate(c.passRate, c.isPassNA)} 
+                      isNA={c.isPassNA}
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -687,8 +911,9 @@ export default function KPICoursePage() {
                       course={c} 
                       field="submitRate" 
                       fieldLabel="Tỉ lệ nộp bài/thi đúng hạn" 
-                      value={Math.round(c.submitRate * 100)} 
-                      displayVal={isFuture ? '-' : `${Math.round(c.submitRate * 100)}%`} 
+                      value={Math.round(c.submitRate * 1000) / 10} 
+                      displayVal={isFuture ? '-' : formatRate(c.submitRate, c.isSubmitNA)} 
+                      isNA={c.isSubmitNA}
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -696,14 +921,22 @@ export default function KPICoursePage() {
                     />
                     
                     {/* Completion Rates */}
-                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : getScoreColor(attendComp!), fontWeight: 700, background: isFuture ? 'transparent' : getBgColor(attendComp!) }}>{isFuture ? '-' : `${attendComp}%`}</td>
-                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : getScoreColor(passComp!), fontWeight: 700, background: isFuture ? 'transparent' : getBgColor(passComp!) }}>{isFuture ? '-' : `${passComp}%`}</td>
-                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : getBgColor(submitComp!) }}>{isFuture ? '-' : `${submitComp}%`}</td>
+                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isAttendanceNA ? '#64748B' : getScoreColor(attendComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isAttendanceNA ? '#F8FAFC' : getBgColor(attendComp!) }}>
+                      {isFuture ? '-' : c.isAttendanceNA ? 'N/A' : `${attendComp}%`}
+                    </td>
+                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isPassNA ? '#64748B' : getScoreColor(passComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isPassNA ? '#F8FAFC' : getBgColor(passComp!) }}>
+                      {isFuture ? '-' : c.isPassNA ? 'N/A' : `${passComp}%`}
+                    </td>
+                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isSubmitNA ? '#64748B' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isSubmitNA ? '#F8FAFC' : getBgColor(submitComp!) }}>
+                      {isFuture ? '-' : c.isSubmitNA ? 'N/A' : `${submitComp}%`}
+                    </td>
                     
                     {/* Course Avg Completion */}
-                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : getScoreColor(avgComp!), fontWeight: 700, fontSize: 13 }}>
+                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : avgComp === null ? '#64748B' : getScoreColor(avgComp!), fontWeight: 700, fontSize: 13 }}>
                       {isFuture ? (
                         <span style={{ fontSize: 10, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '2px 6px', borderRadius: 4, fontWeight: 500 }}>Chưa bắt đầu</span>
+                      ) : avgComp === null ? (
+                        <span style={{ fontSize: 11, color: '#64748B', background: '#E2E8F0', padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>N/A</span>
                       ) : (
                         `${avgComp}%`
                       )}
@@ -722,7 +955,7 @@ export default function KPICoursePage() {
           { color: '#047857', bg: 'rgba(16,185,129,0.1)', label: 'Đạt / Vượt mục tiêu (≥100%)' },
           { color: '#D97706', bg: 'rgba(245,158,11,0.08)', label: 'Gần đạt (90% - 99%)' },
           { color: '#DC2626', bg: 'rgba(220,38,38,0.08)', label: 'Chưa đạt (<90%)' },
-          { color: 'var(--isme-red)', bg: 'white', label: '✏️ Bấm bút để sửa số liệu (sửa trực tiếp khi chưa nộp, gửi yêu cầu duyệt khi đã nộp)' },
+          { color: 'var(--isme-red)', bg: 'white', label: '✏️ Bấm bút để sửa số liệu (Số GV, Số SV, tỷ lệ %, chọn N/A)' },
           { color: '#F59E0B', bg: 'white', label: '⏳ Có yêu cầu thay đổi đang chờ duyệt' },
         ].map(l => (
           <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--gray-600)' }}>
@@ -739,6 +972,7 @@ export default function KPICoursePage() {
           field={editTarget.field}
           fieldLabel={editTarget.fieldLabel}
           currentValue={editTarget.value}
+          isNA={editTarget.isNA}
           userId={currentUserId}
           isDirectEdit={isDirectEdit}
           onDone={() => { setEditTarget(null); forceUpdate((n: number) => n + 1); }}

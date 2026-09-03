@@ -167,7 +167,7 @@ export default function StaffDashboard() {
         <div style={{ position: 'absolute', bottom: -30, right: 120, width: 140, height: 140, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.08)', filter: 'blur(50px)' }} />
         <div style={{ position: 'relative' }}>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 6 }}>{greeting}! 👋</div>
-          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>{user?.name}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{user?.name}</div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)' }}>{user?.position} · {period}</div>
         </div>
         <div style={{ display: 'flex', gap: 24, marginTop: 24, flexWrap: 'wrap' }}>
@@ -186,7 +186,7 @@ export default function StaffDashboard() {
                 <s.icon size={12} color="rgba(255,255,255,0.45)" />
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>{s.label}</div>
               </div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: s.color as string }}>{s.value}</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: s.color as string }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -199,10 +199,10 @@ export default function StaffDashboard() {
           border: `1px solid ${status === 'approved' ? 'rgba(16,185,129,0.2)' : status === 'submitted' ? 'rgba(245,158,11,0.2)' : 'rgba(155,27,48,0.2)'}`
         }}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--gray-800)' }}>
+            <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--gray-800)' }}>
               Trạng thái tự đánh giá: {status === 'approved' ? '✓ Đã phê duyệt' : status === 'submitted' ? '⏳ Đang chờ phê duyệt' : '✏️ Chưa nộp (Bản nháp)'}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>
               {status === 'approved' && 'Bản KPI của bạn đã được quản lý phê duyệt chính thức. Để thay đổi số liệu môn học/vận hành, vui lòng gửi yêu cầu và nêu rõ lý do.'}
               {status === 'submitted' && 'Các số liệu của bạn đang được Hồ Hoàng Lan duyệt. Quyền sửa điểm trực tiếp đã tạm khoá.'}
               {status === 'open' && 'Vui lòng hoàn thành tự đánh giá toàn bộ KPI môn học và Vận hành bên dưới, sau đó bấm nút "Nộp phê duyệt" bên phải.'}
@@ -226,9 +226,9 @@ export default function StaffDashboard() {
             <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--gray-50)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Target size={18} color="var(--isme-red)" />
-                <span style={{ fontSize: 15, fontWeight: 700 }}>1. Nhóm Vận hành - Operations (50%)</span>
+                <span style={{ fontSize: 13, fontWeight: 700 }}>1. Nhóm Vận hành - Operations (50%)</span>
               </div>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-500)' }}>{opSnaps.length} chỉ tiêu · Trọng số 5%/mỗi KPI</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-500)' }}>{opSnaps.length} chỉ tiêu · Trọng số 5%/mỗi KPI</span>
             </div>
             <div style={{ padding: 0 }}>
               {opSnaps.map((kpi, i) => {
@@ -239,13 +239,13 @@ export default function StaffDashboard() {
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-800)' }}>
                         STT {def?.stt}: {def?.name}
-                        {def?.id === 'op5_op' && <span style={{ marginLeft: 8, padding: '2px 6px', background: '#EFF6FF', color: '#1E40AF', borderRadius: 4, fontSize: 10 }}>Liên kết Hỗ trợ HT (20%)</span>}
+                        {def?.id === 'op5_op' && <span style={{ marginLeft: 8, padding: '2px 6px', background: '#EFF6FF', color: '#1E40AF', borderRadius: 4, fontSize: 11 }}>Liên kết Hỗ trợ HT (20%)</span>}
                       </div>
                       <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def?.criteria}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: getScoreColor(kpi.score) }}>{kpi.actualValue}/{kpi.targetValue}</div>
-                      <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>{def?.unit}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: getScoreColor(kpi.score) }}>{kpi.actualValue}/{kpi.targetValue}</div>
+                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def?.unit}</div>
                     </div>
                   </div>
                 );
@@ -258,7 +258,7 @@ export default function StaffDashboard() {
             <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--gray-50)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Users size={18} color="var(--isme-red)" />
-                <span style={{ fontSize: 15, fontWeight: 700 }}>2. Hoạt động Hỗ trợ học tập (20%)</span>
+                <span style={{ fontSize: 13, fontWeight: 700 }}>2. Hoạt động Hỗ trợ học tập (20%)</span>
               </div>
               <span style={{ fontSize: 11, color: 'var(--gray-400)', fontStyle: 'italic' }}>Liên kết với Chỉ tiêu Vận hành STT 5</span>
             </div>
@@ -269,7 +269,7 @@ export default function StaffDashboard() {
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Số hoạt động ngoại khóa được tổ chức thành công.</div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: getScoreColor(asScore) }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: getScoreColor(asScore) }}>
                   {op5AsSnap ? `${op5AsSnap.actualValue}/${op5AsSnap.targetValue}` : '0/0'} hoạt động
                 </div>
               </div>
@@ -281,16 +281,16 @@ export default function StaffDashboard() {
             <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--gray-50)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Award size={18} color="var(--isme-red)" />
-                <span style={{ fontSize: 15, fontWeight: 700 }}>3. Kết quả học tập và Kỷ luật học sinh (20%)</span>
+                <span style={{ fontSize: 13, fontWeight: 700 }}>3. Kết quả học tập và Kỷ luật học sinh (20%)</span>
               </div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <span style={{ fontSize: 13, fontWeight: 800, color: getScoreColor(studentResultsScore), background: 'var(--gray-100)', padding: '2px 8px', borderRadius: 4 }}>Chung: {studentResultsScore}%</span>
-                <Link href="/kpi/courses" style={{ fontSize: 12, fontWeight: 700, color: 'var(--isme-red)', textDecoration: 'none' }}>Chi tiết →</Link>
+                <Link href="/kpi/courses" style={{ fontSize: 13, fontWeight: 700, color: 'var(--isme-red)', textDecoration: 'none' }}>Chi tiết →</Link>
               </div>
             </div>
             
             <div style={{ padding: 0, overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead style={{ background: 'var(--gray-50)', color: 'var(--gray-500)', textAlign: 'left' }}>
                   <tr>
                     <th style={{ padding: '10px 16px', fontWeight: 600 }}>Tên lớp/môn</th>
@@ -325,42 +325,42 @@ export default function StaffDashboard() {
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
                           {c.isAttendanceNA ? (
-                            <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
                           ) : (
                             <>
                               <div style={{ fontWeight: 600, color: c.attendanceRate >= c.attendanceTarget ? '#10B981' : '#EF4444' }}>
                                 {Math.round(c.attendanceRate * 1000) / 10}%
                               </div>
-                              <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {Math.round(c.attendanceTarget * 1000) / 10}%</div>
+                              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>MT: {Math.round(c.attendanceTarget * 1000) / 10}%</div>
                             </>
                           )}
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
                           {c.isPassNA ? (
-                            <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
                           ) : (
                             <>
                               <div style={{ fontWeight: 600, color: c.passRate >= c.passTarget ? '#10B981' : '#EF4444' }}>
                                 {Math.round(c.passRate * 1000) / 10}%
                               </div>
-                              <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {Math.round(c.passTarget * 1000) / 10}%</div>
+                              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>MT: {Math.round(c.passTarget * 1000) / 10}%</div>
                             </>
                           )}
                         </td>
                         <td style={{ padding: '10px 10px', textAlign: 'center' }}>
                           {c.isSubmitNA ? (
-                            <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span>
                           ) : (
                             <>
                               <div style={{ fontWeight: 600, color: c.submitRate >= c.submitTarget ? '#10B981' : '#EF4444' }}>
                                 {Math.round(c.submitRate * 1000) / 10}%
                               </div>
-                              <div style={{ fontSize: 9, color: 'var(--gray-400)' }}>MT: {Math.round(c.submitTarget * 1000) / 10}%</div>
+                              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>MT: {Math.round(c.submitTarget * 1000) / 10}%</div>
                             </>
                           )}
                         </td>
                         <td style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: avgComp === null ? '#64748B' : getScoreColor(avgComp) }}>
-                          {avgComp === null ? <span style={{ fontSize: 10, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span> : `${avgComp}%`}
+                          {avgComp === null ? <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '1px 5px', borderRadius: 4 }}>N/A</span> : `${avgComp}%`}
                         </td>
                       </tr>
                     );
@@ -378,7 +378,7 @@ export default function StaffDashboard() {
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 10, background: 'var(--gray-50)' }}>
               <BookOpen size={18} color="var(--isme-red)" />
-              <span style={{ fontSize: 14, fontWeight: 700 }}>4. Các hoạt động khác (10%)</span>
+              <span style={{ fontSize: 13, fontWeight: 700 }}>4. Các hoạt động khác (10%)</span>
             </div>
             <div style={{ padding: 0 }}>
               {otherSnaps.map((kpi, i) => {
@@ -387,8 +387,8 @@ export default function StaffDashboard() {
                   <div key={kpi.id} style={{ padding: '14px 20px', borderBottom: i < otherSnaps.length - 1 ? '1px solid var(--gray-50)' : 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
                     <CircularProgress value={kpi.score} size={36} strokeWidth={3} color={getScoreColor(kpi.score)} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-800)' }}>{def?.name}</div>
-                      <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Thực tế: {kpi.actualValue} / {kpi.targetValue}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-800)' }}>{def?.name}</div>
+                      <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Thực tế: {kpi.actualValue} / {kpi.targetValue}</div>
                     </div>
                   </div>
                 );
@@ -401,7 +401,7 @@ export default function StaffDashboard() {
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 10, background: openQuestions.length > 0 ? 'linear-gradient(135deg, #F5F3FF, #EDE9FE)' : undefined }}>
               <MessageCircleQuestion size={18} color="#7C3AED" />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: openQuestions.length > 0 ? '#5B21B6' : 'var(--gray-700)' }}>Phản hồi quản lý</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: openQuestions.length > 0 ? '#5B21B6' : 'var(--gray-700)' }}>Phản hồi quản lý</div>
               </div>
             </div>
             <div style={{ maxHeight: 300, overflowY: 'auto' }}>
@@ -411,11 +411,11 @@ export default function StaffDashboard() {
                 <div key={q.id} style={{ padding: '12px 16px', borderBottom: i < myQuestions.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{q.subject}</div>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: q.status === 'open' ? '#FEE2E2' : '#D1FAE5', color: q.status === 'open' ? '#DC2626' : '#059669' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: q.status === 'open' ? '#FEE2E2' : '#D1FAE5', color: q.status === 'open' ? '#DC2626' : '#059669' }}>
                       {q.status === 'open' ? 'Chờ trả lời' : 'Đã trả lời'}
                     </span>
                   </div>
-                  <div style={{ fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.4, marginBottom: 8 }}>{q.question}</div>
+                  <div style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.4, marginBottom: 8 }}>{q.question}</div>
                   {q.status === 'open' && (
                     <button onClick={() => setExpandedQ(expandedQ === q.id ? null : q.id)} style={{ fontSize: 11, fontWeight: 700, color: '#7C3AED', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
                       Phản hồi ngay →
@@ -424,7 +424,7 @@ export default function StaffDashboard() {
                   {expandedQ === q.id && (
                     <div style={{ marginTop: 10 }}>
                       <textarea placeholder="Nhập câu trả lời..." value={answerText[q.id] || ''} onChange={e => setAnswerText(p => ({ ...p, [q.id]: e.target.value }))} rows={3}
-                        style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #DDD6FE', fontSize: 12, resize: 'none', outline: 'none' }} />
+                        style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #DDD6FE', fontSize: 13, resize: 'none', outline: 'none' }} />
                       <button onClick={() => { if (answerText[q.id]?.trim()) { answerQuestion(q.id, answerText[q.id].trim()); addAuditLog(currentUserId, 'Trả lời phản hồi', `Đã trả lời câu hỏi của quản lý về "${q.subject}": "${answerText[q.id].trim()}"`); setAnswerText(p => ({ ...p, [q.id]: '' })); setExpandedQ(null); } }}
                         style={{ marginTop: 6, width: '100%', padding: '6px', borderRadius: 6, border: 'none', background: '#7C3AED', color: 'white', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
                         Gửi câu trả lời
@@ -442,7 +442,7 @@ export default function StaffDashboard() {
       <div className="card" style={{ padding: 0, overflow: 'hidden', marginTop: 24 }}>
         <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: 10 }}>
           <Bell size={18} color="#F59E0B" />
-          <span style={{ fontSize: 15, fontWeight: 700 }}>Thông báo hệ thống</span>
+          <span style={{ fontSize: 13, fontWeight: 700 }}>Thông báo hệ thống</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
           {notifications.slice(0, 3).map((n, i) => {
@@ -456,7 +456,7 @@ export default function StaffDashboard() {
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: iconColor, marginTop: 4, flexShrink: 0 }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>{n.title}</div>
-                    <div style={{ fontSize: 12, color: 'var(--gray-500)', lineHeight: 1.5 }}>{n.message}</div>
+                    <div style={{ fontSize: 13, color: 'var(--gray-500)', lineHeight: 1.5 }}>{n.message}</div>
                   </div>
                 </div>
               </div>

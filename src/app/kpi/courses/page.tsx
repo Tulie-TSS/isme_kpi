@@ -117,10 +117,10 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
     <PortalModal isOpen={true} onClose={onDone} maxWidth={480}>
       <div style={{ padding: '16px 20px', background: 'linear-gradient(135deg, var(--isme-red), var(--isme-red-light))', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
+          <div style={{ color: 'white', fontWeight: 700, fontSize: 13 }}>
             {isDirectEdit ? 'Cập nhật trực tiếp số liệu' : 'Yêu cầu chỉnh sửa số liệu'}
           </div>
-          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12 }}>{course.name} — {fieldLabel}</div>
+          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>{course.name} — {fieldLabel}</div>
         </div>
         <button onClick={onDone} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: 8, padding: 6, cursor: 'pointer', display: 'flex' }}>
           <X size={16} color="white" />
@@ -133,7 +133,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
             <Clock size={18} color="#F59E0B" style={{ flexShrink: 0, marginTop: 2 }} />
             <div>
               <div style={{ fontWeight: 700, fontSize: 13, color: '#92400E' }}>Đã có yêu cầu đang chờ phê duyệt</div>
-              <div style={{ fontSize: 12, color: '#92400E', marginTop: 4 }}>
+              <div style={{ fontSize: 13, color: '#92400E', marginTop: 4 }}>
                 Đang yêu cầu sửa: <b>{pending.oldValue}</b> → <b>{pending.newValue}</b>
               </div>
               <div style={{ fontSize: 11, color: '#B45309', marginTop: 4, fontStyle: 'italic' }}>"{pending.reason}"</div>
@@ -143,7 +143,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
       ) : (
         <div style={{ padding: 20 }}>
           {!isDirectEdit && (
-            <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 12, marginBottom: 16 }}>
+            <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', color: '#1E40AF', borderRadius: 10, padding: 12, fontSize: 13, marginBottom: 16 }}>
               💡 Bản tự đánh giá đã nộp hoặc được duyệt. Thay đổi này cần nêu rõ lý do và sẽ được áp dụng sau khi quản lý phê duyệt.
             </div>
           )}
@@ -152,11 +152,11 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Giá trị hiện tại</div>
-                <div style={{ fontSize: 24, fontWeight: 700 }}>
+                <div style={{ fontSize: 20, fontWeight: 700 }}>
                   {isNA ? 'N/A' : isCountField ? currentValue : `${currentValue}%`}
                 </div>
               </div>
-              <div style={{ fontSize: 20, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
+              <div style={{ fontSize: 18, color: 'var(--gray-300)', paddingTop: 18 }}>→</div>
               <div>
                 <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>
                   {isCountField ? 'Giá trị mới (Số lượng)' : 'Giá trị mới (%)'}
@@ -172,7 +172,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
                   onChange={e => setVal(parseFloat(e.target.value) || 0)}
                   style={{ 
                     width: 130, padding: '8px 12px', borderRadius: 8, 
-                    border: '2px solid var(--gray-200)', fontSize: 16, fontWeight: 700, 
+                    border: '2px solid var(--gray-200)', fontSize: 13, fontWeight: 700, 
                     outline: 'none', background: isNAChecked ? 'var(--gray-100)' : 'white'
                   }}
                   onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
@@ -211,10 +211,10 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
             </div>
           )}
 
-          {err && <div style={{ background: '#FEE2E2', color: '#991B1B', padding: '8px 12px', borderRadius: 8, fontSize: 12, marginBottom: 12 }}>{err}</div>}
+          {err && <div style={{ background: '#FEE2E2', color: '#991B1B', padding: '8px 12px', borderRadius: 8, fontSize: 13, marginBottom: 12 }}>{err}</div>}
           
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-            <button onClick={onDone} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
+            <button onClick={onDone} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid var(--gray-200)', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Huỷ</button>
             <button 
               onClick={handleSubmit} 
               disabled={val === currentValue && isNAChecked === isNA} 
@@ -222,7 +222,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
                 padding: '8px 20px', 
                 borderRadius: 8, 
                 border: 'none', 
-                fontSize: 12, 
+                fontSize: 13, 
                 fontWeight: 700, 
                 cursor: (val !== currentValue || isNAChecked !== isNA) ? 'pointer' : 'not-allowed',
                 background: (val !== currentValue || isNAChecked !== isNA) ? 'var(--isme-red)' : 'var(--gray-200)', 
@@ -264,7 +264,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
       <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(135deg, rgba(59,130,246,0.06), rgba(245,158,11,0.06))' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Edit3 size={16} color="var(--isme-red)" />
-          <span style={{ fontWeight: 700, fontSize: 14 }}>Yêu cầu sửa đổi thông tin môn học</span>
+          <span style={{ fontWeight: 700, fontSize: 13 }}>Yêu cầu sửa đổi thông tin môn học</span>
           {pendingCount > 0 && <span style={{ background: '#F59E0B', color: 'white', borderRadius: 20, padding: '2px 8px', fontSize: 11, fontWeight: 700 }}>{pendingCount}</span>}
         </div>
       </div>
@@ -291,7 +291,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
                 <span style={{ color: 'var(--gray-300)', margin: '0 4px' }}>→</span>
                 <span style={{ color: '#2563EB' }}>{newDisplay}</span>
               </span>
-              <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 10, fontWeight: 600, background: st.bg, color: st.color, marginLeft: 8 }}>{st.label}</span>
+              <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, background: st.bg, color: st.color, marginLeft: 8 }}>{st.label}</span>
             </div>
             {isOpen && (
               <div style={{ padding: '0 20px 14px 40px', background: 'var(--gray-50)' }}>
@@ -300,7 +300,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
                   <div style={{ fontSize: 13, color: 'var(--gray-700)', marginBottom: 8 }}>{r.reason}</div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Thời gian gửi: {r.requestedAt}</div>
                   {r.status !== 'pending' && (
-                    <div style={{ borderRadius: 6, padding: 10, marginTop: 8, fontSize: 12, color: st.color, background: st.bg }}>
+                    <div style={{ borderRadius: 6, padding: 10, marginTop: 8, fontSize: 13, color: st.color, background: st.bg }}>
                       {r.status === 'approved' ? '✓ Đã phê duyệt' : '✗ Đã từ chối'} bởi {reviewer?.name} — {r.reviewedAt}
                       {r.reviewNote && <div style={{ fontStyle: 'italic', marginTop: 4 }}>Ghi chú: "{r.reviewNote}"</div>}
                     </div>
@@ -308,7 +308,7 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
                   {r.status === 'pending' && isManager && (
                     <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 10, marginTop: 8 }}>
                       <textarea placeholder="Nhập ghi chú phản hồi (bắt buộc khi từ chối)..." value={notes[r.id] || ''} onChange={e => setNotes(p => ({ ...p, [r.id]: e.target.value }))} rows={2}
-                        style={{ width: '100%', padding: '6px 10px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 12, resize: 'none', outline: 'none', fontFamily: 'inherit', marginBottom: 8 }} />
+                        style={{ width: '100%', padding: '6px 10px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', marginBottom: 8 }} />
                       <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                         <button onClick={() => { if (!notes[r.id]?.trim()) { alert('Nhập lý do từ chối'); return; } rejectCourseEditRequest(r.id, userId, notes[r.id]); }}
                           style={{ padding: '6px 14px', borderRadius: 6, border: '1px solid #FCA5A5', background: '#FEE2E2', color: '#DC2626', fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
@@ -741,12 +741,12 @@ export default function KPICoursePage() {
       {/* Compact Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Bảng KPI Môn học</h1>
+          <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Bảng KPI Môn học</h1>
           {coordinator && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--gray-100)', padding: '4px 10px', borderRadius: 6, border: '1px solid var(--gray-200)' }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--gray-700)' }}>Coordinator: {coordinator.name}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-700)' }}>Coordinator: {coordinator.name}</span>
               <span style={{ 
-                fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, 
+                fontSize: 11, fontWeight: 700, padding: '2px 6px', borderRadius: 4, 
                 background: assessmentStatus === 'approved' ? '#D1FAE5' : assessmentStatus === 'submitted' ? '#FEF3C7' : '#F3F4F6',
                 color: assessmentStatus === 'approved' ? '#065F46' : assessmentStatus === 'submitted' ? '#B45309' : '#374151'
               }}>
@@ -760,7 +760,7 @@ export default function KPICoursePage() {
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Lọc theo Hệ / Ngành */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ:</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ:</span>
             <select
               value={selectedHe}
               onChange={e => {
@@ -771,7 +771,7 @@ export default function KPICoursePage() {
                   setSelectedProgram(progsInHe[0].id);
                 }
               }}
-              style={{ border: 'none', background: 'transparent', fontSize: 12, fontWeight: 700, color: 'var(--isme-red)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
+              style={{ border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: 'var(--isme-red)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
             >
               <option value="all">Tất cả các hệ</option>
               <option value="degree">Cử nhân Chính quy</option>
@@ -782,7 +782,7 @@ export default function KPICoursePage() {
 
           {/* Lọc theo Người phụ trách */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ:</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ:</span>
             <select
               value={coordinator?.id || ''}
               onChange={e => {
@@ -792,7 +792,7 @@ export default function KPICoursePage() {
                   if (coord.he) setSelectedHe(coord.he);
                 }
               }}
-              style={{ border: 'none', background: 'transparent', fontSize: 12, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
+              style={{ border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
             >
               <option value="">Chọn cán bộ...</option>
               {filteredCoordinators.map(c => (
@@ -814,7 +814,7 @@ export default function KPICoursePage() {
                 setSelectedHe(prog.type);
               }
             }}
-            style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: 'white', color: 'var(--gray-900)' }}
+            style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 700, cursor: 'pointer', background: 'white', color: 'var(--gray-900)' }}
           >
             {filteredPrograms.map(p => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -823,11 +823,11 @@ export default function KPICoursePage() {
 
           {/* Cohort / Class Dropdown */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'white', border: '1px solid var(--gray-200)', borderRadius: 8, padding: '2px 4px 2px 8px' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Lớp:</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Lớp:</span>
             <select 
               value={selectedCohort} 
               onChange={e => setSelectedCohort(e.target.value)}
-              style={{ border: 'none', background: 'transparent', fontSize: 12, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
+              style={{ border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', cursor: 'pointer', outline: 'none', padding: '6px 4px' }}
             >
               <option value="all">Tất cả các lớp</option>
               {uniqueCohorts.map(coh => (
@@ -837,7 +837,7 @@ export default function KPICoursePage() {
           </div>
 
           {/* Export button */}
-          <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 12, padding: '7px 14px' }}>
+          <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 13, padding: '7px 14px' }}>
             <Download size={13} /> Xuất Excel
           </button>
         </div>
@@ -863,7 +863,7 @@ export default function KPICoursePage() {
                 padding: '5px 11px',
                 borderRadius: 6,
                 border: 'none',
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 600,
                 cursor: 'pointer',
                 background: filterSemester === tab.id ? 'white' : 'transparent',
@@ -920,7 +920,7 @@ export default function KPICoursePage() {
 
       {/* Main Table */}
       <div className="card" style={{ padding: 0, overflow: 'auto', borderRadius: 12, border: '1px solid var(--gray-200)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 1400 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1400 }}>
           <thead>
             <tr style={{ background: '#1E293B', color: 'white' }}>
               <th rowSpan={2} style={thStyle}>Lớp</th>
@@ -974,14 +974,14 @@ export default function KPICoursePage() {
                   <tr key={c.id + '_' + ci} style={{ background: isCurrent ? 'rgba(59,130,246,0.02)' : ci % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
                     <td style={{ ...tdStyle, fontWeight: 700, color: 'var(--gray-700)' }}>
                       {c.displayCohort || c.cohort}
-                      {isCurrent && <span style={{ display: 'block', fontSize: 9, color: '#2563EB', background: '#DBEAFE', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 600 }}>Kỳ này</span>}
-                      {isFuture && <span style={{ display: 'block', fontSize: 9, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 500 }}>Chưa học</span>}
+                      {isCurrent && <span style={{ display: 'block', fontSize: 11, color: '#2563EB', background: '#DBEAFE', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 600 }}>Kỳ này</span>}
+                      {isFuture && <span style={{ display: 'block', fontSize: 11, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '1px 4px', borderRadius: 4, marginTop: 2, fontWeight: 500 }}>Chưa học</span>}
                     </td>
                     <td style={{ ...tdStyle, color: 'var(--gray-600)', fontWeight: 500 }}>{formatSemester(c.semester)}</td>
                     <td style={{ ...tdStyle, textAlign: 'left', fontWeight: 500, paddingLeft: 16 }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span style={{ color: isFuture ? 'var(--gray-400)' : 'var(--gray-800)', fontSize: 13, fontWeight: isCurrent ? 700 : 500 }}>{c.name}</span>
-                        {c.code && <span style={{ color: 'var(--gray-400)', fontSize: 10 }}>Mã: {c.code} · Năm {c.year}</span>}
+                        {c.code && <span style={{ color: 'var(--gray-400)', fontSize: 11 }}>Mã: {c.code} · Năm {c.year}</span>}
                       </div>
                     </td>
                     
@@ -1068,7 +1068,7 @@ export default function KPICoursePage() {
                     {/* Course Avg Completion */}
                     <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : avgComp === null ? '#64748B' : getScoreColor(avgComp!), fontWeight: 700, fontSize: 13 }}>
                       {isFuture ? (
-                        <span style={{ fontSize: 10, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '2px 6px', borderRadius: 4, fontWeight: 500 }}>Chưa bắt đầu</span>
+                        <span style={{ fontSize: 11, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '2px 6px', borderRadius: 4, fontWeight: 500 }}>Chưa bắt đầu</span>
                       ) : avgComp === null ? (
                         <span style={{ fontSize: 11, color: '#64748B', background: '#E2E8F0', padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>N/A</span>
                       ) : (
@@ -1092,7 +1092,7 @@ export default function KPICoursePage() {
           { color: 'var(--isme-red)', bg: 'white', label: '✏️ Bấm bút để sửa số liệu (Số GV, Số SV, tỷ lệ %, chọn N/A)' },
           { color: '#F59E0B', bg: 'white', label: '⏳ Có yêu cầu thay đổi đang chờ duyệt' },
         ].map(l => (
-          <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--gray-600)' }}>
+          <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--gray-600)' }}>
             <span style={{ width: 14, height: 14, borderRadius: 4, background: l.bg, border: `1px solid ${l.color}`, display: 'inline-block' }} />
             <span>{l.label}</span>
           </div>
@@ -1123,11 +1123,11 @@ const thStyle: React.CSSProperties = {
 };
 
 const subThStyle: React.CSSProperties = {
-  padding: '6px 8px', fontSize: 10, fontWeight: 500, whiteSpace: 'nowrap',
+  padding: '6px 8px', fontSize: 11, fontWeight: 500, whiteSpace: 'nowrap',
   border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', color: 'rgba(255,255,255,0.85)',
 };
 
 const tdStyle: React.CSSProperties = {
-  padding: '7px 10px', fontSize: 12, textAlign: 'center',
+  padding: '7px 10px', fontSize: 13, textAlign: 'center',
   borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap',
 };

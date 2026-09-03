@@ -91,7 +91,7 @@ export default function Header() {
         >
           <Menu size={22} />
         </button>
-        <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--gray-800)', margin: 0 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-800)', margin: 0 }}>
           {currentRole === 'staff' ? 'Việc của tôi' : currentRole === 'manager' ? 'Quản lý đội ngũ' : 'Quản trị hệ thống'}
         </h2>
       </div>
@@ -101,7 +101,7 @@ export default function Header() {
         <div style={{
           display: 'flex', alignItems: 'center', gap: 6,
           padding: '5px 12px', borderRadius: 8,
-          background: 'var(--gray-100)', fontSize: 12, fontWeight: 600,
+          background: 'var(--gray-100)', fontSize: 13, fontWeight: 600,
           color: roleColors[currentRole]
         }}>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: roleColors[currentRole] }} />
@@ -117,7 +117,7 @@ export default function Header() {
           >
             <Bell size={20} color="var(--gray-500)" style={{ transition: 'color 0.15s' }} />
             {unreadCount > 0 && (
-              <span className="badge" style={{ position: 'absolute', top: 2, right: 2, minWidth: 16, height: 16, fontSize: 10, padding: '0 4px', animation: 'pulse-soft 2s ease-in-out infinite' }}>{unreadCount}</span>
+              <span className="badge" style={{ position: 'absolute', top: 2, right: 2, minWidth: 16, height: 16, fontSize: 11, padding: '0 4px', animation: 'pulse-soft 2s ease-in-out infinite' }}>{unreadCount}</span>
             )}
           </button>
           {showNotif && (
@@ -131,7 +131,7 @@ export default function Header() {
               {/* Header */}
               <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700 }}>Thông báo</span>
+                  <span style={{ fontSize: 13, fontWeight: 700 }}>Thông báo</span>
                   {unreadCount > 0 && <span style={{ fontSize: 11, background: 'var(--isme-red)', color: 'white', padding: '2px 10px', borderRadius: 20, fontWeight: 700 }}>{unreadCount} mới</span>}
                 </div>
                 {unreadCount > 0 && (
@@ -145,7 +145,7 @@ export default function Header() {
               <div style={{ display: 'flex', gap: 4, padding: '8px 16px', borderBottom: '1px solid var(--gray-100)', overflowX: 'auto' }}>
                 {categoryFilter.map(cf => (
                   <button key={cf.key} onClick={() => setNotifCategory(cf.key)}
-                    style={{ fontSize: 12, padding: '6px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', lineHeight: 1.2, background: notifCategory === cf.key ? 'var(--isme-red)' : 'var(--gray-100)', color: notifCategory === cf.key ? 'white' : 'var(--gray-500)' }}>
+                    style={{ fontSize: 13, padding: '6px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap', lineHeight: 1.2, background: notifCategory === cf.key ? 'var(--isme-red)' : 'var(--gray-100)', color: notifCategory === cf.key ? 'white' : 'var(--gray-500)' }}>
                     {cf.label}
                   </button>
                 ))}
@@ -154,7 +154,7 @@ export default function Header() {
               {/* Detail View or List */}
               {selectedNotif ? (
                 <div style={{ flex: 1, overflowY: 'auto', padding: 20 }}>
-                  <button onClick={() => setSelectedNotif(null)} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--gray-400)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: 12 }}>
+                  <button onClick={() => setSelectedNotif(null)} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'var(--gray-400)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: 12 }}>
                     ← Quay lại
                   </button>
                   <div style={{ padding: 16, borderRadius: 12, background: priorityConfig[selectedNotif.priority]?.bg || '#F3F4F6', border: `1px solid ${priorityConfig[selectedNotif.priority]?.border || '#E5E7EB'}`, marginBottom: 16 }}>
@@ -163,7 +163,7 @@ export default function Header() {
                       <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--gray-500)' }}>{priorityConfig[selectedNotif.priority]?.label}</span>
                       <span style={{ fontSize: 11, color: 'var(--gray-400)', marginLeft: 'auto' }}>{timeAgo(selectedNotif.createdAt)}</span>
                     </div>
-                    <h4 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{selectedNotif.title}</h4>
+                    <h4 style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>{selectedNotif.title}</h4>
                     <p style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.6, margin: 0 }}>{selectedNotif.message}</p>
                   </div>
                   {selectedNotif.actionUrl && (
@@ -184,16 +184,16 @@ export default function Header() {
                         onMouseEnter={e => { e.currentTarget.style.background = 'var(--gray-50)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = n.read ? 'white' : 'rgba(155,27,48,0.03)'; }}>
                         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                          <span style={{ fontSize: 14, marginTop: 2 }}>{priorityConfig[n.priority]?.icon}</span>
+                          <span style={{ fontSize: 13, marginTop: 2 }}>{priorityConfig[n.priority]?.icon}</span>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
                               <span style={{ fontSize: 13, fontWeight: n.read ? 500 : 700 }}>{n.title}</span>
                               {!n.read && <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--isme-red)', flexShrink: 0 }} />}
                             </div>
-                            <div style={{ fontSize: 12, color: 'var(--gray-500)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.message}</div>
+                            <div style={{ fontSize: 13, color: 'var(--gray-500)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.message}</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                              <span style={{ fontSize: 10, color: 'var(--gray-400)' }}>{timeAgo(n.createdAt)}</span>
-                              {n.actionLabel && <span style={{ fontSize: 10, color: 'var(--isme-red)', fontWeight: 600 }}>{n.actionLabel} →</span>}
+                              <span style={{ fontSize: 11, color: 'var(--gray-400)' }}>{timeAgo(n.createdAt)}</span>
+                              {n.actionLabel && <span style={{ fontSize: 11, color: 'var(--isme-red)', fontWeight: 600 }}>{n.actionLabel} →</span>}
                             </div>
                           </div>
                         </div>
@@ -240,8 +240,8 @@ export default function Header() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div className="avatar" style={{ background: avatarColors[colorIndex], width: 48, height: 48, fontSize: 18, fontWeight: 700 }}>{initials}</div>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-900)' }}>{user?.name}</div>
-                    <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>{user?.email}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>{user?.name}</div>
+                    <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>{user?.email}</div>
                   </div>
                 </div>
               </div>

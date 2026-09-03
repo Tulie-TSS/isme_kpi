@@ -63,7 +63,7 @@ export default function Sidebar() {
             <GraduationCap size={22} color="white" />
           </div>
           <div>
-            <div style={{ color: 'white', fontWeight: 700, fontSize: 16 }}>ISME Ops</div>
+            <div style={{ color: 'white', fontWeight: 700, fontSize: 13 }}>ISME Ops</div>
             <div style={{ color: 'var(--gray-500)', fontSize: 11, fontWeight: 500 }}>Operations & KPI</div>
           </div>
           <button

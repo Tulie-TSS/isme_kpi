@@ -31,8 +31,8 @@ export default function SchedulePage() {
       {/* Top Header Bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Lịch làm việc & Giờ họp</h1>
-          <p style={{ fontSize: 12, color: 'var(--gray-500)', margin: '2px 0 0 0' }}>
+          <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, color: 'var(--gray-900)' }}>Lịch làm việc & Giờ họp</h1>
+          <p style={{ fontSize: 13, color: 'var(--gray-500)', margin: '2px 0 0 0' }}>
             Tuần bắt đầu {nextMonday} · Cập nhật bởi {user?.name || 'Admin'}
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function SchedulePage() {
           <button
             onClick={() => setActiveTab('my')}
             style={{
-              border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
               background: activeTab === 'my' ? 'white' : 'transparent',
               color: activeTab === 'my' ? 'var(--gray-900)' : 'var(--gray-500)',
               boxShadow: activeTab === 'my' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
@@ -57,7 +57,7 @@ export default function SchedulePage() {
             <button
               onClick={() => setActiveTab('team')}
               style={{
-                border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                border: 'none', borderRadius: 8, padding: '7px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                 background: activeTab === 'team' ? 'white' : 'transparent',
                 color: activeTab === 'team' ? 'var(--gray-900)' : 'var(--gray-500)',
                 boxShadow: activeTab === 'team' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
@@ -152,7 +152,7 @@ function MyScheduleTab({ userId, nextMonday, weekDates }: { userId: string; next
       <div className="card" style={{ padding: 0, overflow: 'hidden', borderRadius: 14 }}>
         <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC' }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)' }}>Bảng đánh dấu lịch rảnh / bận cá nhân</div>
-          <div style={{ fontSize: 12, color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div style={{ fontSize: 13, color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: 16 }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ width: 12, height: 12, borderRadius: 3, background: '#FEE2E2', border: '1px solid #FCA5A5' }} /> Bận
             </span>
@@ -168,7 +168,7 @@ function MyScheduleTab({ userId, nextMonday, weekDates }: { userId: string; next
                 <th style={{ padding: '10px 14px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', width: 90 }}>Giờ</th>
                 {weekDates.map(wd => (
                   <th key={wd.date} style={{ padding: '10px 14px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-700)' }}>
-                    {wd.dayLabel} <span style={{ fontWeight: 500, fontSize: 10, color: 'var(--gray-400)' }}>({wd.date.slice(5)})</span>
+                    {wd.dayLabel} <span style={{ fontWeight: 500, fontSize: 11, color: 'var(--gray-400)' }}>({wd.date.slice(5)})</span>
                   </th>
                 ))}
               </tr>
@@ -253,10 +253,10 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
       <div style={{ background: 'white', border: '1px solid var(--gray-200)', borderRadius: 14, padding: '16px 20px', marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>
               Tình trạng cập nhật lịch làm việc
             </div>
-            <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>
               Đã có <strong>{updatedCount}/{totalPeople} nhân sự ({percentUpdated}%)</strong> hoàn tất cập nhật lịch tuần tới
             </div>
           </div>
@@ -329,7 +329,7 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
       <div className="card" style={{ padding: 0, overflow: 'hidden', borderRadius: 14 }}>
         <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC' }}>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>Ma trận Rảnh / Bận theo khung giờ (Heatmap)</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>Ma trận Rảnh / Bận theo khung giờ (Heatmap)</div>
             <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>Bấm vào ô để xem danh sách nhân sự bận / rảnh chi tiết</div>
           </div>
 
@@ -356,8 +356,8 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
               <tr style={{ background: '#F1F5F9', borderBottom: '2px solid var(--gray-200)' }}>
                 <th style={{ padding: '10px 14px', textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'var(--gray-600)', width: 90 }}>Khung giờ</th>
                 {weekDates.map(wd => (
-                  <th key={wd.date} style={{ padding: '10px 14px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: 'var(--gray-800)' }}>
-                    {wd.dayLabel} <span style={{ fontWeight: 500, fontSize: 10, color: 'var(--gray-400)' }}>({wd.date.slice(5)})</span>
+                  <th key={wd.date} style={{ padding: '10px 14px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: 'var(--gray-800)' }}>
+                    {wd.dayLabel} <span style={{ fontWeight: 500, fontSize: 11, color: 'var(--gray-400)' }}>({wd.date.slice(5)})</span>
                   </th>
                 ))}
               </tr>
@@ -394,7 +394,7 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
                         <div style={{ fontSize: 13, fontWeight: 700, color: style.text }}>
                           {style.label}
                         </div>
-                        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>
+                        <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>
                           {slot.busyCount > 0 ? `${slot.busyCount} bận` : '0 bận'}
                         </div>
                       </td>
@@ -413,8 +413,8 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
           <div style={{ padding: '24px 28px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, borderBottom: '1px solid var(--gray-100)', paddingBottom: 14 }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--gray-900)' }}>{selectedSlot.dayLabel} — {selectedSlot.hourLabel}</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>{selectedSlot.dayLabel} — {selectedSlot.hourLabel}</div>
+                <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>
                   Tổng <strong style={{ color: '#059669' }}>{selectedSlot.freeCount} rảnh</strong> · <strong style={{ color: '#DC2626' }}>{selectedSlot.busyCount} bận</strong> trong số {selectedSlot.totalPeople} nhân sự
                 </div>
               </div>
@@ -425,12 +425,12 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
             {selectedSlot.freeUsers.length > 0 && (
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#059669', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#059669', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
                   <CheckCircle size={14} color="#059669" /> Nhân sự rảnh ({selectedSlot.freeUsers.length})
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
                   {selectedSlot.freeUsers.map(name => (
-                    <div key={name} style={{ padding: '6px 10px', borderRadius: 6, background: '#ECFDF5', border: '1px solid #A7F3D0', fontSize: 12, color: '#047857', fontWeight: 600 }}>
+                    <div key={name} style={{ padding: '6px 10px', borderRadius: 6, background: '#ECFDF5', border: '1px solid #A7F3D0', fontSize: 13, color: '#047857', fontWeight: 600 }}>
                       {name}
                     </div>
                   ))}
@@ -440,12 +440,12 @@ function TeamScheduleTab({ nextMonday, weekDates }: { nextMonday: string; weekDa
 
             {selectedSlot.busyUsers.length > 0 && (
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#DC2626', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#DC2626', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
                   <AlertTriangle size={14} color="#DC2626" /> Nhân sự bận ({selectedSlot.busyUsers.length})
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
                   {selectedSlot.busyUsers.map(name => (
-                    <div key={name} style={{ padding: '6px 10px', borderRadius: 6, background: '#FFF1F2', border: '1px solid #FECDD3', fontSize: 12, color: '#BE123C', fontWeight: 600 }}>
+                    <div key={name} style={{ padding: '6px 10px', borderRadius: 6, background: '#FFF1F2', border: '1px solid #FECDD3', fontSize: 13, color: '#BE123C', fontWeight: 600 }}>
                       {name}
                     </div>
                   ))}

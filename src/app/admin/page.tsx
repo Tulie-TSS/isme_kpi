@@ -174,10 +174,10 @@ export default function AdminPortal() {
         }}>
           <ShieldAlert size={40} />
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--gray-900)', letterSpacing: '-0.02em', marginBottom: 8 }}>
+        <h1 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)', letterSpacing: '-0.02em', marginBottom: 8 }}>
           Quyền truy cập bị hạn chế
         </h1>
-        <p style={{ color: 'var(--gray-500)', maxWidth: 450, fontSize: 15, lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--gray-500)', maxWidth: 450, fontSize: 13, lineHeight: 1.6 }}>
           Khu vực này chỉ dành cho tài khoản <b>Admin gốc (Root Admin)</b> của hệ thống ISME Ops OS. Bạn không có quyền truy cập trang này.
         </p>
       </div>
@@ -431,7 +431,7 @@ export default function AdminPortal() {
           color: 'white', padding: '16px 24px', borderRadius: 16,
           boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
           display: 'flex', alignItems: 'center', gap: 12, fontWeight: 700,
-          animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)', fontSize: 14,
+          animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)', fontSize: 13,
         }}>
           {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertTriangle size={20} />}
           {toast.message}
@@ -448,10 +448,10 @@ export default function AdminPortal() {
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--isme-red)' }} />
             Root Admin Space
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)', marginTop: 4 }}>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)', marginTop: 4 }}>
             Quản trị Hệ thống
           </h1>
-          <p style={{ color: 'var(--gray-500)', fontSize: 14, marginTop: 4 }}>
+          <p style={{ color: 'var(--gray-500)', fontSize: 13, marginTop: 4 }}>
             Kết nối trực tiếp Supabase Database. Xem, thêm, sửa, xóa toàn bộ thực thể vận hành.
           </p>
         </div>
@@ -493,7 +493,7 @@ export default function AdminPortal() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 8, padding: '14px 20px',
                 border: 'none', borderBottom: isActive ? '3px solid var(--isme-red)' : '3px solid transparent',
-                background: 'none', cursor: 'pointer', fontSize: 15, fontWeight: isActive ? 800 : 500,
+                background: 'none', cursor: 'pointer', fontSize: 13, fontWeight: isActive ? 800 : 500,
                 color: isActive ? 'var(--gray-900)' : 'var(--gray-500)', transition: 'all 0.15s ease',
                 whiteSpace: 'nowrap', position: 'relative', top: 1
               }}
@@ -509,7 +509,7 @@ export default function AdminPortal() {
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 280, gap: 12 }}>
           <div className="login-spinner" />
-          <div style={{ color: 'var(--gray-500)', fontSize: 14, fontWeight: 500 }}>Đang kết nối database Supabase...</div>
+          <div style={{ color: 'var(--gray-500)', fontSize: 13, fontWeight: 500 }}>Đang kết nối database Supabase...</div>
         </div>
       ) : (
         <div style={{ animation: 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
@@ -547,8 +547,8 @@ export default function AdminPortal() {
                         </div>
                       </div>
                       <div style={{ marginTop: 16 }}>
-                        <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--gray-900)' }}>{card.value}</div>
-                        <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 4, fontWeight: 500 }}>{card.desc}</div>
+                        <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>{card.value}</div>
+                        <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4, fontWeight: 500 }}>{card.desc}</div>
                       </div>
                     </div>
                   );
@@ -559,7 +559,7 @@ export default function AdminPortal() {
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, flexWrap: 'wrap' }}>
                 {/* System DB info */}
                 <div style={{ background: 'white', borderRadius: 24, padding: 32, border: '1px solid var(--gray-100)' }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-900)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <h3 style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-900)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Info size={18} color="var(--isme-red)" />
                     Thông tin Cơ sở Dữ liệu Supabase
                   </h3>
@@ -572,18 +572,18 @@ export default function AdminPortal() {
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
                         <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981' }} />
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#047857' }}>Trạng thái: Hoạt động (Connected via Connection Pooler)</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: '#047857' }}>Trạng thái: Hoạt động (Connected via Connection Pooler)</span>
                       </div>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                       <div style={{ border: '1px solid var(--gray-100)', padding: 16, borderRadius: 16 }}>
-                        <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 600 }}>Region</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>AWS ap-southeast-1 (Singapore)</div>
+                        <div style={{ fontSize: 13, color: 'var(--gray-400)', fontWeight: 600 }}>Region</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>AWS ap-southeast-1 (Singapore)</div>
                       </div>
                       <div style={{ border: '1px solid var(--gray-100)', padding: 16, borderRadius: 16 }}>
-                        <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 600 }}>SSL Mode</div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>Enabled (rejectUnauthorized: false)</div>
+                        <div style={{ fontSize: 13, color: 'var(--gray-400)', fontWeight: 600 }}>SSL Mode</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', marginTop: 2 }}>Enabled (rejectUnauthorized: false)</div>
                       </div>
                     </div>
                   </div>
@@ -597,7 +597,7 @@ export default function AdminPortal() {
                     <button onClick={openAddUser} style={{
                       display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '16px 20px', 
                       borderRadius: 16, border: 'none', background: 'rgba(59, 130, 246, 0.08)', color: '#2563EB',
-                      fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                      fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
                     }}
                     onMouseOver={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'}
                     onMouseOut={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.08)'}
@@ -609,7 +609,7 @@ export default function AdminPortal() {
                     <button onClick={openAddProgram} style={{
                       display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '16px 20px', 
                       borderRadius: 16, border: 'none', background: 'rgba(16, 185, 129, 0.08)', color: '#059669',
-                      fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                      fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
                     }}
                     onMouseOver={e => e.currentTarget.style.background = 'rgba(16, 185, 129, 0.15)'}
                     onMouseOut={e => e.currentTarget.style.background = 'rgba(16, 185, 129, 0.08)'}
@@ -621,7 +621,7 @@ export default function AdminPortal() {
                     <button onClick={openAddCourse} style={{
                       display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '16px 20px', 
                       borderRadius: 16, border: 'none', background: 'rgba(236, 72, 153, 0.08)', color: '#DB2777',
-                      fontSize: 14, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
+                      fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s',
                     }}
                     onMouseOver={e => e.currentTarget.style.background = 'rgba(236, 72, 153, 0.15)'}
                     onMouseOut={e => e.currentTarget.style.background = 'rgba(236, 72, 153, 0.08)'}
@@ -652,7 +652,7 @@ export default function AdminPortal() {
                       onChange={e => setSearchQuery(e.target.value)}
                       style={{
                         width: '100%', padding: '12px 16px 12px 48px', borderRadius: 14, border: '1px solid var(--gray-200)',
-                        fontSize: 14, outline: 'none', transition: 'all 0.2s'
+                        fontSize: 13, outline: 'none', transition: 'all 0.2s'
                       }}
                       onFocus={e => e.target.style.borderColor = 'var(--isme-red)'}
                       onBlur={e => e.target.style.borderColor = 'var(--gray-200)'}
@@ -663,7 +663,7 @@ export default function AdminPortal() {
                     onChange={e => setFilterRole(e.target.value)}
                     style={{
                       padding: '0 16px', borderRadius: 14, border: '1px solid var(--gray-200)',
-                      fontSize: 14, background: 'white', outline: 'none', minWidth: 150
+                      fontSize: 13, background: 'white', outline: 'none', minWidth: 150
                     }}
                   >
                     <option value="all">Tất cả vai trò</option>
@@ -680,7 +680,7 @@ export default function AdminPortal() {
                   onClick={openAddUser}
                   style={{
                     padding: '12px 24px', borderRadius: 14, border: 'none', background: 'linear-gradient(135deg, var(--isme-red), #991B1B)',
-                    color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                    color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
                     boxShadow: '0 10px 20px -5px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s'
                   }}
                   onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
@@ -710,18 +710,18 @@ export default function AdminPortal() {
                   <tbody>
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={9} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 14 }}>Không tìm thấy thành viên nào.</td>
+                        <td colSpan={9} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>Không tìm thấy thành viên nào.</td>
                       </tr>
                     ) : (
                       filteredUsers.map(u => (
                         <tr key={u.id} style={{ borderBottom: '1px solid var(--gray-100)', transition: 'all 0.2s' }} className="table-row-hover">
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-400)' }}>{u.id}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>{u.name}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-500)' }}>{u.email}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 600, color: 'var(--gray-600)' }}>{u.position || '—'}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14 }}>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-400)' }}>{u.id}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>{u.name}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-500)' }}>{u.email}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 600, color: 'var(--gray-600)' }}>{u.position || '—'}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13 }}>
                             <span style={{
-                              padding: '4px 10px', borderRadius: 8, fontSize: 12, fontWeight: 600,
+                              padding: '4px 10px', borderRadius: 8, fontSize: 13, fontWeight: 600,
                               background: u.role === 'admin' ? '#FEE2E2' : u.role === 'manager' ? '#FEF3C7' : '#DBEAFE',
                               color: u.role === 'admin' ? '#991B1B' : u.role === 'manager' ? '#92400E' : '#1E40AF'
                             }}>
@@ -731,12 +731,12 @@ export default function AdminPortal() {
                           <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-600)', maxWidth: 200, wordBreak: 'break-word' }}>
                             {u.roles?.join(', ') || '—'}
                           </td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-600)' }}>
+                          <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-600)' }}>
                             {getManagerName(u.managerId)}
                           </td>
-                          <td style={{ padding: '16px 20px', fontSize: 14 }}>
+                          <td style={{ padding: '16px 20px', fontSize: 13 }}>
                             <span style={{
-                              padding: '4px 10px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                              padding: '4px 10px', borderRadius: 8, fontSize: 13, fontWeight: 700,
                               background: u.active !== false ? '#D1FAE5' : '#F3F4F6',
                               color: u.active !== false ? '#065F46' : '#374151'
                             }}>
@@ -809,7 +809,7 @@ export default function AdminPortal() {
                     onChange={e => setSearchQuery(e.target.value)}
                     style={{
                       width: '100%', padding: '12px 16px 12px 48px', borderRadius: 14, border: '1px solid var(--gray-200)',
-                      fontSize: 14, outline: 'none', transition: 'all 0.2s'
+                      fontSize: 13, outline: 'none', transition: 'all 0.2s'
                     }}
                     onFocus={e => e.target.style.borderColor = 'var(--isme-red)'}
                     onBlur={e => e.target.style.borderColor = 'var(--gray-200)'}
@@ -820,7 +820,7 @@ export default function AdminPortal() {
                   onClick={openAddProgram}
                   style={{
                     padding: '12px 24px', borderRadius: 14, border: 'none', background: 'linear-gradient(135deg, var(--isme-red), #991B1B)',
-                    color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                    color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
                     boxShadow: '0 10px 20px -5px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s'
                   }}
                   onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
@@ -848,27 +848,27 @@ export default function AdminPortal() {
                   <tbody>
                     {filteredPrograms.length === 0 ? (
                       <tr>
-                        <td colSpan={8} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 14 }}>Không tìm thấy chương trình nào.</td>
+                        <td colSpan={8} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>Không tìm thấy chương trình nào.</td>
                       </tr>
                     ) : (
                       filteredPrograms.map(p => (
                         <tr key={p.id} style={{ borderBottom: '1px solid var(--gray-100)', transition: 'all 0.2s' }}>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-400)' }}>{p.id}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>{p.name}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--isme-red)' }}>{p.shortName}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14 }}>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-400)' }}>{p.id}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>{p.name}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--isme-red)' }}>{p.shortName}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13 }}>
                             <span style={{
-                              padding: '4px 10px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                              padding: '4px 10px', borderRadius: 8, fontSize: 13, fontWeight: 700,
                               background: '#F3F4F6', color: '#1F2937'
                             }}>
                               {p.type}
                             </span>
                           </td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-800)', fontWeight: 600 }}>{getManagerName(p.managerId)}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-500)' }}>{getManagerName(p.secondaryManagerId || null)}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14 }}>
+                          <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-800)', fontWeight: 600 }}>{getManagerName(p.managerId)}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-500)' }}>{getManagerName(p.secondaryManagerId || null)}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13 }}>
                             <span style={{
-                              padding: '4px 10px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                              padding: '4px 10px', borderRadius: 8, fontSize: 13, fontWeight: 700,
                               background: p.status === 'active' ? '#D1FAE5' : '#F3F4F6',
                               color: p.status === 'active' ? '#065F46' : '#374151'
                             }}>
@@ -919,7 +919,7 @@ export default function AdminPortal() {
                       onChange={e => setSearchQuery(e.target.value)}
                       style={{
                         width: '100%', padding: '12px 16px 12px 48px', borderRadius: 14, border: '1px solid var(--gray-200)',
-                        fontSize: 14, outline: 'none', transition: 'all 0.2s'
+                        fontSize: 13, outline: 'none', transition: 'all 0.2s'
                       }}
                       onFocus={e => e.target.style.borderColor = 'var(--isme-red)'}
                       onBlur={e => e.target.style.borderColor = 'var(--gray-200)'}
@@ -931,7 +931,7 @@ export default function AdminPortal() {
                     onChange={e => setFilterProgram(e.target.value)}
                     style={{
                       padding: '0 16px', borderRadius: 14, border: '1px solid var(--gray-200)',
-                      fontSize: 14, background: 'white', outline: 'none', minWidth: 150
+                      fontSize: 13, background: 'white', outline: 'none', minWidth: 150
                     }}
                   >
                     <option value="all">Tất cả chương trình</option>
@@ -945,7 +945,7 @@ export default function AdminPortal() {
                   onClick={openAddCourse}
                   style={{
                     padding: '12px 24px', borderRadius: 14, border: 'none', background: 'linear-gradient(135deg, var(--isme-red), #991B1B)',
-                    color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                    color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
                     boxShadow: '0 10px 20px -5px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s'
                   }}
                   onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
@@ -975,17 +975,17 @@ export default function AdminPortal() {
                   <tbody>
                     {filteredCourses.length === 0 ? (
                       <tr>
-                        <td colSpan={10} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 14 }}>Không tìm thấy môn học nào.</td>
+                        <td colSpan={10} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>Không tìm thấy môn học nào.</td>
                       </tr>
                     ) : (
                       filteredCourses.map(c => (
                         <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)', transition: 'all 0.2s' }}>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-400)' }}>{c.id}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>{c.name}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-800)', fontWeight: 600 }}>{getProgramName(c.programId)}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-600)', fontWeight: 500 }}>{c.cohort}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, textAlign: 'center', color: 'var(--gray-700)' }}>{c.numLecturers}</td>
-                          <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, textAlign: 'center', color: 'var(--gray-700)' }}>{c.numStudents}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-400)' }}>{c.id}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>{c.name}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-800)', fontWeight: 600 }}>{getProgramName(c.programId)}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-600)', fontWeight: 500 }}>{c.cohort}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, textAlign: 'center', color: 'var(--gray-700)' }}>{c.numLecturers}</td>
+                          <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, textAlign: 'center', color: 'var(--gray-700)' }}>{c.numStudents}</td>
                           <td style={{ padding: '16px 20px', fontSize: 13, textAlign: 'center', fontWeight: 600 }}>
                             <span style={{ color: '#047857' }}>{Math.round(c.attendanceRate * 100)}%</span>
                             <span style={{ color: 'var(--gray-400)', fontSize: 11, marginLeft: 2 }}>({Math.round(c.attendanceTarget * 100)}%)</span>
@@ -1056,9 +1056,9 @@ export default function AdminPortal() {
                             padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 700,
                             background: 'rgba(239, 68, 68, 0.1)', color: 'var(--isme-red)'
                           }}>{g.id}</span>
-                          <span style={{ fontSize: 24, fontWeight: 900, color: 'var(--gray-800)' }}>{g.weight}%</span>
+                          <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-800)' }}>{g.weight}%</span>
                         </div>
-                        <h4 style={{ fontSize: 15, fontWeight: 800, color: 'var(--gray-900)', marginTop: 12, minHeight: 40 }}>{g.name}</h4>
+                        <h4 style={{ fontSize: 13, fontWeight: 800, color: 'var(--gray-900)', marginTop: 12, minHeight: 40 }}>{g.name}</h4>
                       </div>
 
                       <div style={{ borderTop: '1px solid var(--gray-200)', marginTop: 16, paddingTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
@@ -1094,7 +1094,7 @@ export default function AdminPortal() {
                       onChange={e => setFilterGroup(e.target.value)}
                       style={{
                         padding: '0 16px', borderRadius: 14, border: '1px solid var(--gray-200)',
-                        fontSize: 14, background: 'white', outline: 'none', minWidth: 200
+                        fontSize: 13, background: 'white', outline: 'none', minWidth: 200
                       }}
                     >
                       <option value="all">Tất cả các nhóm KPI</option>
@@ -1107,7 +1107,7 @@ export default function AdminPortal() {
                       onClick={openAddDef}
                       style={{
                         padding: '12px 24px', borderRadius: 14, border: 'none', background: 'linear-gradient(135deg, var(--isme-red), #991B1B)',
-                        color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
+                        color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
                         boxShadow: '0 10px 20px -5px rgba(239, 68, 68, 0.3)', transition: 'all 0.2s'
                       }}
                       onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
@@ -1136,20 +1136,20 @@ export default function AdminPortal() {
                     <tbody>
                       {filteredDefs.length === 0 ? (
                         <tr>
-                          <td colSpan={8} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 14 }}>Không có tiêu chí KPI nào.</td>
+                          <td colSpan={8} style={{ textAlign: 'center', padding: '40px 0', color: 'var(--gray-400)', fontSize: 13 }}>Không có tiêu chí KPI nào.</td>
                         </tr>
                       ) : (
                         filteredDefs.map(d => (
                           <tr key={d.id} style={{ borderBottom: '1px solid var(--gray-100)', transition: 'all 0.2s' }}>
                             <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--isme-red)' }}>{d.groupId}</td>
-                            <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, textAlign: 'center' }}>{d.stt}</td>
-                            <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 700, color: 'var(--gray-900)' }}>{d.shortName}</td>
-                            <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-700)', maxWidth: 220, wordBreak: 'break-word' }}>
+                            <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, textAlign: 'center' }}>{d.stt}</td>
+                            <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 700, color: 'var(--gray-900)' }}>{d.shortName}</td>
+                            <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-700)', maxWidth: 220, wordBreak: 'break-word' }}>
                               <b>{d.name}</b>
-                              {d.description && <div style={{ fontSize: 12, color: 'var(--gray-450)', marginTop: 4 }}>{d.description}</div>}
+                              {d.description && <div style={{ fontSize: 13, color: 'var(--gray-450)', marginTop: 4 }}>{d.description}</div>}
                             </td>
-                            <td style={{ padding: '16px 20px', fontSize: 14, color: 'var(--gray-600)' }}>{d.unit}</td>
-                            <td style={{ padding: '16px 20px', fontSize: 14, fontWeight: 800, textAlign: 'center', color: '#047857' }}>{d.weight}%</td>
+                            <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-600)' }}>{d.unit}</td>
+                            <td style={{ padding: '16px 20px', fontSize: 13, fontWeight: 800, textAlign: 'center', color: '#047857' }}>{d.weight}%</td>
                             <td style={{ padding: '16px 20px', fontSize: 13, color: 'var(--gray-500)', maxWidth: 280, wordBreak: 'break-word' }}>{d.criteria}</td>
                             <td style={{ padding: '16px 20px', textAlign: 'center' }}>
                               <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
@@ -1191,7 +1191,7 @@ export default function AdminPortal() {
       <PortalModal isOpen={userModalOpen} onClose={() => setUserModalOpen(false)} maxWidth={640}>
         <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingUser ? 'Chỉnh sửa Thành viên' : 'Thêm Thành viên Mới'}
               </h3>
               <button onClick={() => setUserModalOpen(false)} style={{ background: 'var(--gray-50)', border: 'none', borderRadius: 10, padding: 8, cursor: 'pointer' }}>
@@ -1319,7 +1319,7 @@ export default function AdminPortal() {
                       </select>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', height: '100%', paddingTop: 20 }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                         <input 
                           type="checkbox" checked={userForm.active}
                           onChange={e => setUserForm({ ...userForm, active: e.target.checked })}
@@ -1335,7 +1335,7 @@ export default function AdminPortal() {
               {userModalTab === 'assignments' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                   <div>
-                    <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', display: 'block', marginBottom: 8 }}>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', display: 'block', marginBottom: 8 }}>
                       Chương trình Phụ trách (Program Manager)
                     </label>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'var(--gray-50)', padding: 16, borderRadius: 14, maxHeight: 160, overflowY: 'auto', border: '1px solid var(--gray-100)' }}>
@@ -1364,7 +1364,7 @@ export default function AdminPortal() {
                   </div>
 
                   <div>
-                    <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', display: 'block', marginBottom: 8 }}>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', display: 'block', marginBottom: 8 }}>
                       Môn học & Lớp phụ trách (Lecturer)
                     </label>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'var(--gray-50)', padding: 16, borderRadius: 14, maxHeight: 200, overflowY: 'auto', border: '1px solid var(--gray-100)' }}>
@@ -1401,7 +1401,7 @@ export default function AdminPortal() {
               {/* TAB 3: KPI TARGETS */}
               {userModalTab === 'kpis' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <label style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray-800)', display: 'block' }}>
+                  <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-800)', display: 'block' }}>
                     Thiết lập Chỉ tiêu KPI (Học kỳ: 2026-Q1)
                   </label>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: 380, overflowY: 'auto', paddingRight: 4 }}>
@@ -1432,7 +1432,7 @@ export default function AdminPortal() {
                                 }}
                                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid var(--gray-200)', fontSize: 13, fontWeight: 700, textAlign: 'right', outline: 'none' }}
                               />
-                              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)', width: 24 }}>{def.unit}</span>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)', width: 24 }}>{def.unit}</span>
                             </div>
                           </div>
                         );
@@ -1454,7 +1454,7 @@ export default function AdminPortal() {
       <PortalModal isOpen={programModalOpen} onClose={() => setProgramModalOpen(false)} maxWidth={520}>
         <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingProgram ? 'Chỉnh sửa Chương trình' : 'Tạo Chương trình Mới'}
               </h3>
               <button onClick={() => setProgramModalOpen(false)} style={{ background: 'var(--gray-50)', border: 'none', borderRadius: 10, padding: 8, cursor: 'pointer' }}>
@@ -1558,7 +1558,7 @@ export default function AdminPortal() {
       <PortalModal isOpen={courseModalOpen} onClose={() => setCourseModalOpen(false)} maxWidth={580}>
         <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingCourse ? 'Chỉnh sửa Môn học' : 'Thêm Môn học Mới'}
               </h3>
               <button onClick={() => setCourseModalOpen(false)} style={{ background: 'var(--gray-50)', border: 'none', borderRadius: 10, padding: 8, cursor: 'pointer' }}>
@@ -1633,7 +1633,7 @@ export default function AdminPortal() {
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>Đi học thực tế (0.0 - 1.0)</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-600)' }}>Đi học thực tế (0.0 - 1.0)</label>
                     <input 
                       type="number" step="0.01" min="0" max="1" value={courseForm.attendanceRate}
                       onChange={e => setCourseForm({ ...courseForm, attendanceRate: parseFloat(e.target.value) || 0.0 })}
@@ -1641,7 +1641,7 @@ export default function AdminPortal() {
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>Target Đi học (0.0 - 1.0)</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-600)' }}>Target Đi học (0.0 - 1.0)</label>
                     <input 
                       type="number" step="0.01" min="0" max="1" value={courseForm.attendanceTarget}
                       onChange={e => setCourseForm({ ...courseForm, attendanceTarget: parseFloat(e.target.value) || 0.0 })}
@@ -1652,7 +1652,7 @@ export default function AdminPortal() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>Pass Rate (0-1)</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-600)' }}>Pass Rate (0-1)</label>
                     <input 
                       type="number" step="0.01" min="0" max="1" value={courseForm.passRate}
                       onChange={e => setCourseForm({ ...courseForm, passRate: parseFloat(e.target.value) || 0.0 })}
@@ -1660,7 +1660,7 @@ export default function AdminPortal() {
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>Target Pass (0-1)</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-600)' }}>Target Pass (0-1)</label>
                     <input 
                       type="number" step="0.01" min="0" max="1" value={courseForm.passTarget}
                       onChange={e => setCourseForm({ ...courseForm, passTarget: parseFloat(e.target.value) || 0.0 })}
@@ -1668,7 +1668,7 @@ export default function AdminPortal() {
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-600)' }}>Nộp đúng hạn (0-1)</label>
+                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-600)' }}>Nộp đúng hạn (0-1)</label>
                     <input 
                       type="number" step="0.01" min="0" max="1" value={courseForm.submitRate}
                       onChange={e => setCourseForm({ ...courseForm, submitRate: parseFloat(e.target.value) || 0.0 })}
@@ -1690,7 +1690,7 @@ export default function AdminPortal() {
       <PortalModal isOpen={groupModalOpen} onClose={() => setGroupModalOpen(false)} maxWidth={450}>
         <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>Chỉnh sửa Phân loại KPI</h3>
+              <h3 style={{ fontSize: 18, fontWeight: 900, color: 'var(--gray-900)' }}>Chỉnh sửa Phân loại KPI</h3>
               <button onClick={() => setGroupModalOpen(false)} style={{ background: 'var(--gray-50)', border: 'none', borderRadius: 10, padding: 8, cursor: 'pointer' }}>
                 <X size={18} color="var(--gray-500)" />
               </button>
@@ -1735,7 +1735,7 @@ export default function AdminPortal() {
       <PortalModal isOpen={defModalOpen} onClose={() => setDefModalOpen(false)} maxWidth={580}>
         <div style={{ padding: 32 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-              <h3 style={{ fontSize: 20, fontWeight: 900, color: 'var(--gray-900)' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 900, color: 'var(--gray-900)' }}>
                 {editingDef ? 'Chỉnh sửa Tiêu chí KPI' : 'Thêm Tiêu chí KPI Mới'}
               </h3>
               <button onClick={() => setDefModalOpen(false)} style={{ background: 'var(--gray-50)', border: 'none', borderRadius: 10, padding: 8, cursor: 'pointer' }}>

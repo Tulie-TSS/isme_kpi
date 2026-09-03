@@ -106,7 +106,7 @@ export default function KPIPage() {
         <div className="card" style={{ padding: '12px 18px', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14, background: 'white', border: '1px solid var(--gray-200)' }}>
           {/* Lọc theo Hệ / Ngành */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ / Ngành:</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Hệ / Ngành:</span>
             <div style={{ display: 'flex', background: 'var(--gray-100)', padding: 3, borderRadius: 8, gap: 4 }}>
               {[
                 { id: 'all', label: 'Tất cả các hệ' },
@@ -128,7 +128,7 @@ export default function KPIPage() {
                     }
                   }}
                   style={{
-                    padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                    padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                     background: selectedHe === tab.id ? 'white' : 'transparent',
                     color: selectedHe === tab.id ? 'var(--isme-red)' : 'var(--gray-600)',
                     boxShadow: selectedHe === tab.id ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
@@ -142,7 +142,7 @@ export default function KPIPage() {
 
           {/* Chọn Người phụ trách */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ phụ trách:</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-500)' }}>Cán bộ phụ trách:</span>
             <select
               value={selectedStaffId}
               onChange={e => setSelectedStaffId(e.target.value)}
@@ -167,7 +167,7 @@ export default function KPIPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--gray-900)' }}>Bảng Theo dõi Kết quả KPI</h1>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)' }}>Bảng Theo dõi Kết quả KPI</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 6 }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--isme-red)' }}>{viewingUser?.name}</span>
             <span style={{ fontSize: 13, color: 'var(--gray-400)' }}>|</span>
@@ -185,8 +185,8 @@ export default function KPIPage() {
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Điểm KPI Tổng hợp</div>
-          <div style={{ fontSize: 28, fontWeight: 700, color: getScoreColor(overall), lineHeight: 1 }}>
-            {overall}<span style={{ fontSize: 15, fontWeight: 700, color: 'var(--gray-300)' }}>/100</span>
+          <div style={{ fontSize: 20, fontWeight: 700, color: getScoreColor(overall), lineHeight: 1 }}>
+            {overall}<span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-300)' }}>/100</span>
           </div>
         </div>
       </div>
@@ -198,14 +198,14 @@ export default function KPIPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
           <thead>
             <tr style={{ background: '#F8FAFC', borderBottom: '2px solid var(--gray-200)' }}>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, width: 40 }}>STT</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, width: 300 }}>Chỉ tiêu / Nội dung</th>
-              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700 }}>Tiêu chí đánh giá</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, width: 80 }}>Đơn vị</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, width: 80 }}>Kế hoạch</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, width: 80 }}>Thực hiện</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, width: 80 }}>Tỉ lệ (%)</th>
-              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, width: 120 }}>Đánh giá</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 700, width: 40 }}>STT</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 700, width: 300 }}>Chỉ tiêu / Nội dung</th>
+              <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, fontWeight: 700 }}>Tiêu chí đánh giá</th>
+              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Đơn vị</th>
+              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Kế hoạch</th>
+              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Thực hiện</th>
+              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 80 }}>Tỉ lệ (%)</th>
+              <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, width: 120 }}>Đánh giá</th>
             </tr>
           </thead>
           <tbody>
@@ -244,15 +244,15 @@ export default function KPIPage() {
               if (!snap || !def) return null;
               return (
                 <tr style={{ borderBottom: '1px solid var(--gray-100)', background: 'rgba(59,130,246,0.02)' }}>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, color: 'var(--gray-400)' }}>1</td>
-                  <td style={{ padding: '12px 16px', fontSize: 12 }}>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, color: 'var(--gray-400)' }}>1</td>
+                  <td style={{ padding: '12px 16px', fontSize: 13 }}>
                     <div style={{ fontWeight: 700 }}>{def.name} (Hỗ trợ học tập)</div>
-                    <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
+                    <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
                   </td>
-                  <td style={{ padding: '12px 16px', fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.4 }}>
+                  <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.4 }}>
                     {def.criteria} <br/> <span style={{ color: '#1E40AF', fontSize: 11 }}>💡 Được lấy điểm trực tiếp từ Vận hành chỉ tiêu STT 1.</span>
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{def.unit}</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>{def.unit}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.targetValue}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.actualValue}</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(snap.score) }}>
@@ -288,15 +288,15 @@ export default function KPIPage() {
 
               return (
                 <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{i + 1}</td>
-                  <td style={{ padding: '12px 16px', fontSize: 12 }}>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>{i + 1}</td>
+                  <td style={{ padding: '12px 16px', fontSize: 13 }}>
                     <div style={{ fontWeight: 700 }}>{c.name}</div>
                     <div style={{ fontSize: 11, color: 'var(--gray-500)' }}>Lớp: {c.cohort} · {formatSemester(c.semester)}</div>
                   </td>
-                  <td style={{ padding: '12px 16px', fontSize: 12, lineHeight: 1.4 }}>
+                  <td style={{ padding: '12px 16px', fontSize: 13, lineHeight: 1.4 }}>
                     Đảm bảo chỉ tiêu chuyên cần & học tập môn học đầu kỳ.
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>Môn</td>
+                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>Môn</td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)', whiteSpace: 'nowrap' }}>
                     CC Target: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceTarget * 1000) / 10}%`} <br/>
                     Pass Target: {c.isPassNA ? 'N/A' : `${Math.round(c.passTarget * 1000) / 10}%`} <br/>
@@ -322,10 +322,10 @@ export default function KPIPage() {
             {/* 3.1 Course Aggregate Row */}
             <tr style={{ background: '#F8FAFC', borderBottom: '1px solid var(--gray-200)' }}>
               <td style={{ padding: '10px 16px', textAlign: 'center' }}>★</td>
-              <td style={{ padding: '10px 16px', fontWeight: 700, fontSize: 12 }} colSpan={2}>Mức hoàn thành trung bình Nhóm Kết quả học sinh</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>%</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>100%</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 12 }}>-</td>
+              <td style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13 }} colSpan={2}>Mức hoàn thành trung bình Nhóm Kết quả học sinh</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>100%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>-</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center' }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{getScoreLabel(studentResultsScore)}</span>
@@ -374,13 +374,13 @@ function KPIRow({ snap, def, idx, isStaff, assessmentStatus, onEdit }: { snap: K
 
   return (
     <tr style={{ borderBottom: '1px solid var(--gray-100)', transition: 'background 0.15s' }}>
-      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, color: 'var(--gray-400)' }}>{idx}</td>
-      <td style={{ padding: '12px 16px', fontSize: 12 }}>
+      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, color: 'var(--gray-400)' }}>{idx}</td>
+      <td style={{ padding: '12px 16px', fontSize: 13 }}>
         <div style={{ fontWeight: 700 }}>{def.name}</div>
-        <div style={{ fontSize: 10, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
+        <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>{def.shortName}</div>
       </td>
-      <td style={{ padding: '12px 16px', fontSize: 12, color: 'var(--gray-600)', lineHeight: 1.4 }}>{def.criteria}</td>
-      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12 }}>{def.unit}</td>
+      <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.4 }}>{def.criteria}</td>
+      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>{def.unit}</td>
       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.targetValue}</td>
       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600 }}>{snap.actualValue}</td>
       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: getScoreColor(snap.score) }}>
@@ -396,7 +396,7 @@ function KPIRow({ snap, def, idx, isStaff, assessmentStatus, onEdit }: { snap: K
             </button>
           )}
           {pendingEdit && (
-            <div style={{ fontSize: 9, color: '#F59E0B', display: 'flex', alignItems: 'center', gap: 2 }}>
+            <div style={{ fontSize: 11, color: '#F59E0B', display: 'flex', alignItems: 'center', gap: 2 }}>
               <ClockIcon size={10} /> Đang duyệt
             </div>
           )}

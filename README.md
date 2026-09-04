@@ -34,7 +34,7 @@ Hệ thống Quản lý Vận hành và Theo dõi KPI - Viện ISME (ISNEU).
 | :--- | :--- | :--- |
 | **Quản trị hệ thống (Admin)** | Admin System | `admin@isneu.org` |
 | **Trưởng Ban Đào tạo ĐH** | Hồ Hoàng Lan | `ho.lan@isneu.org` |
-| **Phó Trưởng Ban** | Nguyễn Thùy Chinh | `nguyen.chinh@isneu.org` |
+| **Phó Ban** | Nguyễn Thùy Trinh | `nguyen.trinh@isneu.org` |
 | **Viện trưởng Viện Đào tạo Quốc tế** | PGS.TS. Lê Trung Thành | `le.thanh@isneu.org` |
 | **Phó Viện trưởng Viện Đào tạo Quốc tế** | TS. Trịnh Thị Thu Giang | `trinh.giang@isneu.org` |
 | **CNCT Năm 1** | Bùi Thị Quỳnh Trang | `bui.trang@isneu.org` |

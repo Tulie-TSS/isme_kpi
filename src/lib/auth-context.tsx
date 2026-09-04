@@ -54,7 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { success: false, error: 'Vui lòng nhập mật khẩu' };
     }
 
-    const foundUser = users.find(u => u.email.toLowerCase() === trimmedEmail);
+    const foundUser = users.find(u => 
+      u.email.toLowerCase() === trimmedEmail || 
+      (u.id === 'u14' && trimmedEmail === 'nguyen.chinh@isneu.org')
+    );
     
     if (!foundUser) {
       return { success: false, error: 'Email không tồn tại trong hệ thống' };

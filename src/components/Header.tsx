@@ -145,7 +145,7 @@ export default function Header() {
               <option value="u0">Admin System (Mặc định)</option>
               <optgroup label="Ban Lãnh đạo & Quản lý">
                 <option value="u1">Hồ Hoàng Lan (Trưởng Ban)</option>
-                <option value="u14">Nguyễn Thùy Chinh (Phó Trưởng ban)</option>
+                <option value="u14">Nguyễn Thùy Trinh (Phó Ban)</option>
                 <option value="u20">PGS.TS. Lê Trung Thành (Viện trưởng Viện Đào tạo Quốc tế)</option>
                 <option value="u21">TS. Trịnh Thị Thu Giang (Phó Viện trưởng Viện Đào tạo Quốc tế)</option>
               </optgroup>

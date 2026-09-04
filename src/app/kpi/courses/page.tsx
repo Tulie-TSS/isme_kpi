@@ -334,17 +334,19 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
 }
 
 // ── Editable cell component ──
-function EditableCell({ course, field, fieldLabel, value, displayVal, isNA, isStaff, userId, isDirectEdit, onEdit }: {
+function EditableCell({ course, field, fieldLabel, value, displayVal, isNA, isStaff, userId, isDirectEdit, onEdit, borderRight = '1px solid #E2E8F0', background }: {
   course: Course; field: CourseEditField; fieldLabel: string;
   value: number; displayVal?: string; isNA?: boolean; isStaff: boolean; userId: string; isDirectEdit: boolean;
   onEdit: (course: Course, field: CourseEditField, fieldLabel: string, value: number, isNA?: boolean) => void;
+  borderRight?: string;
+  background?: string;
 }) {
   const pending = getPendingCourseEditForField(course.id, field);
   const isCount = field === 'numLecturers' || field === 'numStudents';
   const showText = isNA ? 'N/A' : displayVal !== undefined ? displayVal : isCount ? String(value) : `${Math.round(value * 10) / 10}%`;
 
   return (
-    <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--gray-100)', position: 'relative', textAlign: 'center' }}>
+    <td style={{ padding: '7px 8px', fontSize: 13, borderBottom: '1px solid #E2E8F0', borderRight, background, position: 'relative', textAlign: 'center' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
         {isNA ? (
           <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '2px 6px', borderRadius: 4 }}>N/A</span>
@@ -853,53 +855,76 @@ export default function KPICoursePage() {
       {/* Course Edit Approval Panel */}
       <CourseApprovalPanel isManager={isManager} userId={currentUserId} selectedProgramId={selectedProgram} />
 
-      {/* Main Table */}
-      <div className="card" style={{ padding: 0, overflow: 'auto', borderRadius: 8, border: '1px solid var(--gray-200)', boxShadow: 'none' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1550 }}>
-          <thead>
-            {/* Header Tier 1: 3 Main Blocks */}
-            <tr style={{ background: '#1E293B', color: 'white' }}>
-              <th rowSpan={3} style={thStyle}>Lớp</th>
-              <th rowSpan={3} style={thStyle}>Kỳ</th>
-              <th rowSpan={3} style={{ ...thStyle, minWidth: 220, textAlign: 'left' }}>Môn học</th>
-              <th rowSpan={3} style={thStyle}>Số GV</th>
-              <th rowSpan={3} style={thStyle}>Số SV</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#FFEDD5', color: '#9A3412', borderLeft: '1px solid #FDBA74', borderRight: '1px solid #FDBA74', fontWeight: 800, fontSize: 13 }}>MỤC TIÊU ĐẦU KỲ</th>
-              <th colSpan={4} style={{ ...thStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #86EFAC', fontWeight: 800, fontSize: 13 }}>KẾT QUẢ CUỐI KỲ</th>
-              <th colSpan={3} style={{ ...thStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74', fontWeight: 800, fontSize: 13 }}>MỨC ĐỘ HOÀN THÀNH</th>
-              <th rowSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)', minWidth: 110 }}>Hoàn thành chung (%)</th>
-            </tr>
-            {/* Header Tier 2: Kỷ luật vs Học tập */}
-            <tr style={{ background: '#F8FAFC', color: 'var(--gray-800)', fontSize: 12 }}>
-              {/* Mục tiêu đầu kỳ */}
-              <th style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
-              <th colSpan={2} style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
-              {/* Kết quả cuối kỳ */}
-              <th style={{ ...subThStyle, background: '#F0FDF4', color: '#166534', borderBottom: '1px solid #BBF7D0' }}>Kỷ luật</th>
-              <th colSpan={3} style={{ ...subThStyle, background: '#F0FDF4', color: '#166534', borderLeft: '1px solid #BBF7D0', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #BBF7D0' }}>Học tập</th>
-              {/* Mức độ hoàn thành */}
-              <th style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
-              <th colSpan={2} style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
-            </tr>
-            {/* Header Tier 3: Specific Columns matching Excel */}
-            <tr style={{ background: '#F8FAFC', color: 'var(--gray-700)', fontSize: 11 }}>
-              {/* MT Đầu kỳ */}
-              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', borderLeft: '1px solid #FED7AA' }}>Tỉ lệ đi học đầy đủ</th>
-              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412' }}>Mục tiêu pass 1st</th>
-              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74' }}>Mục tiêu nộp bài/thi lần đầu đúng hạn</th>
-              
-              {/* KQ Cuối kỳ */}
-              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534' }}>Tỉ lệ đi học đầy đủ</th>
-              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534' }}>Tỉ lệ pass 1st</th>
-              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534' }}>Tỉ lệ pass sau Resit</th>
-              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #86EFAC' }}>Tỷ lệ nộp bài/thi lần đầu đúng hạn</th>
-              
-              {/* Mức độ hoàn thành */}
-              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412' }}>Tỉ lệ đi học đầy đủ</th>
-              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', minWidth: 150 }}>Tỉ lệ pass (Điểm hiệu suất học tập sau khi đã tính bù điểm Resit)</th>
-              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74' }}>Tỷ lệ nộp bài/thi lần đầu đúng hạn</th>
-            </tr>
-          </thead>
+      {/* Main Table Container */}
+      <div style={{ borderRadius: 8, border: '1px solid #CBD5E1', overflow: 'hidden', background: 'white' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1550, textAlign: 'center' }}>
+            <thead>
+              {/* Header Tier 1: 3 Main Blocks */}
+              <tr style={{ background: '#1E293B', color: 'white' }}>
+                <th rowSpan={3} style={{ ...thFixedStyle, width: 90, minWidth: 90 }}>Lớp</th>
+                <th rowSpan={3} style={{ ...thFixedStyle, width: 70, minWidth: 70 }}>Kỳ</th>
+                <th rowSpan={3} style={{ ...thFixedStyle, minWidth: 230, textAlign: 'left', paddingLeft: 14 }}>Môn học</th>
+                <th rowSpan={3} style={{ ...thFixedStyle, width: 60, minWidth: 60 }}>Số GV</th>
+                <th rowSpan={3} style={{ ...thFixedStyle, width: 60, minWidth: 60, borderRight: '2px solid #94A3B8' }}>Số SV</th>
+                
+                <th colSpan={3} style={{ ...thBlockStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #FDBA74' }}>
+                  MỤC TIÊU ĐẦU KỲ
+                </th>
+                <th colSpan={4} style={{ ...thBlockStyle, background: '#DCFCE7', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #86EFAC' }}>
+                  KẾT QUẢ CUỐI KỲ
+                </th>
+                <th colSpan={3} style={{ ...thBlockStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '1px solid #FDBA74' }}>
+                  MỨC ĐỘ HOÀN THÀNH
+                </th>
+                
+                <th rowSpan={3} style={{ ...thFixedStyle, minWidth: 115, borderRight: 'none' }}>
+                  <div style={{ lineHeight: 1.35 }}>Hoàn thành<br/>chung (%)</div>
+                </th>
+              </tr>
+
+              {/* Header Tier 2: Kỷ luật vs Học tập */}
+              <tr style={{ fontSize: 11 }}>
+                {/* Mục tiêu đầu kỳ */}
+                <th style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
+                <th colSpan={2} style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+                
+                {/* Kết quả cuối kỳ */}
+                <th style={{ ...thSubBlockStyle, background: '#F0FDF4', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #BBF7D0' }}>Kỷ luật</th>
+                <th colSpan={3} style={{ ...thSubBlockStyle, background: '#F0FDF4', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #BBF7D0' }}>Học tập</th>
+                
+                {/* Mức độ hoàn thành */}
+                <th style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
+                <th colSpan={2} style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+              </tr>
+
+              {/* Header Tier 3: Specific Columns */}
+              <tr style={{ fontSize: 11 }}>
+                {/* MT Đầu kỳ */}
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 85 }}>Tỉ lệ đi học</th>
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 85 }}>Pass 1st</th>
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #CBD5E1', minWidth: 110 }}>
+                  <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
+                </th>
+                
+                {/* KQ Cuối kỳ */}
+                <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', minWidth: 85 }}>Tỉ lệ đi học</th>
+                <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', minWidth: 85 }}>Pass 1st</th>
+                <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', minWidth: 90 }}>Pass sau Resit</th>
+                <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '2px solid #CBD5E1', minWidth: 110 }}>
+                  <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
+                </th>
+                
+                {/* Mức độ hoàn thành */}
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 85 }}>Đi học đầy đủ</th>
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 135 }}>
+                  <div style={{ lineHeight: 1.3 }}>Pass học tập<br/><span style={{ fontSize: 10, fontWeight: 500 }}>(Tính bù điểm Resit)</span></div>
+                </th>
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #94A3B8', minWidth: 110 }}>
+                  <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
+                </th>
+              </tr>
+            </thead>
           <tbody>
             {programCourses.length === 0 ? (
               <tr>
@@ -946,7 +971,7 @@ export default function KPICoursePage() {
                       onEdit={handleEdit} 
                     />
 
-                    {/* Số SV - Editable */}
+                    {/* Số SV - Editable, kết thúc 5 cột thông tin cơ sở */}
                     <EditableCell 
                       course={c} 
                       field="numStudents" 
@@ -957,21 +982,22 @@ export default function KPICoursePage() {
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
                       onEdit={handleEdit} 
+                      borderRight="2px solid #94A3B8"
                     />
                     
-                    {/* Targets */}
+                    {/* Targets (Khối Mục tiêu đầu kỳ) */}
                     <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.attendanceTarget, c.isAttendanceNA)}</td>
                     <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.passTarget, c.isPassNA)}</td>
-                    <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
+                    <td style={{ ...tdStyle, background: '#FFF7ED', borderRight: '2px solid #CBD5E1' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
                     
-                    {/* Actuals - Editable */}
+                    {/* Actuals - Editable (Khối Kết quả cuối kỳ) */}
                     <EditableCell 
                       course={c} 
                       field="attendanceRate" 
                       fieldLabel="Tỉ lệ đi học đầy đủ" 
                       value={Math.round(c.attendanceRate * 1000) / 10} 
                       displayVal={isFuture ? '-' : formatRate(c.attendanceRate, c.isAttendanceNA)} 
-                      isNA={c.isAttendanceNA}
+                      isNA={c.isAttendanceNA} 
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -983,7 +1009,7 @@ export default function KPICoursePage() {
                       fieldLabel="Tỉ lệ pass lần 1" 
                       value={Math.round(c.passRate * 1000) / 10} 
                       displayVal={isFuture ? '-' : formatRate(c.passRate, c.isPassNA)} 
-                      isNA={c.isPassNA}
+                      isNA={c.isPassNA} 
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -995,7 +1021,7 @@ export default function KPICoursePage() {
                       fieldLabel="Tỉ lệ pass sau Resit" 
                       value={Math.round((c.passResitRate || 0) * 1000) / 10} 
                       displayVal={isFuture ? '-' : formatRate(c.passResitRate || 0, c.isPassResitNA)} 
-                      isNA={c.isPassResitNA}
+                      isNA={c.isPassResitNA} 
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -1007,26 +1033,27 @@ export default function KPICoursePage() {
                       fieldLabel="Tỉ lệ nộp bài/thi đúng hạn" 
                       value={Math.round(c.submitRate * 1000) / 10} 
                       displayVal={isFuture ? '-' : formatRate(c.submitRate, c.isSubmitNA)} 
-                      isNA={c.isSubmitNA}
+                      isNA={c.isSubmitNA} 
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
                       onEdit={handleEdit} 
+                      borderRight="2px solid #CBD5E1"
                     />
                     
-                    {/* Completion Rates */}
+                    {/* Completion Rates (Khối Mức độ hoàn thành) */}
                     <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isAttendanceNA ? '#64748B' : getScoreColor(attendComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isAttendanceNA ? '#F8FAFC' : getBgColor(attendComp!) }}>
                       {isFuture ? '-' : c.isAttendanceNA ? 'N/A' : `${attendComp}%`}
                     </td>
                     <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isPassNA ? '#64748B' : getScoreColor(passComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isPassNA ? '#F8FAFC' : getBgColor(passComp!) }}>
                       {isFuture ? '-' : c.isPassNA ? 'N/A' : `${passComp}%`}
                     </td>
-                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isSubmitNA ? '#64748B' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isSubmitNA ? '#F8FAFC' : getBgColor(submitComp!) }}>
+                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isSubmitNA ? '#64748B' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isSubmitNA ? '#F8FAFC' : getBgColor(submitComp!), borderRight: '2px solid #94A3B8' }}>
                       {isFuture ? '-' : c.isSubmitNA ? 'N/A' : `${submitComp}%`}
                     </td>
                     
-                    {/* Course Avg Completion */}
-                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : avgComp === null ? '#64748B' : getScoreColor(avgComp!), fontWeight: 800, fontSize: 13 }}>
+                    {/* Course Avg Completion (Hoàn thành chung) */}
+                    <td style={{ ...tdStyle, borderRight: 'none', background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : avgComp === null ? '#64748B' : getScoreColor(avgComp!), fontWeight: 800, fontSize: 13 }}>
                       {isFuture ? (
                         <span style={{ fontSize: 11, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '2px 6px', borderRadius: 4, fontWeight: 500 }}>Chưa bắt đầu</span>
                       ) : avgComp === null ? (
@@ -1042,6 +1069,7 @@ export default function KPICoursePage() {
           </tbody>
         </table>
       </div>
+    </div>
 
       {/* Minimal Legend */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, flexWrap: 'wrap', gap: 10, fontSize: 11, color: 'var(--gray-500)', padding: '0 4px' }}>
@@ -1081,18 +1109,28 @@ export default function KPICoursePage() {
   );
 }
 
-const thStyle: React.CSSProperties = {
-  padding: '8px 10px', fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
-  border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center', minWidth: 60,
+const thFixedStyle: React.CSSProperties = {
+  padding: '8px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap',
+  borderRight: '1px solid #334155', borderBottom: '2px solid #334155', textAlign: 'center',
   letterSpacing: '0.01em',
 };
 
-const subThStyle: React.CSSProperties = {
-  padding: '6px 8px', fontSize: 11, fontWeight: 500, whiteSpace: 'nowrap',
-  border: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', color: 'rgba(255,255,255,0.85)',
+const thBlockStyle: React.CSSProperties = {
+  padding: '10px 8px', fontSize: 12, fontWeight: 800, whiteSpace: 'nowrap',
+  textAlign: 'center', letterSpacing: '0.02em',
+};
+
+const thSubBlockStyle: React.CSSProperties = {
+  padding: '6px 6px', fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap',
+  textAlign: 'center',
+};
+
+const thLeafStyle: React.CSSProperties = {
+  padding: '8px 4px', fontSize: 11, fontWeight: 600,
+  textAlign: 'center', borderBottom: '2px solid #CBD5E1',
 };
 
 const tdStyle: React.CSSProperties = {
-  padding: '7px 10px', fontSize: 13, textAlign: 'center',
-  borderBottom: '1px solid var(--gray-100)', whiteSpace: 'nowrap',
+  padding: '7px 8px', fontSize: 13, textAlign: 'center',
+  borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #E2E8F0', whiteSpace: 'nowrap',
 };

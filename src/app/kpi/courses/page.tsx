@@ -856,7 +856,7 @@ export default function KPICoursePage() {
       <CourseApprovalPanel isManager={isManager} userId={currentUserId} selectedProgramId={selectedProgram} />
 
       {/* Main Table Container */}
-      <div style={{ borderRadius: 8, border: '1px solid #CBD5E1', overflow: 'hidden', background: 'white' }}>
+      <div style={{ borderRadius: 8, border: '1px solid #E2E8F0', overflow: 'hidden', background: 'white' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1550, textAlign: 'center' }}>
             <thead>
@@ -866,15 +866,15 @@ export default function KPICoursePage() {
                 <th rowSpan={3} style={{ ...thFixedStyle, width: 70, minWidth: 70 }}>Kỳ</th>
                 <th rowSpan={3} style={{ ...thFixedStyle, minWidth: 230, textAlign: 'left', paddingLeft: 14 }}>Môn học</th>
                 <th rowSpan={3} style={{ ...thFixedStyle, width: 60, minWidth: 60 }}>Số GV</th>
-                <th rowSpan={3} style={{ ...thFixedStyle, width: 60, minWidth: 60, borderRight: '2px solid #94A3B8' }}>Số SV</th>
+                <th rowSpan={3} style={{ ...thFixedStyle, width: 60, minWidth: 60, borderRight: '1px solid #475569' }}>Số SV</th>
                 
-                <th colSpan={3} style={{ ...thBlockStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #FDBA74' }}>
+                <th colSpan={3} style={{ ...thBlockStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FDBA74' }}>
                   MỤC TIÊU ĐẦU KỲ
                 </th>
-                <th colSpan={4} style={{ ...thBlockStyle, background: '#DCFCE7', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #86EFAC' }}>
+                <th colSpan={4} style={{ ...thBlockStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #86EFAC' }}>
                   KẾT QUẢ CUỐI KỲ
                 </th>
-                <th colSpan={3} style={{ ...thBlockStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '1px solid #FDBA74' }}>
+                <th colSpan={3} style={{ ...thBlockStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FDBA74' }}>
                   MỨC ĐỘ HOÀN THÀNH
                 </th>
                 
@@ -887,15 +887,15 @@ export default function KPICoursePage() {
               <tr style={{ fontSize: 11 }}>
                 {/* Mục tiêu đầu kỳ */}
                 <th style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
-                <th colSpan={2} style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+                <th colSpan={2} style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
                 
                 {/* Kết quả cuối kỳ */}
                 <th style={{ ...thSubBlockStyle, background: '#F0FDF4', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #BBF7D0' }}>Kỷ luật</th>
-                <th colSpan={3} style={{ ...thSubBlockStyle, background: '#F0FDF4', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #BBF7D0' }}>Học tập</th>
+                <th colSpan={3} style={{ ...thSubBlockStyle, background: '#F0FDF4', color: '#166534', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #BBF7D0' }}>Học tập</th>
                 
                 {/* Mức độ hoàn thành */}
                 <th style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
-                <th colSpan={2} style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+                <th colSpan={2} style={{ ...thSubBlockStyle, background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
               </tr>
 
               {/* Header Tier 3: Specific Columns */}
@@ -903,7 +903,7 @@ export default function KPICoursePage() {
                 {/* MT Đầu kỳ */}
                 <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 85 }}>Tỉ lệ đi học</th>
                 <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 85 }}>Pass 1st</th>
-                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #CBD5E1', minWidth: 110 }}>
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', minWidth: 110 }}>
                   <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
                 </th>
                 
@@ -911,7 +911,7 @@ export default function KPICoursePage() {
                 <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', minWidth: 85 }}>Tỉ lệ đi học</th>
                 <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', minWidth: 85 }}>Pass 1st</th>
                 <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', minWidth: 90 }}>Pass sau Resit</th>
-                <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '2px solid #CBD5E1', minWidth: 110 }}>
+                <th style={{ ...thLeafStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #CBD5E1', minWidth: 110 }}>
                   <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
                 </th>
                 
@@ -920,7 +920,7 @@ export default function KPICoursePage() {
                 <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', minWidth: 135 }}>
                   <div style={{ lineHeight: 1.3 }}>Pass học tập<br/><span style={{ fontSize: 10, fontWeight: 500 }}>(Tính bù điểm Resit)</span></div>
                 </th>
-                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #94A3B8', minWidth: 110 }}>
+                <th style={{ ...thLeafStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', minWidth: 110 }}>
                   <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
                 </th>
               </tr>
@@ -982,13 +982,13 @@ export default function KPICoursePage() {
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
                       onEdit={handleEdit} 
-                      borderRight="2px solid #94A3B8"
+                      borderRight="1px solid #CBD5E1"
                     />
                     
                     {/* Targets (Khối Mục tiêu đầu kỳ) */}
                     <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.attendanceTarget, c.isAttendanceNA)}</td>
                     <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.passTarget, c.isPassNA)}</td>
-                    <td style={{ ...tdStyle, background: '#FFF7ED', borderRight: '2px solid #CBD5E1' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
+                    <td style={{ ...tdStyle, background: '#FFF7ED', borderRight: '1px solid #CBD5E1' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
                     
                     {/* Actuals - Editable (Khối Kết quả cuối kỳ) */}
                     <EditableCell 
@@ -1038,7 +1038,7 @@ export default function KPICoursePage() {
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
                       onEdit={handleEdit} 
-                      borderRight="2px solid #CBD5E1"
+                      borderRight="1px solid #CBD5E1"
                     />
                     
                     {/* Completion Rates (Khối Mức độ hoàn thành) */}
@@ -1048,7 +1048,7 @@ export default function KPICoursePage() {
                     <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isPassNA ? '#64748B' : getScoreColor(passComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isPassNA ? '#F8FAFC' : getBgColor(passComp!) }}>
                       {isFuture ? '-' : c.isPassNA ? 'N/A' : `${passComp}%`}
                     </td>
-                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isSubmitNA ? '#64748B' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isSubmitNA ? '#F8FAFC' : getBgColor(submitComp!), borderRight: '2px solid #94A3B8' }}>
+                    <td style={{ ...tdStyle, color: isFuture ? 'var(--gray-300)' : c.isSubmitNA ? '#64748B' : getScoreColor(submitComp!), fontWeight: 700, background: isFuture ? 'transparent' : c.isSubmitNA ? '#F8FAFC' : getBgColor(submitComp!), borderRight: '1px solid #CBD5E1' }}>
                       {isFuture ? '-' : c.isSubmitNA ? 'N/A' : `${submitComp}%`}
                     </td>
                     
@@ -1111,7 +1111,7 @@ export default function KPICoursePage() {
 
 const thFixedStyle: React.CSSProperties = {
   padding: '8px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap',
-  borderRight: '1px solid #334155', borderBottom: '2px solid #334155', textAlign: 'center',
+  borderRight: '1px solid #334155', borderBottom: '1px solid #334155', textAlign: 'center',
   letterSpacing: '0.01em',
 };
 
@@ -1127,7 +1127,7 @@ const thSubBlockStyle: React.CSSProperties = {
 
 const thLeafStyle: React.CSSProperties = {
   padding: '8px 4px', fontSize: 11, fontWeight: 600,
-  textAlign: 'center', borderBottom: '2px solid #CBD5E1',
+  textAlign: 'center', borderBottom: '1px solid #CBD5E1',
 };
 
 const tdStyle: React.CSSProperties = {

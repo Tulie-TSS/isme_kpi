@@ -582,27 +582,27 @@ export default function ReviewPage() {
                       </Link>
                     </div>
 
-                    <div style={{ borderRadius: 8, border: '1px solid #CBD5E1', overflow: 'hidden', background: 'white' }}>
+                    <div style={{ borderRadius: 8, border: '1px solid #E2E8F0', overflow: 'hidden', background: 'white' }}>
                       <div style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 1200, textAlign: 'center' }}>
                           <thead>
                             {/* Header Tier 1: 3 Khối lớn chuẩn Viện */}
                             <tr style={{ background: '#1E293B', color: 'white' }}>
-                              <th rowSpan={3} style={{ padding: '8px 10px', borderRight: '1px solid #334155', borderBottom: '2px solid #334155', textAlign: 'left', minWidth: 140, fontWeight: 700 }}>Lớp / Kỳ</th>
-                              <th rowSpan={3} style={{ padding: '8px 12px', borderRight: '1px solid #334155', borderBottom: '2px solid #334155', textAlign: 'left', minWidth: 200, fontWeight: 700 }}>Môn học</th>
-                              <th rowSpan={3} style={{ padding: '8px 6px', borderRight: '2px solid #94A3B8', borderBottom: '2px solid #334155', width: 60, fontWeight: 700 }}>Số SV</th>
+                              <th rowSpan={3} style={{ padding: '8px 10px', borderRight: '1px solid #334155', borderBottom: '1px solid #334155', textAlign: 'left', minWidth: 140, fontWeight: 700 }}>Lớp / Kỳ</th>
+                              <th rowSpan={3} style={{ padding: '8px 12px', borderRight: '1px solid #334155', borderBottom: '1px solid #334155', textAlign: 'left', minWidth: 200, fontWeight: 700 }}>Môn học</th>
+                              <th rowSpan={3} style={{ padding: '8px 6px', borderRight: '1px solid #475569', borderBottom: '1px solid #334155', width: 60, fontWeight: 700 }}>Số SV</th>
                               
-                              <th colSpan={3} style={{ padding: '10px 8px', background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #FDBA74', fontWeight: 800, fontSize: 12 }}>
+                              <th colSpan={3} style={{ padding: '10px 8px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FDBA74', fontWeight: 800, fontSize: 12 }}>
                                 MỤC TIÊU ĐẦU KỲ
                               </th>
-                              <th colSpan={4} style={{ padding: '10px 8px', background: '#DCFCE7', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #86EFAC', fontWeight: 800, fontSize: 12 }}>
+                              <th colSpan={4} style={{ padding: '10px 8px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #86EFAC', fontWeight: 800, fontSize: 12 }}>
                                 KẾT QUẢ CUỐI KỲ
                               </th>
-                              <th colSpan={3} style={{ padding: '10px 8px', background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '1px solid #FDBA74', fontWeight: 800, fontSize: 12 }}>
+                              <th colSpan={3} style={{ padding: '10px 8px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FDBA74', fontWeight: 800, fontSize: 12 }}>
                                 MỨC ĐỘ HOÀN THÀNH
                               </th>
                               
-                              <th rowSpan={3} style={{ padding: '8px 10px', borderBottom: '2px solid #334155', width: 110, minWidth: 110, fontWeight: 800, borderRight: 'none' }}>
+                              <th rowSpan={3} style={{ padding: '8px 10px', borderBottom: '1px solid #334155', width: 110, minWidth: 110, fontWeight: 800, borderRight: 'none' }}>
                                 <div style={{ lineHeight: 1.35 }}>Hoàn thành<br/>chung (%)</div>
                               </th>
                             </tr>
@@ -611,40 +611,40 @@ export default function ReviewPage() {
                             <tr style={{ fontSize: 11 }}>
                               {/* Mục tiêu */}
                               <th style={{ padding: '6px 6px', background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA', fontWeight: 600 }}>Kỷ luật</th>
-                              <th colSpan={2} style={{ padding: '6px 6px', background: '#FFF7ED', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #FED7AA', fontWeight: 600 }}>Học tập</th>
+                              <th colSpan={2} style={{ padding: '6px 6px', background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FED7AA', fontWeight: 600 }}>Học tập</th>
                               
                               {/* Kết quả */}
                               <th style={{ padding: '6px 6px', background: '#F0FDF4', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #BBF7D0', fontWeight: 600 }}>Kỷ luật</th>
-                              <th colSpan={3} style={{ padding: '6px 6px', background: '#F0FDF4', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '1px solid #BBF7D0', fontWeight: 600 }}>Học tập</th>
+                              <th colSpan={3} style={{ padding: '6px 6px', background: '#F0FDF4', color: '#166534', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #BBF7D0', fontWeight: 600 }}>Học tập</th>
                               
                               {/* Mức độ hoàn thành */}
                               <th style={{ padding: '6px 6px', background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA', fontWeight: 600 }}>Kỷ luật</th>
-                              <th colSpan={2} style={{ padding: '6px 6px', background: '#FFF7ED', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '1px solid #FED7AA', fontWeight: 600 }}>Học tập</th>
+                              <th colSpan={2} style={{ padding: '6px 6px', background: '#FFF7ED', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #FED7AA', fontWeight: 600 }}>Học tập</th>
                             </tr>
 
                             {/* Header Tier 3: Tên chỉ tiêu */}
                             <tr style={{ fontSize: 11 }}>
                               {/* MT Đầu kỳ */}
-                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '2px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Tỉ lệ đi học</th>
-                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '2px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Pass 1st</th>
-                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #CBD5E1', borderBottom: '2px solid #CBD5E1', minWidth: 105, fontWeight: 600 }}>
+                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Tỉ lệ đi học</th>
+                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Pass 1st</th>
+                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #CBD5E1', minWidth: 105, fontWeight: 600 }}>
                                 <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
                               </th>
                               
                               {/* KQ Cuối kỳ */}
-                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '2px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Tỉ lệ đi học</th>
-                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '2px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Pass 1st</th>
-                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '2px solid #CBD5E1', minWidth: 85, fontWeight: 600 }}>Pass sau Resit</th>
-                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '2px solid #CBD5E1', borderBottom: '2px solid #CBD5E1', minWidth: 105, fontWeight: 600 }}>
+                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Tỉ lệ đi học</th>
+                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Pass 1st</th>
+                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #CBD5E1', minWidth: 85, fontWeight: 600 }}>Pass sau Resit</th>
+                              <th style={{ padding: '8px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #CBD5E1', minWidth: 105, fontWeight: 600 }}>
                                 <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
                               </th>
                               
                               {/* Mức độ hoàn thành */}
-                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '2px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Đi học đầy đủ</th>
-                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '2px solid #CBD5E1', minWidth: 130, fontWeight: 600 }}>
+                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #CBD5E1', minWidth: 80, fontWeight: 600 }}>Đi học đầy đủ</th>
+                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #CBD5E1', minWidth: 130, fontWeight: 600 }}>
                                 <div style={{ lineHeight: 1.3 }}>Pass học tập<br/><span style={{ fontSize: 9, fontWeight: 500 }}>(Tính bù điểm Resit)</span></div>
                               </th>
-                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '2px solid #94A3B8', borderBottom: '2px solid #CBD5E1', minWidth: 105, fontWeight: 600 }}>
+                              <th style={{ padding: '8px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #CBD5E1', borderBottom: '1px solid #CBD5E1', minWidth: 105, fontWeight: 600 }}>
                                 <div style={{ lineHeight: 1.3 }}>Nộp bài / Thi<br/>đúng hạn</div>
                               </th>
                             </tr>
@@ -669,7 +669,7 @@ export default function ReviewPage() {
                                       <div style={{ fontWeight: 600, color: 'var(--gray-900)' }}>{c.name}</div>
                                       {c.code && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Mã: {c.code}</div>}
                                     </td>
-                                    <td style={{ padding: '8px 6px', textAlign: 'center', color: 'var(--gray-600)', borderBottom: '1px solid #E2E8F0', borderRight: '2px solid #94A3B8' }}>
+                                    <td style={{ padding: '8px 6px', textAlign: 'center', color: 'var(--gray-600)', borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #CBD5E1' }}>
                                       {c.numStudents || '-'}
                                     </td>
 
@@ -680,7 +680,7 @@ export default function ReviewPage() {
                                     <td style={{ padding: '8px 4px', textAlign: 'center', background: '#FFF7ED', color: '#9A3412', fontWeight: 600, borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #FED7AA' }}>
                                       {c.isPassNA ? 'N/A' : `${(c.passTarget * 100).toFixed(0)}%`}
                                     </td>
-                                    <td style={{ padding: '8px 4px', textAlign: 'center', background: '#FFF7ED', color: '#9A3412', fontWeight: 600, borderBottom: '1px solid #E2E8F0', borderRight: '2px solid #CBD5E1' }}>
+                                    <td style={{ padding: '8px 4px', textAlign: 'center', background: '#FFF7ED', color: '#9A3412', fontWeight: 600, borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #CBD5E1' }}>
                                       {c.isSubmitNA ? 'N/A' : `${(c.submitTarget * 100).toFixed(0)}%`}
                                     </td>
 
@@ -694,7 +694,7 @@ export default function ReviewPage() {
                                     <td style={{ padding: '8px 4px', textAlign: 'center', background: '#F0FDF4', color: '#166534', fontWeight: 600, borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #BBF7D0' }}>
                                       {c.isPassResitNA ? 'N/A' : c.passResitRate !== undefined ? `${(c.passResitRate * 100).toFixed(1)}%` : '-'}
                                     </td>
-                                    <td style={{ padding: '8px 4px', textAlign: 'center', background: '#F0FDF4', color: '#166534', fontWeight: 600, borderBottom: '1px solid #E2E8F0', borderRight: '2px solid #CBD5E1' }}>
+                                    <td style={{ padding: '8px 4px', textAlign: 'center', background: '#F0FDF4', color: '#166534', fontWeight: 600, borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #CBD5E1' }}>
                                       {c.isSubmitNA ? 'N/A' : `${(c.submitRate * 100).toFixed(1)}%`}
                                     </td>
 
@@ -705,7 +705,7 @@ export default function ReviewPage() {
                                     <td style={{ padding: '8px 4px', textAlign: 'center', background: '#FFF7ED', fontWeight: 700, color: perf.passComp === null ? '#94A3B8' : getScoreColor(perf.passComp), borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #FED7AA' }}>
                                       {perf.passComp === null ? 'N/A' : `${Math.round(perf.passComp)}%`}
                                     </td>
-                                    <td style={{ padding: '8px 4px', textAlign: 'center', background: '#FFF7ED', fontWeight: 700, color: perf.submitComp === null ? '#94A3B8' : getScoreColor(perf.submitComp), borderBottom: '1px solid #E2E8F0', borderRight: '2px solid #94A3B8' }}>
+                                    <td style={{ padding: '8px 4px', textAlign: 'center', background: '#FFF7ED', fontWeight: 700, color: perf.submitComp === null ? '#94A3B8' : getScoreColor(perf.submitComp), borderBottom: '1px solid #E2E8F0', borderRight: '1px solid #CBD5E1' }}>
                                       {perf.submitComp === null ? 'N/A' : `${Math.round(perf.submitComp)}%`}
                                     </td>
 
@@ -717,8 +717,8 @@ export default function ReviewPage() {
                                 );
                               })
                             )}
-                            <tr style={{ background: '#F8FAFC', fontWeight: 700, borderTop: '2px solid #94A3B8' }}>
-                              <td colSpan={13} style={{ textAlign: 'right', padding: '12px 16px', fontSize: 13, color: 'var(--gray-800)', borderRight: '2px solid #94A3B8' }}>
+                            <tr style={{ background: '#F8FAFC', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
+                              <td colSpan={13} style={{ textAlign: 'right', padding: '12px 16px', fontSize: 13, color: 'var(--gray-800)', borderRight: '1px solid #CBD5E1' }}>
                                 Mức hoàn thành trung bình Nhóm Kết quả học sinh:
                               </td>
                               <td style={{ textAlign: 'center', padding: '12px 10px', fontSize: 15, fontWeight: 900, color: getScoreColor(studentResultsScore), borderRight: 'none', background: '#F1F5F9' }}>

@@ -146,8 +146,8 @@ export default function Header() {
               <optgroup label="Ban Lãnh đạo & Quản lý">
                 <option value="u1">Hồ Hoàng Lan (Trưởng Ban)</option>
                 <option value="u14">Nguyễn Thùy Chinh (Phó Trưởng ban)</option>
-                <option value="u20">Lê Thanh (Lãnh đạo Viện)</option>
-                <option value="u21">Trịnh Giang (Lãnh đạo Viện)</option>
+                <option value="u20">PGS.TS. Lê Trung Thành (Viện trưởng Viện Đào tạo Quốc tế)</option>
+                <option value="u21">TS. Trịnh Thị Thu Giang (Phó Viện trưởng Viện Đào tạo Quốc tế)</option>
               </optgroup>
               <optgroup label="Cán bộ phụ trách Chương trình">
                 {users.filter(u => u.role === 'staff').map(u => {

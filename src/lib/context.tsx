@@ -23,7 +23,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [currentRole, setCurrentRole] = useState<Role>('staff');
-  const [currentUserId, setCurrentUserId] = useState('u9');
+  const [currentUserId, setCurrentUserId] = useState('u5');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedProgramId, setSelectedProgramId] = useState<string | 'all'>('all');
   const [userRoles, setUserRoles] = useState<UserRole[]>([]);

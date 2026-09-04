@@ -73,16 +73,6 @@ let _schedules: WeeklySchedule[] = [
     })),
   },
   {
-    id: 'sch-u3', userId: 'u3', weekStart: nextMonday, lastUpdatedAt: new Date().toISOString().split('T')[0],
-    slots: weekDates.map((wd, i) => ({
-      date: wd.date, dayLabel: wd.dayLabel,
-      busySlots: i === 1 ? makeBusySlots(['09:00', '10:00', '11:00'], 'Họp chương trình DM')
-        : i === 2 ? makeBusySlots(['14:00', '15:00', '16:00'], 'Gặp SV')
-        : i === 4 ? makeBusySlots(['08:00'], 'Họp tổng kết')
-        : [],
-    })),
-  },
-  {
     id: 'sch-u4', userId: 'u4', weekStart: nextMonday, lastUpdatedAt: new Date().toISOString().split('T')[0],
     slots: weekDates.map((wd, i) => ({
       date: wd.date, dayLabel: wd.dayLabel,
@@ -128,13 +118,6 @@ let _schedules: WeeklySchedule[] = [
       busySlots: i === 0 ? makeBusySlots(['08:00', '09:00'], 'Điều phối BBAE')
         : i === 2 ? makeBusySlots(['14:00', '15:00', '16:00'], 'Hỗ trợ lớp BBAE')
         : [],
-    })),
-  },
-  {
-    id: 'sch-u9', userId: 'u9', weekStart: nextMonday, lastUpdatedAt: '',
-    slots: weekDates.map(wd => ({
-      date: wd.date, dayLabel: wd.dayLabel,
-      busySlots: [], // Chưa cập nhật
     })),
   },
   {

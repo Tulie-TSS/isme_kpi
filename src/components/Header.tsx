@@ -55,7 +55,7 @@ export default function Header() {
     setCurrentRole(role);
     if (role === 'manager') setCurrentUserId('u1');
     else if (role === 'admin') setCurrentUserId('u0');
-    else setCurrentUserId(authUser?.id || 'u9');
+    else setCurrentUserId(authUser?.id || 'u5');
     setShowUserMenu(false);
   };
 

@@ -60,9 +60,7 @@ export const users: User[] = [
 
   // Coordinators
   { id: 'u8', name: 'Nguyễn Minh Tuấn', email: 'nguyen.tuan@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CN CT BBAE' },
-  { id: 'u9', name: 'Đoàn Thu Hương Giang', email: 'doan.giang@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
   { id: 'u2', name: 'Vũ Minh Nhật', email: 'vu.nhat@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CNCT Top-up UWE' },
-  { id: 'u3', name: 'Phạm Gia Linh', email: 'pham.gialinh@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'Điều phối viên' },
   { id: 'u4', name: 'Trần Thị Bích Ngọc', email: 'tran.ngoc@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CNCT NHTC' },
   { id: 'u5', name: 'Trần Hương Thảo', email: 'tran.thao@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CNCT BTEC' },
   { id: 'u6', name: 'Nguyễn Giang Khánh Huyền', email: 'nguyen.huyen@isneu.org', role: 'staff', roles: ['coordinator_director'], managerId: 'u1', avatarUrl: '', active: true, position: 'CNCT Top-up CU' },
@@ -5896,13 +5894,13 @@ export function getCoordinatorStats(userId: string): CoordinatorStats | undefine
   // Basic stats for demonstration
   return {
     userId: user.id,
-    programme: user.id === 'u7' ? 'Andrews' : user.id === 'u9' ? 'BTEC' : 'BBAE',
-    totalStudents: user.id === 'u7' ? 40 : user.id === 'u9' ? 145 : 122,
-    totalClasses: user.id === 'u7' ? 2 : user.id === 'u9' ? 5 : 6,
-    totalLecturers: user.id === 'u7' ? 2 : user.id === 'u9' ? 12 : 29,
-    passRateActual: user.id === 'u7' ? 0.95 : user.id === 'u9' ? 0.85 : 0.9857,
+    programme: user.id === 'u7' ? 'Andrews' : user.id === 'u5' ? 'BTEC' : 'BBAE',
+    totalStudents: user.id === 'u7' ? 40 : user.id === 'u5' ? 145 : 122,
+    totalClasses: user.id === 'u7' ? 2 : user.id === 'u5' ? 5 : 6,
+    totalLecturers: user.id === 'u7' ? 2 : user.id === 'u5' ? 12 : 29,
+    passRateActual: user.id === 'u7' ? 0.95 : user.id === 'u5' ? 0.85 : 0.9857,
     passRateTarget: 0.95,
-    attendanceRateActual: user.id === 'u7' ? 0.88 : user.id === 'u9' ? 0.92 : 0.9881,
+    attendanceRateActual: user.id === 'u7' ? 0.88 : user.id === 'u5' ? 0.92 : 0.9881,
     attendanceRateTarget: 0.95,
   };
 }

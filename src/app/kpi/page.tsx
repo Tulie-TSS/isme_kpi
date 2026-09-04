@@ -8,6 +8,8 @@ import {
   getUserById, 
   calculateOverallKPI, 
   calculateCoursesKPI,
+  calculateCoursePerformance,
+  subscribeCourses,
   getPendingEditForSnapshot, 
   subscribeEditRequests, 
   getUserRoleLabel,
@@ -18,7 +20,8 @@ import {
   formatSemester
 } from '@/lib/mock-data';
 import { KPISnapshot, KPIDefinition, Course } from '@/lib/types';
-import { ChevronDown, ChevronRight, CheckCircle2, AlertTriangle, Edit3, Clock, Target, Users, Award, BookOpen, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronDown, ChevronRight, CheckCircle2, AlertTriangle, Edit3, Clock, Target, Users, Award, BookOpen, ShieldCheck, ExternalLink } from 'lucide-react';
 import KPIEditDialog from '@/components/kpi/KPIEditDialog';
 import KPIApprovalPanel from '@/components/kpi/KPIApprovalPanel';
 
@@ -50,8 +53,12 @@ export default function KPIPage() {
   const [, forceUpdate] = useState(0);
 
   useEffect(() => {
-    const unsub = subscribeEditRequests(() => forceUpdate(n => n + 1));
-    return unsub;
+    const unsubEdit = subscribeEditRequests(() => forceUpdate(n => n + 1));
+    const unsubCourses = subscribeCourses(() => forceUpdate(n => n + 1));
+    return () => {
+      unsubEdit();
+      unsubCourses();
+    };
   }, []);
 
   // Filter staff list by selected Hệ / Ngành
@@ -278,23 +285,29 @@ export default function KPIPage() {
             {/* 3. STUDENT RESULTS (20%) */}
             <tr style={{ background: '#F8FAFC', borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)' }}>
               <td colSpan={8} style={{ padding: '9px 16px', fontWeight: 700, fontSize: 13, color: 'var(--gray-900)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <AwardIcon size={15} color="var(--isme-red)" />
-                  <span>III. Kết quả học tập & kỷ luật sinh viên (Trọng số 20%)</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <AwardIcon size={15} color="var(--isme-red)" />
+                    <span>III. Kết quả học tập & kỷ luật sinh viên (Trọng số 20%)</span>
+                    <span style={{ fontSize: 11, color: 'var(--gray-500)', fontWeight: 400 }}>· {activeCourses.length} môn học kỳ này</span>
+                  </div>
+                  <Link 
+                    href={`/kpi/courses?program=${managedProgram?.id || 'all'}`}
+                    style={{ 
+                      display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 600, 
+                      color: '#2563EB', background: '#EFF6FF', padding: '3px 8px', borderRadius: 4, 
+                      textDecoration: 'none', border: '1px solid #BFDBFE' 
+                    }}
+                  >
+                    <ExternalLink size={12} />
+                    Bảng điền dữ liệu môn học
+                  </Link>
                 </div>
               </td>
             </tr>
             {activeCourses.map((c, i) => {
-              const attendComp = c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
-              const passComp = c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
-              const submitComp = c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
-              
-              let compSum = 0;
-              let compCount = 0;
-              if (attendComp !== null) { compSum += attendComp; compCount++; }
-              if (passComp !== null) { compSum += passComp; compCount++; }
-              if (submitComp !== null) { compSum += submitComp; compCount++; }
-              const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : null;
+              const perf = calculateCoursePerformance(c);
+              const avgComp = perf.avgComp;
 
               return (
                 <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)', background: 'white' }}>
@@ -307,15 +320,15 @@ export default function KPIPage() {
                     Đảm bảo chỉ tiêu chuyên cần & học tập môn học đầu kỳ.
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13 }}>Môn</td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-400)', whiteSpace: 'nowrap' }}>
-                    CC Target: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceTarget * 1000) / 10}%`} <br/>
-                    Pass Target: {c.isPassNA ? 'N/A' : `${Math.round(c.passTarget * 1000) / 10}%`} <br/>
-                    Nộp bài Target: {c.isSubmitNA ? 'N/A' : `${Math.round(c.submitTarget * 1000) / 10}%`}
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, color: 'var(--gray-600)', whiteSpace: 'nowrap' }}>
+                    <div>Đi học MT: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceTarget * 1000) / 10}%`}</div>
+                    <div>Pass 1st MT: {c.isPassNA ? 'N/A' : `${Math.round(c.passTarget * 1000) / 10}%`}</div>
+                    <div>Nộp bài MT: {c.isSubmitNA ? 'N/A' : `${Math.round(c.submitTarget * 1000) / 10}%`}</div>
                   </td>
-                  <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, whiteSpace: 'nowrap' }}>
-                    CC KQ: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceRate * 1000) / 10}%`} <br/>
-                    Pass KQ: {c.isPassNA ? 'N/A' : `${Math.round(c.passRate * 1000) / 10}%`} <br/>
-                    Nộp bài KQ: {c.isSubmitNA ? 'N/A' : `${Math.round(c.submitRate * 1000) / 10}%`}
+                  <td style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, whiteSpace: 'nowrap' }}>
+                    <div>Đi học KQ: {c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceRate * 1000) / 10}%`} ({perf.attendComp}%)</div>
+                    <div>Pass 1st: {c.isPassNA ? 'N/A' : `${Math.round(c.passRate * 1000) / 10}%`} {c.passResitRate !== undefined ? `| Resit: ${(c.passResitRate * 100).toFixed(1)}%` : ''} → Bù Resit: <strong>{perf.passComp}%</strong></div>
+                    <div>Nộp bài KQ: {c.isSubmitNA ? 'N/A' : `${Math.round(c.submitRate * 1000) / 10}%`} ({perf.submitComp}%)</div>
                   </td>
                   <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: avgComp === null ? '#64748B' : getScoreColor(avgComp) }}>
                     {avgComp === null ? <span style={{ fontSize: 11, fontWeight: 700, background: '#F1F5F9', color: '#64748B', padding: '2px 6px', borderRadius: 4 }}>N/A</span> : `${avgComp}%`}
@@ -334,8 +347,8 @@ export default function KPIPage() {
               <td style={{ padding: '10px 16px', textAlign: 'center', color: 'var(--gray-400)' }}>—</td>
               <td style={{ padding: '10px 16px', fontWeight: 700, fontSize: 13 }} colSpan={2}>Mức hoàn thành trung bình Nhóm Kết quả học sinh</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>%</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>100%</td>
-              <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13 }}>-</td>
+              <td style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, color: 'var(--gray-500)' }}>Mục tiêu: 100%</td>
+              <td style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11, color: 'var(--gray-500)' }}>TB {activeCourses.length} môn học kỳ này</td>
               <td style={{ padding: '10px 16px', textAlign: 'center', fontSize: 13, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{studentResultsScore}%</td>
               <td style={{ padding: '10px 16px', textAlign: 'center' }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: getScoreColor(studentResultsScore) }}>{getScoreLabel(studentResultsScore)}</span>

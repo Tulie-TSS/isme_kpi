@@ -123,6 +123,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 0.8,
     "passRate": 0.793,
+    "passResitRate": 0.826,
     "submitRate": 0.936,
     "year": 1,
     "semester": "SEM 2"
@@ -142,6 +143,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 0.94,
     "passRate": 0.537,
+    "passResitRate": 0.747,
     "submitRate": 0.924,
     "year": 1,
     "semester": "SEM 2"
@@ -180,6 +182,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 1.0,
     "passRate": 0.891,
+    "passResitRate": 0.895,
     "submitRate": 0.945,
     "year": 1,
     "semester": "SEM 2"
@@ -408,7 +411,8 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 0.88,
     "passRate": 0.899,
-    "submitRate": 0.971,
+    "passResitRate": 0.971,
+    "submitRate": 0.973,
     "year": 1,
     "semester": "SEM 2"
   },
@@ -427,6 +431,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 0.92,
     "passRate": 0.841,
+    "passResitRate": 0.924,
     "submitRate": 0.908,
     "year": 1,
     "semester": "SEM 2"
@@ -465,6 +470,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 0.95,
     "passRate": 0.91,
+    "passResitRate": 0.931,
     "submitRate": 0.925,
     "year": 1,
     "semester": "SEM 2"
@@ -484,6 +490,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.9,
     "attendanceRate": 0.667,
     "passRate": 0.881,
+    "passResitRate": 0.910,
     "submitRate": 0.902,
     "year": 1,
     "semester": "SEM 2"
@@ -1046,15 +1053,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1107",
     "name": "Introduction to Environmental Studies",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K67",
+    "numLecturers": 1,
+    "numStudents": 101,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 1.0,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 1,
     "semester": "SEM 2"
   },
@@ -1065,15 +1073,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1108",
     "name": "Introduction to Calculus",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K67",
+    "numLecturers": 1,
+    "numStudents": 109,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 0.9898,
+    "passRate": 0.9286,
+    "passResitRate": 0,
+    "submitRate": 0.9898,
     "year": 1,
     "semester": "SEM 2"
   },
@@ -1084,15 +1093,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1121",
     "name": "Business Environment",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K67",
+    "numLecturers": 1,
+    "numStudents": 102,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 0.9898,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 1,
     "semester": "SEM 2"
   },
@@ -1103,15 +1113,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1112",
     "name": "English 2",
-    "cohort": "BBAE",
+    "cohort": "BBAE K67",
     "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "numStudents": 18,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 0.9388,
+    "passRate": 0.9459,
+    "passResitRate": 0,
+    "submitRate": 0.9388,
     "year": 1,
     "semester": "SEM 2"
   },
@@ -1122,15 +1133,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "LLNL1105",
     "name": "Triết học Marx Lenin",
-    "cohort": "BBAE",
+    "cohort": "BBAE K67",
     "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "numStudents": 101,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 0.9898,
+    "passRate": 0.9898,
+    "passResitRate": 0,
+    "submitRate": 0.9898,
     "year": 1,
     "semester": "SEM 2"
   },
@@ -1236,15 +1248,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1126",
     "name": "Managerial Accounting",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K66",
+    "numLecturers": 1,
+    "numStudents": 85,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 1.0,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 2,
     "semester": "SEM 2"
   },
@@ -1255,15 +1268,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1117",
     "name": "Macroeconomics",
-    "cohort": "BBAE",
+    "cohort": "BBAE K66",
     "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "numStudents": 85,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 0.9882,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 2,
     "semester": "SEM 2"
   },
@@ -1274,15 +1288,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1123",
     "name": "Principles of Marketing",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K66",
+    "numLecturers": 1,
+    "numStudents": 86,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 0.9882,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 2,
     "semester": "SEM 2"
   },
@@ -1293,15 +1308,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1130",
     "name": "Business Law",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K66",
+    "numLecturers": 1,
+    "numStudents": 85,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 0.9882,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 2,
     "semester": "SEM 2"
   },
@@ -1312,15 +1328,16 @@ const initialCourses: Course[] = [
     "coordinatorName": "Nguyễn Minh Tuấn",
     "code": "BBAE1119",
     "name": "Business Decision Making 2",
-    "cohort": "BBAE",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.9,
-    "submitTarget": 0.9,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
+    "cohort": "BBAE K66",
+    "numLecturers": 1,
+    "numStudents": 87,
+    "attendanceTarget": 0.95,
+    "passTarget": 0.95,
+    "submitTarget": 0.95,
+    "attendanceRate": 1.0,
+    "passRate": 0.8824,
+    "passResitRate": 0,
+    "submitRate": 1.0,
     "year": 2,
     "semester": "SEM 2"
   },
@@ -4333,18 +4350,23 @@ const initialCourses: Course[] = [
   }
 ];
 
-export let courses: Course[] = getSaved<Course[]>('isme_courses_v13', initialCourses);
+const COURSES_STORAGE_KEY = 'isme_courses_v16';
+export let courses: Course[] = getSaved<Course[]>(COURSES_STORAGE_KEY, initialCourses);
 
+let _coursesListeners: (() => void)[] = [];
+export function subscribeCourses(fn: () => void) {
+  _coursesListeners.push(fn);
+  return () => { _coursesListeners = _coursesListeners.filter(f => f !== fn); };
+}
 
-
-
-
-
-
+export function notifyCoursesChanged() {
+  save(COURSES_STORAGE_KEY, courses);
+  _coursesListeners.forEach(fn => fn());
+}
 
 export function updateCourseValue(courseId: string, updates: Partial<Course>) {
   courses = courses.map(c => c.id === courseId ? { ...c, ...updates } : c);
-  save('isme_courses', courses);
+  notifyCoursesChanged();
 }
 
 // ==================== KPI DEFINITIONS ====================
@@ -5885,6 +5907,47 @@ export function getCoordinatorStats(userId: string): CoordinatorStats | undefine
   };
 }
 
+export function calculateCoursePerformance(c: Course) {
+  const isAttendanceApplicable = !c.isAttendanceNA && c.attendanceTarget > 0;
+  const attendComp = isAttendanceApplicable 
+    ? Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10 
+    : null;
+
+  // Công thức Excel của Viện: =IF((Pass1st / Target) >= 1, Pass1st / Target, MIN(1, (Pass1st / Target) + ((PassResit / Target) * 1)))
+  let passComp: number | null = null;
+  if (!c.isPassNA && c.passTarget > 0) {
+    const rawPass1st = c.passRate / c.passTarget;
+    const resitRate = typeof c.passResitRate === 'number' ? c.passResitRate : 0;
+    if (rawPass1st >= 1) {
+      passComp = Math.round(rawPass1st * 1000) / 10;
+    } else {
+      const resitAdd = resitRate / c.passTarget;
+      const combined = Math.min(1, rawPass1st + resitAdd);
+      passComp = Math.round(combined * 1000) / 10;
+    }
+  }
+
+  const isSubmitApplicable = !c.isSubmitNA && c.submitTarget > 0;
+  const submitComp = isSubmitApplicable 
+    ? Math.round((c.submitRate / c.submitTarget) * 1000) / 10 
+    : null;
+
+  let compSum = 0;
+  let compCount = 0;
+  if (attendComp !== null) { compSum += attendComp; compCount++; }
+  if (passComp !== null) { compSum += passComp; compCount++; }
+  if (submitComp !== null) { compSum += submitComp; compCount++; }
+
+  const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : 100;
+
+  return {
+    attendComp,
+    passComp,
+    submitComp,
+    avgComp
+  };
+}
+
 export function calculateCoursesKPI(programId: string, filterSemester: 'current' | 'all' = 'current'): number {
   let filteredCourses = courses.filter(c => c.programId === programId);
   
@@ -5910,24 +5973,9 @@ export function calculateCoursesKPI(programId: string, filterSemester: 'current'
   let validCoursesCount = 0;
 
   for (const c of filteredCourses) {
-    let sum = 0;
-    let count = 0;
-    if (!c.isAttendanceNA && c.attendanceTarget > 0) {
-      sum += Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
-      count++;
-    }
-    if (!c.isPassNA && c.passTarget > 0) {
-      sum += Math.min((c.passRate / c.passTarget) * 100, 100);
-      count++;
-    }
-    if (!c.isSubmitNA && c.submitTarget > 0) {
-      sum += Math.min((c.submitRate / c.submitTarget) * 100, 100);
-      count++;
-    }
-    if (count > 0) {
-      totalScore += sum / count;
-      validCoursesCount++;
-    }
+    const perf = calculateCoursePerformance(c);
+    totalScore += perf.avgComp;
+    validCoursesCount++;
   }
 
   if (validCoursesCount === 0) return 100;
@@ -6110,6 +6158,7 @@ export function approveCourseEditRequest(id: string, reviewerId: string, note: s
     } else if (r.isNA || r.newValue === 'N/A') {
       if (r.field === 'attendanceRate') updates.isAttendanceNA = true;
       if (r.field === 'passRate') updates.isPassNA = true;
+      if (r.field === 'passResitRate') updates.isPassResitNA = true;
       if (r.field === 'submitRate') updates.isSubmitNA = true;
     } else {
       const num = typeof r.newValue === 'number' ? r.newValue : parseFloat(String(r.newValue)) || 0;
@@ -6117,6 +6166,7 @@ export function approveCourseEditRequest(id: string, reviewerId: string, note: s
       updates[r.field] = valDecimal;
       if (r.field === 'attendanceRate') updates.isAttendanceNA = false;
       if (r.field === 'passRate') updates.isPassNA = false;
+      if (r.field === 'passResitRate') updates.isPassResitNA = false;
       if (r.field === 'submitRate') updates.isSubmitNA = false;
     }
 

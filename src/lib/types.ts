@@ -49,9 +49,11 @@ export interface Course {
   attendanceTarget: number;    // Mục tiêu kỷ luật
   isAttendanceNA?: boolean;    // N/A flag for attendance target
   // Học tập
-  passRate: number;            // Tỉ lệ pass trung bình
+  passRate: number;            // Tỉ lệ pass 1st (lần 1)
+  passResitRate?: number;      // Tỉ lệ pass sau Resit (thi lại)
+  isPassResitNA?: boolean;     // N/A flag for pass resit
   submitRate: number;          // Tỉ lệ nộp bài lần đầu đúng hạn
-  passTarget: number;          // Mục tiêu học tập
+  passTarget: number;          // Mục tiêu pass 1st
   isPassNA?: boolean;          // N/A flag for pass target
   submitTarget: number;        // Mục tiêu nộp bài đúng hạn
   isSubmitNA?: boolean;        // N/A flag for submit target
@@ -196,7 +198,7 @@ export interface KPIEditRequest {
 }
 
 // ==================== COURSE EDIT REQUEST ====================
-export type CourseEditField = 'attendanceRate' | 'passRate' | 'submitRate' | 'numLecturers' | 'numStudents';
+export type CourseEditField = 'attendanceRate' | 'passRate' | 'passResitRate' | 'submitRate' | 'numLecturers' | 'numStudents';
 
 export interface CourseEditRequest {
   id: string;

@@ -15,7 +15,9 @@ import {
   updateCourseValue,
   getSubmissionStatus,
   addAuditLog,
-  formatSemester
+  formatSemester,
+  calculateCoursePerformance,
+  subscribeCourses
 } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
@@ -83,11 +85,11 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
         updateCourseValue(course.id, { [field]: intVal });
         addAuditLog(userId, 'Cập nhật môn học', `Đã cập nhật số lượng ${fieldLabel} môn ${course.name}: ${currentValue} -> ${intVal}.`);
       } else if (isNAChecked) {
-        const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : 'isSubmitNA';
+        const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : field === 'passResitRate' ? 'isPassResitNA' : 'isSubmitNA';
         updateCourseValue(course.id, { [naField]: true, [field]: 0 });
         addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã chuyển ${fieldLabel} môn ${course.name} sang trạng thái N/A.`);
       } else {
-        const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : 'isSubmitNA';
+        const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : field === 'passResitRate' ? 'isPassResitNA' : 'isSubmitNA';
         const valDecimal = val / 100;
         updateCourseValue(course.id, { [field]: valDecimal, [naField]: false });
         addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã cập nhật trực tiếp điểm môn ${course.name} (${fieldLabel}): ${isNA ? 'N/A' : currentValue + '%'} -> ${val}%.`);
@@ -617,24 +619,9 @@ export default function KPICoursePage() {
     let totalScore = 0;
     let validCount = 0;
     activeCourses.forEach(c => {
-      let sum = 0;
-      let count = 0;
-      if (!c.isAttendanceNA && c.attendanceTarget > 0) {
-        sum += Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
-        count++;
-      }
-      if (!c.isPassNA && c.passTarget > 0) {
-        sum += Math.min((c.passRate / c.passTarget) * 100, 100);
-        count++;
-      }
-      if (!c.isSubmitNA && c.submitTarget > 0) {
-        sum += Math.min((c.submitRate / c.submitTarget) * 100, 100);
-        count++;
-      }
-      if (count > 0) {
-        totalScore += sum / count;
-        validCount++;
-      }
+      const perf = calculateCoursePerformance(c);
+      totalScore += perf.avgComp;
+      validCount++;
     });
 
     const avg = !isUnstarted && validCount > 0
@@ -647,24 +634,9 @@ export default function KPICoursePage() {
   let curTotal = 0;
   let curCount = 0;
   currentActiveCourses.forEach(c => {
-    let sum = 0;
-    let count = 0;
-    if (!c.isAttendanceNA && c.attendanceTarget > 0) {
-      sum += Math.min((c.attendanceRate / c.attendanceTarget) * 100, 100);
-      count++;
-    }
-    if (!c.isPassNA && c.passTarget > 0) {
-      sum += Math.min((c.passRate / c.passTarget) * 100, 100);
-      count++;
-    }
-    if (!c.isSubmitNA && c.submitTarget > 0) {
-      sum += Math.min((c.submitRate / c.submitTarget) * 100, 100);
-      count++;
-    }
-    if (count > 0) {
-      curTotal += sum / count;
-      curCount++;
-    }
+    const perf = calculateCoursePerformance(c);
+    curTotal += perf.avgComp;
+    curCount++;
   });
   const totalAvgScore = curCount > 0 ? Math.round(curTotal / curCount) : 100;
 
@@ -689,24 +661,19 @@ export default function KPICoursePage() {
     const wb = XLSX.utils.book_new();
     const header = [
       'Chương trình', 'Lớp', 'Kỳ', 'Môn học', 'Số GV', 'Số SV', 
-      'Mục tiêu Chuyên cần (%)', 'Mục tiêu Điểm đạt (%)', 'Mục tiêu Nộp bài đúng hạn (%)',
-      'Kết quả Chuyên cần (%)', 'Kết quả Điểm đạt (%)', 'Kết quả Nộp bài đúng hạn (%)',
-      'Mức hoàn thành Chuyên cần (%)', 'Mức hoàn thành Điểm đạt (%)', 'Mức hoàn thành Nộp bài (%)',
-      'Mức hoàn thành trung bình môn (%)'
+      'Mục tiêu đi học đầy đủ (%)', 'Mục tiêu Pass 1st (%)', 'Mục tiêu Nộp bài đúng hạn (%)',
+      'Kết quả đi học đầy đủ (%)', 'Kết quả Pass 1st (%)', 'Kết quả Pass sau Resit (%)', 'Kết quả Nộp bài đúng hạn (%)',
+      'Mức hoàn thành Đi học (%)', 'Mức hoàn thành Pass sau bù Resit (%)', 'Mức hoàn thành Nộp bài (%)',
+      'Hoàn thành chung môn (%)'
     ];
     
     const rows = programCourses.map(c => {
       const isFuture = c.isFuture;
-      const attendComp = isFuture || c.isAttendanceNA ? 'N/A' : `${Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10}%`;
-      const passComp = isFuture || c.isPassNA ? 'N/A' : `${Math.round((c.passRate / c.passTarget) * 1000) / 10}%`;
-      const submitComp = isFuture || c.isSubmitNA ? 'N/A' : `${Math.round((c.submitRate / c.submitTarget) * 1000) / 10}%`;
-      
-      let compSum = 0;
-      let compCount = 0;
-      if (!isFuture && !c.isAttendanceNA) { compSum += (c.attendanceRate / c.attendanceTarget) * 100; compCount++; }
-      if (!isFuture && !c.isPassNA) { compSum += (c.passRate / c.passTarget) * 100; compCount++; }
-      if (!isFuture && !c.isSubmitNA) { compSum += (c.submitRate / c.submitTarget) * 100; compCount++; }
-      const avgComp = isFuture || compCount === 0 ? 'N/A' : `${Math.round((compSum / compCount) * 10) / 10}%`;
+      const perf = calculateCoursePerformance(c);
+      const attendComp = isFuture || perf.attendComp === null ? 'N/A' : `${perf.attendComp}%`;
+      const passComp = isFuture || perf.passComp === null ? 'N/A' : `${perf.passComp}%`;
+      const submitComp = isFuture || perf.submitComp === null ? 'N/A' : `${perf.submitComp}%`;
+      const avgComp = isFuture || perf.avgComp === null ? 'N/A' : `${perf.avgComp}%`;
 
       return [
         program?.shortName,
@@ -720,6 +687,7 @@ export default function KPICoursePage() {
         c.isSubmitNA ? 'N/A' : `${Math.round(c.submitTarget * 1000) / 10}%`,
         c.isAttendanceNA ? 'N/A' : `${Math.round(c.attendanceRate * 1000) / 10}%`,
         c.isPassNA ? 'N/A' : `${Math.round(c.passRate * 1000) / 10}%`,
+        c.isPassResitNA || !c.passResitRate ? 'N/A' : `${Math.round(c.passResitRate * 1000) / 10}%`,
         c.isSubmitNA ? 'N/A' : `${Math.round(c.submitRate * 1000) / 10}%`,
         attendComp,
         passComp,
@@ -887,37 +855,55 @@ export default function KPICoursePage() {
 
       {/* Main Table */}
       <div className="card" style={{ padding: 0, overflow: 'auto', borderRadius: 8, border: '1px solid var(--gray-200)', boxShadow: 'none' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1400 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 1550 }}>
           <thead>
+            {/* Header Tier 1: 3 Main Blocks */}
             <tr style={{ background: '#1E293B', color: 'white' }}>
-              <th rowSpan={2} style={thStyle}>Lớp</th>
-              <th rowSpan={2} style={thStyle}>Kỳ</th>
-              <th rowSpan={2} style={{ ...thStyle, minWidth: 220, textAlign: 'left' }}>Môn học</th>
-              <th rowSpan={2} style={thStyle}>Số GV</th>
-              <th rowSpan={2} style={thStyle}>Số SV</th>
-              <th colSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Mục tiêu đầu kỳ (%)</th>
-              <th colSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Kết quả thực tế (%)</th>
-              <th colSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Mức độ hoàn thành (%)</th>
-              <th rowSpan={2} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)' }}>Hoàn thành chung</th>
+              <th rowSpan={3} style={thStyle}>Lớp</th>
+              <th rowSpan={3} style={thStyle}>Kỳ</th>
+              <th rowSpan={3} style={{ ...thStyle, minWidth: 220, textAlign: 'left' }}>Môn học</th>
+              <th rowSpan={3} style={thStyle}>Số GV</th>
+              <th rowSpan={3} style={thStyle}>Số SV</th>
+              <th colSpan={3} style={{ ...thStyle, background: '#FFEDD5', color: '#9A3412', borderLeft: '1px solid #FDBA74', borderRight: '1px solid #FDBA74', fontWeight: 800, fontSize: 13 }}>MỤC TIÊU ĐẦU KỲ</th>
+              <th colSpan={4} style={{ ...thStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #86EFAC', fontWeight: 800, fontSize: 13 }}>KẾT QUẢ CUỐI KỲ</th>
+              <th colSpan={3} style={{ ...thStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74', fontWeight: 800, fontSize: 13 }}>MỨC ĐỘ HOÀN THÀNH</th>
+              <th rowSpan={3} style={{ ...thStyle, borderLeft: '1px solid rgba(255,255,255,0.2)', minWidth: 110 }}>Hoàn thành chung (%)</th>
             </tr>
-            <tr style={{ background: '#243247', color: 'rgba(255,255,255,0.9)' }}>
-              <th style={subThStyle}>Chuyên cần</th>
-              <th style={subThStyle}>Pass lần 1</th>
-              <th style={subThStyle}>Nộp đúng hạn</th>
+            {/* Header Tier 2: Kỷ luật vs Học tập */}
+            <tr style={{ background: '#F8FAFC', color: 'var(--gray-800)', fontSize: 12 }}>
+              {/* Mục tiêu đầu kỳ */}
+              <th style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
+              <th colSpan={2} style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+              {/* Kết quả cuối kỳ */}
+              <th style={{ ...subThStyle, background: '#F0FDF4', color: '#166534', borderBottom: '1px solid #BBF7D0' }}>Kỷ luật</th>
+              <th colSpan={3} style={{ ...subThStyle, background: '#F0FDF4', color: '#166534', borderLeft: '1px solid #BBF7D0', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #BBF7D0' }}>Học tập</th>
+              {/* Mức độ hoàn thành */}
+              <th style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
+              <th colSpan={2} style={{ ...subThStyle, background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+            </tr>
+            {/* Header Tier 3: Specific Columns matching Excel */}
+            <tr style={{ background: '#F8FAFC', color: 'var(--gray-700)', fontSize: 11 }}>
+              {/* MT Đầu kỳ */}
+              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', borderLeft: '1px solid #FED7AA' }}>Tỉ lệ đi học đầy đủ</th>
+              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412' }}>Mục tiêu pass 1st</th>
+              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74' }}>Mục tiêu nộp bài/thi lần đầu đúng hạn</th>
               
-              <th style={{ ...subThStyle, borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Chuyên cần</th>
-              <th style={subThStyle}>Pass lần 1</th>
-              <th style={subThStyle}>Nộp đúng hạn</th>
+              {/* KQ Cuối kỳ */}
+              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534' }}>Tỉ lệ đi học đầy đủ</th>
+              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534' }}>Tỉ lệ pass 1st</th>
+              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534' }}>Tỉ lệ pass sau Resit</th>
+              <th style={{ ...subThStyle, background: '#DCFCE7', color: '#166534', borderRight: '1px solid #86EFAC' }}>Tỷ lệ nộp bài/thi lần đầu đúng hạn</th>
               
-              <th style={{ ...subThStyle, borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Chuyên cần</th>
-              <th style={subThStyle}>Pass lần 1</th>
-              <th style={subThStyle}>Nộp đúng hạn</th>
+              {/* Mức độ hoàn thành */}
+              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412' }}>Tỉ lệ đi học đầy đủ</th>
+              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', minWidth: 150 }}>Tỉ lệ pass (Điểm hiệu suất học tập sau khi đã tính bù điểm Resit)</th>
+              <th style={{ ...subThStyle, background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74' }}>Tỷ lệ nộp bài/thi lần đầu đúng hạn</th>
             </tr>
           </thead>
           <tbody>
             {programCourses.length === 0 ? (
               <tr>
-                <td colSpan={15} style={{ padding: 32, textAlign: 'center', color: 'var(--gray-400)' }}>
+                <td colSpan={16} style={{ padding: 32, textAlign: 'center', color: 'var(--gray-400)' }}>
                   Không có môn học nào được ghi nhận cho chương trình này trong bộ lọc đã chọn.
                 </td>
               </tr>
@@ -926,16 +912,11 @@ export default function KPICoursePage() {
                 const isFuture = c.isFuture;
                 const isCurrent = c.isCurrent;
 
-                const attendComp = isFuture || c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
-                const passComp = isFuture || c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
-                const submitComp = isFuture || c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
-
-                let compSum = 0;
-                let compCount = 0;
-                if (attendComp !== null) { compSum += attendComp; compCount++; }
-                if (passComp !== null) { compSum += passComp; compCount++; }
-                if (submitComp !== null) { compSum += submitComp; compCount++; }
-                const avgComp = isFuture || compCount === 0 ? null : Math.round((compSum / compCount) * 10) / 10;
+                const perf = calculateCoursePerformance(c);
+                const attendComp = isFuture ? null : perf.attendComp;
+                const passComp = isFuture ? null : perf.passComp;
+                const submitComp = isFuture ? null : perf.submitComp;
+                const avgComp = isFuture ? null : perf.avgComp;
 
                 return (
                   <tr key={c.id + '_' + ci} style={{ background: isCurrent ? 'rgba(59,130,246,0.02)' : ci % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
@@ -979,9 +960,9 @@ export default function KPICoursePage() {
                     />
                     
                     {/* Targets */}
-                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : formatRate(c.attendanceTarget, c.isAttendanceNA)}</td>
-                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : formatRate(c.passTarget, c.isPassNA)}</td>
-                    <td style={{ ...tdStyle, background: '#F8FAFC' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
+                    <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.attendanceTarget, c.isAttendanceNA)}</td>
+                    <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.passTarget, c.isPassNA)}</td>
+                    <td style={{ ...tdStyle, background: '#FFF7ED' }}>{isFuture ? '-' : formatRate(c.submitTarget, c.isSubmitNA)}</td>
                     
                     {/* Actuals - Editable */}
                     <EditableCell 
@@ -1003,6 +984,18 @@ export default function KPICoursePage() {
                       value={Math.round(c.passRate * 1000) / 10} 
                       displayVal={isFuture ? '-' : formatRate(c.passRate, c.isPassNA)} 
                       isNA={c.isPassNA}
+                      isStaff={isStaff && isCurrent} 
+                      userId={currentUserId} 
+                      isDirectEdit={isDirectEdit} 
+                      onEdit={handleEdit} 
+                    />
+                    <EditableCell 
+                      course={c} 
+                      field="passResitRate" 
+                      fieldLabel="Tỉ lệ pass sau Resit" 
+                      value={Math.round((c.passResitRate || 0) * 1000) / 10} 
+                      displayVal={isFuture ? '-' : formatRate(c.passResitRate || 0, c.isPassResitNA)} 
+                      isNA={c.isPassResitNA}
                       isStaff={isStaff && isCurrent} 
                       userId={currentUserId} 
                       isDirectEdit={isDirectEdit} 
@@ -1033,7 +1026,7 @@ export default function KPICoursePage() {
                     </td>
                     
                     {/* Course Avg Completion */}
-                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : avgComp === null ? '#64748B' : getScoreColor(avgComp!), fontWeight: 700, fontSize: 13 }}>
+                    <td style={{ ...tdStyle, background: isFuture ? 'transparent' : '#F1F5F9', color: isFuture ? 'var(--gray-300)' : avgComp === null ? '#64748B' : getScoreColor(avgComp!), fontWeight: 800, fontSize: 13 }}>
                       {isFuture ? (
                         <span style={{ fontSize: 11, color: 'var(--gray-400)', background: 'var(--gray-100)', padding: '2px 6px', borderRadius: 4, fontWeight: 500 }}>Chưa bắt đầu</span>
                       ) : avgComp === null ? (

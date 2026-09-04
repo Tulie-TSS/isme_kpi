@@ -1,10 +1,10 @@
 'use client';
 import { useApp } from '@/lib/context';
 import PortalModal from '@/components/common/PortalModal';
-import { reviewCycles, reviews, users, kpiDefinitions, getKPISnapshotsByUser, calculateOverallKPI, calculateOperationsKPI, getKPIDetailsBySnapshot, getTasksByUser, getOverdueTasksByUser, getProgramById, getCoordinatorStats, getUserRoleLabel, kpiGroups, courses, otherActivityRecords, laborDisciplineRecords, programs, calculateCoursesKPI } from '@/lib/mock-data';
+import { reviewCycles, reviews, users, kpiDefinitions, getKPISnapshotsByUser, calculateOverallKPI, calculateOperationsKPI, getKPIDetailsBySnapshot, getTasksByUser, getOverdueTasksByUser, getProgramById, getCoordinatorStats, getUserRoleLabel, kpiGroups, courses, otherActivityRecords, laborDisciplineRecords, programs, calculateCoursesKPI, calculateCoursePerformance, subscribeCourses } from '@/lib/mock-data';
 import { tasks } from '@/lib/mock-tasks';
 import { FileText, CheckCircle, Clock, Send, X, ExternalLink, TrendingUp, TrendingDown, BarChart3, Target, AlertTriangle, Award, ChevronDown, ChevronRight, Minus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { KPIDetailItem, Course } from '@/lib/types';
 import Link from 'next/link';
@@ -24,7 +24,13 @@ export default function ReviewPage() {
   const [submitted, setSubmitted] = useState(false);
   const [drilldown, setDrilldown] = useState<{ snapshotId: string; kpiName: string; items: KPIDetailItem[]; num: number; den: number } | null>(null);
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
+  const [, forceCoursesUpdate] = useState(0);
   const period = selectedCycle?.name || 'Kỳ 2 2025-2026';
+
+  useEffect(() => {
+    const unsub = subscribeCourses(() => forceCoursesUpdate(n => n + 1));
+    return unsub;
+  }, []);
 
   const staffUsers = users.filter(u => u.role === 'staff');
   const userReviews = reviews.filter(r => r.cycleId === selectedCycle?.id);
@@ -552,63 +558,151 @@ export default function ReviewPage() {
                 const studentResultsScore = userProgram ? calculateCoursesKPI(userProgram.id, 'current') : 100;
 
                 return (
-                  <div key={group.id}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--gray-200)' }}>
-                      <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
-                      <h4 style={{ fontSize: 13, fontWeight: 700 }}>{group.name} (Trọng số {group.weight}%)</h4>
+                  <div key={group.id} style={{ marginBottom: 20 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, paddingBottom: 8, borderBottom: '1px solid var(--gray-200)', flexWrap: 'wrap', gap: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{ background: 'var(--isme-red)', color: 'white', width: 24, height: 24, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700 }}>{roman}</div>
+                        <div>
+                          <h4 style={{ fontSize: 13, fontWeight: 700, margin: 0 }}>{group.name} (Trọng số {group.weight}%)</h4>
+                          <span style={{ fontSize: 11, color: 'var(--gray-500)' }}>
+                            {userProgram ? userProgram.name : 'Tất cả chương trình'} · {activeUserCourses.length} môn học đang theo dõi · Đồng bộ thời gian thực từ Bảng điền dữ liệu môn học
+                          </span>
+                        </div>
+                      </div>
+                      <Link 
+                        href={`/kpi/courses?program=${userProgram?.id || 'all'}`}
+                        style={{ 
+                          display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, 
+                          color: '#2563EB', background: '#EFF6FF', padding: '5px 10px', borderRadius: 6, 
+                          textDecoration: 'none', border: '1px solid #BFDBFE' 
+                        }}
+                      >
+                        <ExternalLink size={13} />
+                        Bảng điền dữ liệu môn học chi tiết
+                      </Link>
                     </div>
-                    <table className="data-table">
-                      <thead>
-                        <tr>
-                          <th>Lớp / Môn học</th>
-                          <th style={{ textAlign: 'center' }}>Chuyên cần (đạt/MT)</th>
-                          <th style={{ textAlign: 'center' }}>Tỷ lệ Pass (đạt/MT)</th>
-                          <th style={{ textAlign: 'center' }}>Tỉ lệ hoàn thành (%)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {activeUserCourses.map((c) => {
-                          const attendComp = c.isAttendanceNA ? null : Math.round((c.attendanceRate / c.attendanceTarget) * 1000) / 10;
-                          const passComp = c.isPassNA ? null : Math.round((c.passRate / c.passTarget) * 1000) / 10;
-                          const submitComp = c.isSubmitNA ? null : Math.round((c.submitRate / c.submitTarget) * 1000) / 10;
-                          
-                          let compSum = 0;
-                          let compCount = 0;
-                          if (attendComp !== null) { compSum += attendComp; compCount++; }
-                          if (passComp !== null) { compSum += passComp; compCount++; }
-                          if (submitComp !== null) { compSum += submitComp; compCount++; }
-                          const avgComp = compCount > 0 ? Math.round((compSum / compCount) * 10) / 10 : 0;
-                          
-                          return (
-                            <tr key={c.id}>
-                              <td>
-                                <div style={{ fontWeight: 700, fontSize: 13 }}>{c.name}</div>
-                                <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{c.cohort} · {c.semester}</div>
-                              </td>
-                              <td style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: 13, fontWeight: 700, color: c.attendanceRate >= c.attendanceTarget ? 'var(--success)' : 'var(--danger)' }}>
-                                  {c.isAttendanceNA ? 'N/A' : `${(c.attendanceRate * 100).toFixed(1)}% / ${(c.attendanceTarget * 100)}%`}
-                                </div>
-                              </td>
-                              <td style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: 13, fontWeight: 700, color: c.passRate >= c.passTarget ? 'var(--success)' : 'var(--danger)' }}>
-                                  {c.isPassNA ? 'N/A' : `${(c.passRate * 100).toFixed(1)}% / ${(c.passTarget * 100)}%`}
-                                </div>
-                              </td>
-                              <td style={{ textAlign: 'center', fontWeight: 800, fontSize: 13, color: getScoreColor(avgComp) }}>
-                                {avgComp}%
+
+                    <div style={{ overflowX: 'auto', border: '1px solid var(--gray-200)', borderRadius: 8, background: 'white' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12, minWidth: 1150 }}>
+                        <thead>
+                          {/* Header Tier 1: 3 Khối lớn chuẩn Viện */}
+                          <tr style={{ background: '#1E293B', color: 'white', textAlign: 'center' }}>
+                            <th rowSpan={3} style={{ padding: '8px 10px', borderRight: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', minWidth: 160 }}>Lớp / Kỳ</th>
+                            <th rowSpan={3} style={{ padding: '8px 12px', borderRight: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', minWidth: 200 }}>Môn học</th>
+                            <th rowSpan={3} style={{ padding: '8px 6px', borderRight: '1px solid rgba(255,255,255,0.1)', width: 55 }}>Số SV</th>
+                            <th colSpan={3} style={{ padding: '8px 6px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74', fontWeight: 800 }}>MỤC TIÊU ĐẦU KỲ</th>
+                            <th colSpan={4} style={{ padding: '8px 6px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #86EFAC', fontWeight: 800 }}>KẾT QUẢ CUỐI KỲ</th>
+                            <th colSpan={3} style={{ padding: '8px 6px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74', fontWeight: 800 }}>MỨC ĐỘ HOÀN THÀNH</th>
+                            <th rowSpan={3} style={{ padding: '8px 10px', borderLeft: '1px solid rgba(255,255,255,0.2)', width: 100, fontWeight: 800 }}>Hoàn thành chung (%)</th>
+                          </tr>
+                          {/* Header Tier 2: Kỷ luật vs Học tập */}
+                          <tr style={{ textAlign: 'center', fontSize: 11 }}>
+                            {/* Mục tiêu */}
+                            <th style={{ padding: '5px 6px', background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
+                            <th colSpan={2} style={{ padding: '5px 6px', background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+                            {/* Kết quả */}
+                            <th style={{ padding: '5px 6px', background: '#F0FDF4', color: '#166534', borderBottom: '1px solid #BBF7D0' }}>Kỷ luật</th>
+                            <th colSpan={3} style={{ padding: '5px 6px', background: '#F0FDF4', color: '#166534', borderLeft: '1px solid #BBF7D0', borderRight: '1px solid #BBF7D0', borderBottom: '1px solid #BBF7D0' }}>Học tập</th>
+                            {/* Mức độ hoàn thành */}
+                            <th style={{ padding: '5px 6px', background: '#FFF7ED', color: '#9A3412', borderBottom: '1px solid #FED7AA' }}>Kỷ luật</th>
+                            <th colSpan={2} style={{ padding: '5px 6px', background: '#FFF7ED', color: '#9A3412', borderLeft: '1px solid #FED7AA', borderRight: '1px solid #FED7AA', borderBottom: '1px solid #FED7AA' }}>Học tập</th>
+                          </tr>
+                          {/* Header Tier 3: Tên chỉ tiêu */}
+                          <tr style={{ textAlign: 'center', fontSize: 10, color: 'var(--gray-700)' }}>
+                            {/* MT Đầu kỳ */}
+                            <th style={{ padding: '6px 4px', background: '#FFEDD5', color: '#9A3412', borderLeft: '1px solid #FED7AA', width: 75 }}>Tỉ lệ đi học đầy đủ</th>
+                            <th style={{ padding: '6px 4px', background: '#FFEDD5', color: '#9A3412', width: 75 }}>Mục tiêu pass 1st</th>
+                            <th style={{ padding: '6px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74', width: 85 }}>Mục tiêu nộp bài/thi đúng hạn</th>
+                            {/* KQ Cuối kỳ */}
+                            <th style={{ padding: '6px 4px', background: '#DCFCE7', color: '#166534', width: 75 }}>Tỉ lệ đi học đầy đủ</th>
+                            <th style={{ padding: '6px 4px', background: '#DCFCE7', color: '#166534', width: 75 }}>Tỉ lệ pass 1st</th>
+                            <th style={{ padding: '6px 4px', background: '#DCFCE7', color: '#166534', width: 75 }}>Tỉ lệ pass sau Resit</th>
+                            <th style={{ padding: '6px 4px', background: '#DCFCE7', color: '#166534', borderRight: '1px solid #86EFAC', width: 85 }}>Tỷ lệ nộp bài/thi đúng hạn</th>
+                            {/* Mức độ hoàn thành */}
+                            <th style={{ padding: '6px 4px', background: '#FFEDD5', color: '#9A3412', width: 75 }}>Tỉ lệ đi học đầy đủ</th>
+                            <th style={{ padding: '6px 4px', background: '#FFEDD5', color: '#9A3412', width: 110 }}>Tỉ lệ pass (Tính bù điểm Resit)</th>
+                            <th style={{ padding: '6px 4px', background: '#FFEDD5', color: '#9A3412', borderRight: '1px solid #FDBA74', width: 85 }}>Tỷ lệ nộp bài/thi đúng hạn</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {activeUserCourses.length === 0 ? (
+                            <tr>
+                              <td colSpan={14} style={{ padding: 24, textAlign: 'center', color: 'var(--gray-400)' }}>
+                                Chưa có môn học nào được ghi nhận cho học kỳ này.
                               </td>
                             </tr>
-                          );
-                        })}
-                        <tr style={{ background: 'var(--gray-50)', fontWeight: 700 }}>
-                          <td colSpan={3} style={{ textAlign: 'right', padding: '10px 16px' }}>Mức hoàn thành trung bình Nhóm Kết quả học sinh:</td>
-                          <td style={{ textAlign: 'center', padding: '10px 16px', color: getScoreColor(studentResultsScore) }}>
-                            {studentResultsScore}%
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                          ) : (
+                            activeUserCourses.map((c, idx) => {
+                              const perf = calculateCoursePerformance(c);
+                              return (
+                                <tr key={c.id} style={{ borderBottom: '1px solid var(--gray-100)', background: idx % 2 === 0 ? 'white' : 'var(--gray-50)' }}>
+                                  <td style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 600 }}>
+                                    <div>{c.cohort}</div>
+                                    <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>{c.semester}</div>
+                                  </td>
+                                  <td style={{ padding: '8px 12px', textAlign: 'left' }}>
+                                    <div style={{ fontWeight: 600, color: 'var(--gray-900)' }}>{c.name}</div>
+                                    {c.code && <div style={{ fontSize: 10, color: 'var(--gray-400)' }}>Mã: {c.code}</div>}
+                                  </td>
+                                  <td style={{ padding: '8px 6px', textAlign: 'center', color: 'var(--gray-600)' }}>
+                                    {c.numStudents || '-'}
+                                  </td>
+
+                                  {/* MT Đầu kỳ */}
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(255,237,213,0.3)', color: '#9A3412', fontWeight: 600 }}>
+                                    {c.isAttendanceNA ? 'N/A' : `${(c.attendanceTarget * 100).toFixed(0)}%`}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(255,237,213,0.3)', color: '#9A3412', fontWeight: 600 }}>
+                                    {c.isPassNA ? 'N/A' : `${(c.passTarget * 100).toFixed(0)}%`}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(255,237,213,0.3)', color: '#9A3412', fontWeight: 600, borderRight: '1px solid #FED7AA' }}>
+                                    {c.isSubmitNA ? 'N/A' : `${(c.submitTarget * 100).toFixed(0)}%`}
+                                  </td>
+
+                                  {/* KQ Cuối kỳ */}
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(220,252,231,0.3)', color: '#166534', fontWeight: 600 }}>
+                                    {c.isAttendanceNA ? 'N/A' : `${(c.attendanceRate * 100).toFixed(1)}%`}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(220,252,231,0.3)', color: '#166534', fontWeight: 600 }}>
+                                    {c.isPassNA ? 'N/A' : `${(c.passRate * 100).toFixed(1)}%`}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(220,252,231,0.3)', color: '#166534', fontWeight: 600 }}>
+                                    {c.isPassResitNA ? 'N/A' : c.passResitRate !== undefined ? `${(c.passResitRate * 100).toFixed(1)}%` : '-'}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(220,252,231,0.3)', color: '#166534', fontWeight: 600, borderRight: '1px solid #BBF7D0' }}>
+                                    {c.isSubmitNA ? 'N/A' : `${(c.submitRate * 100).toFixed(1)}%`}
+                                  </td>
+
+                                  {/* Mức độ hoàn thành */}
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(255,237,213,0.3)', fontWeight: 700, color: perf.attendComp === null ? '#94A3B8' : getScoreColor(perf.attendComp) }}>
+                                    {perf.attendComp === null ? 'N/A' : `${Math.round(perf.attendComp)}%`}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(255,237,213,0.3)', fontWeight: 700, color: perf.passComp === null ? '#94A3B8' : getScoreColor(perf.passComp) }}>
+                                    {perf.passComp === null ? 'N/A' : `${Math.round(perf.passComp)}%`}
+                                  </td>
+                                  <td style={{ padding: '8px 4px', textAlign: 'center', background: 'rgba(255,237,213,0.3)', fontWeight: 700, color: perf.submitComp === null ? '#94A3B8' : getScoreColor(perf.submitComp), borderRight: '1px solid #FED7AA' }}>
+                                    {perf.submitComp === null ? 'N/A' : `${Math.round(perf.submitComp)}%`}
+                                  </td>
+
+                                  {/* Hoàn thành chung môn */}
+                                  <td style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 800, fontSize: 13, color: getScoreColor(perf.avgComp), borderLeft: '1px solid var(--gray-200)' }}>
+                                    {perf.avgComp}%
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                          <tr style={{ background: '#F8FAFC', fontWeight: 700, borderTop: '2px solid var(--gray-300)' }}>
+                            <td colSpan={13} style={{ textAlign: 'right', padding: '12px 16px', fontSize: 13, color: 'var(--gray-800)' }}>
+                              Mức hoàn thành trung bình Nhóm Kết quả học sinh:
+                            </td>
+                            <td style={{ textAlign: 'center', padding: '12px 10px', fontSize: 15, fontWeight: 900, color: getScoreColor(studentResultsScore), borderLeft: '1px solid var(--gray-200)' }}>
+                              {studentResultsScore}%
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 );
               }

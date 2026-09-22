@@ -212,8 +212,9 @@ export default function ManagerDashboard() {
       return Math.round(opSnaps.reduce((acc, s) => acc + s.score, 0) / opSnaps.length);
     }
     if (groupId === 'academic_support') {
-      const op5AsSnap = kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op5_as');
-      return op5AsSnap ? Math.round(op5AsSnap.score) : 0;
+      const op5AsSnap = kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op5_as')
+        || kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op1');
+      return op5AsSnap ? Math.round(op5AsSnap.score) : 100;
     }
     if (groupId === 'student_results') {
       const userProg = programs.find(p => p.managerId === userId);

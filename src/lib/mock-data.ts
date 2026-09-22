@@ -4594,6 +4594,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
+    "id": "ks_u10_op5_as",
+    "userId": "u10",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
     "id": "ks_u10_op6",
     "userId": "u10",
     "kpiDefinitionId": "op6",
@@ -4747,6 +4759,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "actualValue": 4,
     "rawNumerator": 4,
     "rawDenominator": 4,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
+    "id": "ks_u2_op5_as",
+    "userId": "u2",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
@@ -4906,6 +4930,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
+    "id": "ks_u11_op5_as",
+    "userId": "u11",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
     "id": "ks_u11_op6",
     "userId": "u11",
     "kpiDefinitionId": "op6",
@@ -5059,6 +5095,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "actualValue": 4,
     "rawNumerator": 4,
     "rawDenominator": 4,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
+    "id": "ks_u6_op5_as",
+    "userId": "u6",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
@@ -5218,6 +5266,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
+    "id": "ks_u8_op5_as",
+    "userId": "u8",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
     "id": "ks_u8_op6",
     "userId": "u8",
     "kpiDefinitionId": "op6",
@@ -5371,6 +5431,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "actualValue": 7,
     "rawNumerator": 7,
     "rawDenominator": 7,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
+    "id": "ks_u5_op5_as",
+    "userId": "u5",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
@@ -5530,6 +5602,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
+    "id": "ks_u4_op5_as",
+    "userId": "u4",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
     "id": "ks_u4_op6",
     "userId": "u4",
     "kpiDefinitionId": "op6",
@@ -5686,6 +5770,18 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
+    "id": "ks_u7_op5_as",
+    "userId": "u7",
+    "kpiDefinitionId": "op5_as",
+    "period": "Kỳ 2 2025-2026",
+    "score": 100,
+    "targetValue": 100,
+    "actualValue": 100,
+    "rawNumerator": 100,
+    "rawDenominator": 100,
+    "calculatedAt": "2026-07-22T00:00:00.000Z"
+  },
+  {
     "id": "ks_u7_op6",
     "userId": "u7",
     "kpiDefinitionId": "op6",
@@ -5783,11 +5879,11 @@ const initialKpiSnapshots: KPISnapshot[] = [
   }
 ];
 
-export let kpiSnapshots: KPISnapshot[] = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v6', initialKpiSnapshots);
+export let kpiSnapshots: KPISnapshot[] = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v7', initialKpiSnapshots);
 
 export function updateSnapshotValue(snapshotId: string, updates: Partial<KPISnapshot>) {
   kpiSnapshots = kpiSnapshots.map(s => s.id === snapshotId ? { ...s, ...updates } : s);
-  save('isme_kpi_snapshots', kpiSnapshots);
+  save('isme_kpi_snapshots_v7', kpiSnapshots);
 }
 
 // ==================== SUBMISSION STATUS ====================
@@ -5988,7 +6084,7 @@ export function calculateOverallKPI(userId: string, period: string): number {
   // Shared KPI: Linked directly to op5_as (Hoạt động ngoại khóa - Học tập) or fallback to op1
   const snapshots = getKPISnapshotsByUser(userId, period);
   const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as') || snapshots.find(s => s.kpiDefinitionId === 'op1');
-  const asScore = op5AsSnap ? op5AsSnap.score : 0;
+  const asScore = op5AsSnap ? op5AsSnap.score : 100;
 
   // 3. Kết quả học tập & Kỷ luật - Student Results (20%)
   // Find which program this user manages

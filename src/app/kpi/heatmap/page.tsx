@@ -49,7 +49,7 @@ export default function HeatmapPage() {
     if (groupId === 'operations' || groupId === 'academic_support') {
       const groupDefs = kpiDefinitions.filter(d => d.groupId === groupId);
       const groupSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && groupDefs.some(d => d.id === s.kpiDefinitionId));
-      if (groupSnaps.length === 0) return 0;
+      if (groupSnaps.length === 0) return groupId === 'academic_support' ? 100 : 0;
       const avg = groupSnaps.reduce((acc, s) => acc + s.score, 0) / groupSnaps.length;
       return Math.round(avg);
     }

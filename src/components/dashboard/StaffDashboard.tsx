@@ -107,8 +107,8 @@ export default function StaffDashboard() {
   const otherSnaps = snapshots.filter(s => kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === 'other_activities');
   
   // Linked academic support KPI (STT 5 Hoạt động ngoại khóa)
-  const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as');
-  const asScore = op5AsSnap ? op5AsSnap.score : 0;
+  const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as') || snapshots.find(s => s.kpiDefinitionId === 'op1');
+  const asScore = op5AsSnap ? op5AsSnap.score : 100;
 
   // Student Results & Discipline KPI Score (20% weight)
   const studentResultsScore = managedProgram ? calculateCoursesKPI(managedProgram.id, 'current') : 100;

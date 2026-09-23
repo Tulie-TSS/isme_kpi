@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/lib/context';
-import { getAuditLogs, subscribeEditRequests, subscribeCourseEditRequests } from '@/lib/mock-data';
+import { getAuditLogs, subscribeAuditLogs, syncAuditLogsFromDatabase, subscribeEditRequests, subscribeCourseEditRequests } from '@/lib/mock-data';
 import { AuditLog } from '@/lib/types';
 import { Search, RotateCw, ShieldAlert, FileSpreadsheet, Calendar, User, Terminal } from 'lucide-react';
 
@@ -15,12 +15,14 @@ export default function AuditLogsPage() {
   // Sync logs and support updates from other pages
   useEffect(() => {
     setLogs(getAuditLogs());
+    syncAuditLogsFromDatabase().then(() => setLogs(getAuditLogs()));
     
-    // Refresh list when any edit request changes
+    const unsub0 = subscribeAuditLogs(() => setLogs(getAuditLogs()));
     const unsub1 = subscribeEditRequests(() => setLogs(getAuditLogs()));
     const unsub2 = subscribeCourseEditRequests(() => setLogs(getAuditLogs()));
     
     return () => {
+      unsub0();
       unsub1();
       unsub2();
     };
@@ -30,8 +32,9 @@ export default function AuditLogsPage() {
 
   const handleRefresh = async () => {
     setRefreshing(true);
+    await syncAuditLogsFromDatabase();
     setLogs(getAuditLogs());
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 400));
     setRefreshing(false);
     forceUpdate(n => n + 1);
   };
@@ -64,10 +67,13 @@ export default function AuditLogsPage() {
   });
 
   const getActionBadgeStyle = (action: string) => {
-    if (action.includes('Duyệt')) return { bg: '#D1FAE5', text: '#065F46', border: '#A7F3D0' };
-    if (action.includes('Từ chối')) return { bg: '#FEE2E2', text: '#991B1B', border: '#FCA5A5' };
-    if (action.includes('Yêu cầu') || action.includes('Gửi')) return { bg: '#DBEAFE', text: '#1E40AF', border: '#BFDBFE' };
-    if (action.includes('Đăng nhập') || action.includes('Vai trò')) return { bg: '#F3F4F6', text: '#374151', border: '#E5E7EB' };
+    if (action.includes('Duyệt') || action.includes('phê duyệt')) return { bg: '#D1FAE5', text: '#065F46', border: '#A7F3D0' };
+    if (action.includes('Từ chối') || action.includes('Cảnh báo')) return { bg: '#FEE2E2', text: '#991B1B', border: '#FCA5A5' };
+    if (action.includes('Yêu cầu') || action.includes('Gửi') || action.includes('Nộp')) return { bg: '#DBEAFE', text: '#1E40AF', border: '#BFDBFE' };
+    if (action.includes('Đăng nhập') || action.includes('Vai trò') || action.includes('Đổi người dùng')) return { bg: '#F3F4F6', text: '#374151', border: '#E5E7EB' };
+    if (action.includes('Truy cập trang')) return { bg: '#EDE9FE', text: '#5B21B6', border: '#DDD6FE' };
+    if (action.includes('Chuyển tab') || action.includes('bộ lọc') || action.includes('tùy chọn')) return { bg: '#E0F2FE', text: '#0369A1', border: '#BAE6FD' };
+    if (action.includes('Thao tác giao diện')) return { bg: '#F1F5F9', text: '#334155', border: '#CBD5E1' };
     return { bg: '#FEF3C7', text: '#92400E', border: '#FDE68A' };
   };
 

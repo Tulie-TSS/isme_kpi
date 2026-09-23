@@ -6120,6 +6120,8 @@ export async function syncFromDatabase() {
         save('isme_submission_statuses_v10', submissionStatuses);
       }
     }
+    // Also sync audit logs from database
+    await syncAuditLogsFromDatabase();
   } catch (err) {
     console.warn('Could not sync from PostgreSQL, using cached local data:', err);
   } finally {
@@ -6160,26 +6162,78 @@ const initialAuditLogs: AuditLog[] = [
 
 export let auditLogs: AuditLog[] = getSaved<AuditLog[]>('isme_audit_logs', initialAuditLogs);
 
+let _auditListeners: (() => void)[] = [];
+export function subscribeAuditLogs(fn: () => void) {
+  _auditListeners.push(fn);
+  return () => {
+    _auditListeners = _auditListeners.filter(f => f !== fn);
+  };
+}
+
+let _lastAuditDetails = '';
+let _lastAuditTime = 0;
+
 export function addAuditLog(userId: string, action: string, details: string) {
+  const now = Date.now();
+  // Prevent duplicate logs within 350ms of exact same details
+  if (now - _lastAuditTime < 350 && _lastAuditDetails === details) {
+    return;
+  }
+  _lastAuditTime = now;
+  _lastAuditDetails = details;
+
   const user = users.find(u => u.id === userId);
-  const userName = user ? user.name : 'Unknown User';
-  const mockIps = ['192.168.1.45', '172.16.2.110', '118.70.124.9', '14.161.12.87'];
-  const ipAddress = mockIps[Math.floor(Math.random() * mockIps.length)];
+  const userName = user ? user.name : (userId === 'u0' ? 'Admin System' : 'Người dùng');
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Server Environment';
   
   const newLog: AuditLog = {
-    id: 'log_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+    id: 'log_' + now + '_' + Math.floor(Math.random() * 1000),
     timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
     userId,
     userName,
     action,
-    ipAddress,
+    ipAddress: '127.0.0.1',
     userAgent,
     details
   };
   
-  auditLogs = [newLog, ...auditLogs];
+  auditLogs = [newLog, ...auditLogs.slice(0, 499)];
   save('isme_audit_logs', auditLogs);
+  _auditListeners.forEach(fn => fn());
+
+  // Fire-and-forget sync to PostgreSQL backend
+  if (typeof window !== 'undefined') {
+    fetch('/api/audit-logs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newLog)
+    }).then(res => res.json()).then(data => {
+      if (data?.log?.ipAddress) {
+        newLog.ipAddress = data.log.ipAddress;
+        save('isme_audit_logs', auditLogs);
+        _auditListeners.forEach(fn => fn());
+      }
+    }).catch(() => {});
+  }
+}
+
+export async function syncAuditLogsFromDatabase() {
+  if (typeof window === 'undefined') return;
+  try {
+    const res = await fetch('/api/audit-logs');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.success && Array.isArray(data.logs) && data.logs.length > 0) {
+      const dbLogs: AuditLog[] = data.logs;
+      const dbIds = new Set(dbLogs.map(l => l.id));
+      const localOnly = auditLogs.filter(l => !dbIds.has(l.id));
+      auditLogs = [...dbLogs, ...localOnly].slice(0, 500);
+      save('isme_audit_logs', auditLogs);
+      _auditListeners.forEach(fn => fn());
+    }
+  } catch (err) {
+    console.warn('Could not sync audit logs from database:', err);
+  }
 }
 
 export function getAuditLogs(): AuditLog[] {

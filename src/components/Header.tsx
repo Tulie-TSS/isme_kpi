@@ -1,7 +1,7 @@
 'use client';
 import { useApp } from '@/lib/context';
 import { useAuth } from '@/lib/auth-context';
-import { getUserById, getNotificationsByUser, users, programs } from '@/lib/mock-data';
+import { getUserById, getNotificationsByUser, users, programs, addAuditLog } from '@/lib/mock-data';
 import { Bell, Menu, ChevronDown, AlertTriangle, CheckCircle, Info, ArrowUpRight, Clock, X, LogOut, User as UserIcon, Eye } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -57,9 +57,11 @@ export default function Header() {
     else if (role === 'admin') setCurrentUserId('u0');
     else setCurrentUserId(authUser?.id || 'u5');
     setShowUserMenu(false);
+    addAuditLog(currentUserId, 'Đổi vai trò', `Chuyển vai trò làm việc sang ${roleLabels[role]}`);
   };
 
   const handleLogout = () => {
+    addAuditLog(currentUserId, 'Đăng xuất', `Người dùng ${user?.name || authUser?.name || 'User'} đăng xuất khỏi hệ thống.`);
     setShowUserMenu(false);
     logout();
     router.replace('/login');
@@ -126,8 +128,11 @@ export default function Header() {
                 const targetId = e.target.value;
                 if (targetId === 'u0') {
                   stopImpersonating();
+                  addAuditLog(currentUserId, 'Chuyển đổi người dùng', 'Kết thúc phiên test, trở về quyền Quản trị viên (Admin System)');
                 } else {
                   impersonate(targetId);
+                  const targetUser = getUserById(targetId);
+                  addAuditLog(currentUserId, 'Chuyển đổi người dùng', `Đổi phiên làm việc sang ${targetUser?.name || targetId} (${targetUser?.position || 'Nhân sự'})`);
                 }
               }}
               style={{

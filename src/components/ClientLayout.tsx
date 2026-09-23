@@ -9,6 +9,8 @@ import Header from '@/components/Header';
 import { ToastProvider } from '@/components/common/Toast';
 import { ConfirmProvider } from '@/components/common/ConfirmModal';
 
+import ActivityTracker from '@/components/common/ActivityTracker';
+
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, isImpersonating, stopImpersonating, user } = useAuth();
   const router = useRouter();
@@ -49,6 +51,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     <AppProvider>
       <ConfirmProvider>
         <ToastProvider>
+          <ActivityTracker />
           <Sidebar />
           <Header />
           <main className="main-content">

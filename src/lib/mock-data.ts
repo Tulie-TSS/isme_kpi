@@ -2523,7 +2523,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 1",
-    "name": "ENGLISH (Elementary - pre Intermediate Level)",
+    "name": "ENGLISH (Elementary - pre Intermediate Level 1)",
     "cohort": "I21 MT",
     "numLecturers": 2,
     "numStudents": 45,
@@ -2542,7 +2542,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 2",
-    "name": "ENGLISH (Intermediate Level)",
+    "name": "ENGLISH (Intermediate Level 2)",
     "cohort": "I22 MX",
     "numLecturers": 2,
     "numStudents": 32,
@@ -2551,6 +2551,7 @@ const initialCourses: Course[] = [
     "submitTarget": 1.0,
     "attendanceRate": 1.0,
     "passRate": 0.842,
+    "passResitRate": 0.786,
     "submitRate": 1.0,
     "year": 1,
     "semester": "SEM SPRING"
@@ -2561,7 +2562,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 3",
-    "name": "ENGLISH (Upper -Intermediate Level)",
+    "name": "ENGLISH (Upper -Intermediate Level 3)",
     "cohort": "I21 MT",
     "numLecturers": 13,
     "numStudents": 85,
@@ -2570,6 +2571,7 @@ const initialCourses: Course[] = [
     "submitTarget": 1.0,
     "attendanceRate": 0.976,
     "passRate": 0.803,
+    "passResitRate": 0.5,
     "submitRate": 1.0,
     "year": 1,
     "semester": "SEM SPRING"
@@ -2580,19 +2582,17 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 3",
-    "name": "ENGLISH (Upper -Intermediate Level)",
+    "name": "ENGLISH (Upper -Intermediate Level 3)",
     "cohort": "I22 MX",
     "numLecturers": 2,
-    "numStudents": 39,
+    "numStudents": 37,
     "attendanceTarget": 0.9,
     "passTarget": 0.7,
-    "submitTarget": 1.0,
-    "attendanceRate": 0,
-    "passRate": 0,
-    "submitRate": 0,
-    "isAttendanceNA": true,
-    "isPassNA": true,
-    "isSubmitNA": true,
+    "submitTarget": 0.95,
+    "attendanceRate": 0.973,
+    "passRate": 0.639,
+    "passResitRate": 0.4,
+    "submitRate": 1.0,
     "year": 1,
     "semester": "SEM SPRING"
   },
@@ -2602,7 +2602,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 4",
-    "name": "ENGLISH (Advanced Level)",
+    "name": "ENGLISH (Advanced Level 4)",
     "cohort": "I21 MT",
     "numLecturers": 11,
     "numStudents": 92,
@@ -2611,6 +2611,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.95,
     "attendanceRate": 0.989,
     "passRate": 0.468,
+    "passResitRate": 0.6,
     "submitRate": 0.989,
     "year": 1,
     "semester": "SEM SPRING"
@@ -2630,6 +2631,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.95,
     "attendanceRate": 0.94,
     "passRate": 0.833,
+    "passResitRate": 0.467,
     "submitRate": 0.97,
     "year": 1,
     "semester": "SEM SPRING"
@@ -2649,6 +2651,7 @@ const initialCourses: Course[] = [
     "submitTarget": 0.95,
     "attendanceRate": 0.88,
     "passRate": 0.484,
+    "passResitRate": 0.78,
     "submitRate": 0.96,
     "year": 1,
     "semester": "SEM SPRING"
@@ -2692,25 +2695,6 @@ const initialCourses: Course[] = [
     "semester": "SEM SUMMER"
   },
   {
-    "id": "c_u11_40",
-    "programId": "p_nam1",
-    "coordinatorId": "u11",
-    "coordinatorName": "Bùi Thị Quỳnh Trang",
-    "code": "Môn cơ sở",
-    "name": "Data Analysis and AI",
-    "cohort": "I21 MT",
-    "numLecturers": 2,
-    "numStudents": 45,
-    "attendanceTarget": 0.9,
-    "passTarget": 0.7,
-    "submitTarget": 0.95,
-    "attendanceRate": 0.92,
-    "passRate": 0.88,
-    "submitRate": 0.91,
-    "year": 1,
-    "semester": "SEM SPRING"
-  },
-  {
     "id": "c_u11_exp_1",
     "programId": "p_nam1",
     "coordinatorId": "u11",
@@ -2735,7 +2719,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 2",
-    "name": "ENGLISH (Intermediate Level)",
+    "name": "ENGLISH (Intermediate Level 2)",
     "cohort": "I22 MT",
     "numLecturers": 2,
     "numStudents": 50,
@@ -2754,7 +2738,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 3",
-    "name": "ENGLISH (Upper -Intermediate Level)",
+    "name": "ENGLISH (Upper -Intermediate Level 3)",
     "cohort": "I22 MT",
     "numLecturers": 2,
     "numStudents": 50,
@@ -2773,7 +2757,7 @@ const initialCourses: Course[] = [
     "coordinatorId": "u11",
     "coordinatorName": "Bùi Thị Quỳnh Trang",
     "code": "Level 4",
-    "name": "ENGLISH (Advanced Level)",
+    "name": "ENGLISH (Advanced Level 4)",
     "cohort": "I22 MT",
     "numLecturers": 2,
     "numStudents": 50,
@@ -2794,6 +2778,120 @@ const initialCourses: Course[] = [
     "code": "Môn cơ sở",
     "name": "Basic Economics",
     "cohort": "I22 MT",
+    "numLecturers": 2,
+    "numStudents": 50,
+    "attendanceTarget": 0.9,
+    "passTarget": 0.7,
+    "submitTarget": 0.95,
+    "attendanceRate": 0,
+    "passRate": 0,
+    "submitRate": 0,
+    "year": 1,
+    "semester": "SEM SPRING"
+  },
+  {
+    "id": "c_u11_40",
+    "programId": "p_nam1",
+    "coordinatorId": "u11",
+    "coordinatorName": "Bùi Thị Quỳnh Trang",
+    "code": "Môn cơ sở",
+    "name": "Data Analysis and AI",
+    "cohort": "I22 MT",
+    "numLecturers": 2,
+    "numStudents": 50,
+    "attendanceTarget": 0.9,
+    "passTarget": 0.7,
+    "submitTarget": 0.95,
+    "attendanceRate": 0,
+    "passRate": 0,
+    "submitRate": 0,
+    "year": 1,
+    "semester": "SEM SPRING"
+  },
+  {
+    "id": "c_u11_i23_1",
+    "programId": "p_nam1",
+    "coordinatorId": "u11",
+    "coordinatorName": "Bùi Thị Quỳnh Trang",
+    "code": "Level 1",
+    "name": "Welcome to University",
+    "cohort": "I23 MX",
+    "numLecturers": 2,
+    "numStudents": 50,
+    "attendanceTarget": 0.9,
+    "passTarget": 0.7,
+    "submitTarget": 0.95,
+    "attendanceRate": 0,
+    "passRate": 0,
+    "submitRate": 0,
+    "year": 1,
+    "semester": "SEM FALL"
+  },
+  {
+    "id": "c_u11_i23_2",
+    "programId": "p_nam1",
+    "coordinatorId": "u11",
+    "coordinatorName": "Bùi Thị Quỳnh Trang",
+    "code": "Level 2",
+    "name": "ENGLISH (Intermediate Level 2)",
+    "cohort": "I23 MX",
+    "numLecturers": 2,
+    "numStudents": 50,
+    "attendanceTarget": 0.9,
+    "passTarget": 0.7,
+    "submitTarget": 0.95,
+    "attendanceRate": 0,
+    "passRate": 0,
+    "submitRate": 0,
+    "year": 1,
+    "semester": "SEM SPRING"
+  },
+  {
+    "id": "c_u11_i23_3",
+    "programId": "p_nam1",
+    "coordinatorId": "u11",
+    "coordinatorName": "Bùi Thị Quỳnh Trang",
+    "code": "Level 3",
+    "name": "ENGLISH (Upper -Intermediate Level 3)",
+    "cohort": "I23 MX",
+    "numLecturers": 2,
+    "numStudents": 50,
+    "attendanceTarget": 0.9,
+    "passTarget": 0.7,
+    "submitTarget": 0.95,
+    "attendanceRate": 0,
+    "passRate": 0,
+    "submitRate": 0,
+    "year": 1,
+    "semester": "SEM SPRING"
+  },
+  {
+    "id": "c_u11_i23_4",
+    "programId": "p_nam1",
+    "coordinatorId": "u11",
+    "coordinatorName": "Bùi Thị Quỳnh Trang",
+    "code": "Level 4",
+    "name": "ENGLISH (Advanced Level 4)",
+    "cohort": "I23 MX",
+    "numLecturers": 2,
+    "numStudents": 50,
+    "attendanceTarget": 0.9,
+    "passTarget": 0.7,
+    "submitTarget": 0.95,
+    "attendanceRate": 0,
+    "passRate": 0,
+    "submitRate": 0,
+    "year": 1,
+    "semester": "SEM SPRING"
+  },
+  {
+    "id": "c_u11_i23_5",
+    "programId": "p_nam1",
+    "coordinatorId": "u11",
+    "coordinatorName": "Bùi Thị Quỳnh Trang",
+    "code": "Môn cơ sở",
+    "name": "Basic Economics",
+    "cohort": "I23 MX",
     "numLecturers": 2,
     "numStudents": 50,
     "attendanceTarget": 0.9,
@@ -4348,7 +4446,7 @@ const initialCourses: Course[] = [
   }
 ];
 
-const COURSES_STORAGE_KEY = 'isme_courses_v16';
+const COURSES_STORAGE_KEY = 'isme_courses_v17';
 export let courses: Course[] = getSaved<Course[]>(COURSES_STORAGE_KEY, initialCourses);
 
 let _coursesListeners: (() => void)[] = [];
@@ -4935,10 +5033,10 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "kpiDefinitionId": "op5_as",
     "period": "Kỳ 2 2025-2026",
     "score": 100,
-    "targetValue": 100,
-    "actualValue": 100,
-    "rawNumerator": 100,
-    "rawDenominator": 100,
+    "targetValue": 5,
+    "actualValue": 5,
+    "rawNumerator": 5,
+    "rawDenominator": 5,
     "calculatedAt": "2026-07-22T00:00:00.000Z"
   },
   {
@@ -5880,7 +5978,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
 ];
 
 export let kpiSnapshots: KPISnapshot[] = (() => {
-  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v7', initialKpiSnapshots);
+  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v8', initialKpiSnapshots);
   let hasChange = false;
   const migrated = loaded.map(s => {
     if (s.leaderScore !== undefined && s.score !== s.leaderScore) {
@@ -5894,7 +5992,7 @@ export let kpiSnapshots: KPISnapshot[] = (() => {
     return s;
   });
   if (hasChange && typeof window !== 'undefined') {
-    save('isme_kpi_snapshots_v7', migrated);
+    save('isme_kpi_snapshots_v8', migrated);
   }
   return migrated;
 })();
@@ -5907,7 +6005,7 @@ export function subscribeSnapshots(fn: () => void) {
 }
 
 function _notifySnapshots() {
-  save('isme_kpi_snapshots_v7', kpiSnapshots);
+  save('isme_kpi_snapshots_v8', kpiSnapshots);
   _snapshotListeners.forEach(fn => fn());
 }
 

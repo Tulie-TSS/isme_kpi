@@ -57,31 +57,33 @@ interface EditCellProps {
 
 function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false, userId, isDirectEdit, onDone }: EditCellProps) {
   const isCountField = field === 'numLecturers' || field === 'numStudents';
-  const [val, setVal] = useState<number>(currentValue);
+  const [val, setVal] = useState<number | string>(currentValue);
   const [isNAChecked, setIsNAChecked] = useState<boolean>(isNA);
   const [reason, setReason] = useState('');
   const [err, setErr] = useState('');
   const pending = getPendingCourseEditForField(course.id, field);
 
+  const numVal = typeof val === 'string' ? (parseFloat(val) || 0) : val;
+
   const handleSubmit = () => {
     if (!isCountField && !isNAChecked) {
-      if (val < 0 || val > 100) {
+      if (numVal < 0 || numVal > 100) {
         setErr('Giá trị phải nằm trong khoảng 0% - 100%');
         return;
       }
     }
-    if (isCountField && val < 0) {
+    if (isCountField && numVal < 0) {
       setErr('Số lượng phải lớn hơn hoặc bằng 0');
       return;
     }
-    if (val === currentValue && isNAChecked === isNA) {
+    if (numVal === currentValue && isNAChecked === isNA) {
       setErr('Chưa có thay đổi về trị số hoặc trạng thái');
       return;
     }
 
     if (isDirectEdit) {
       if (isCountField) {
-        const intVal = Math.max(0, Math.floor(val));
+        const intVal = Math.max(0, Math.floor(numVal));
         updateCourseValue(course.id, { [field]: intVal });
         addAuditLog(userId, 'Cập nhật môn học', `Đã cập nhật số lượng ${fieldLabel} môn ${course.name}: ${currentValue} -> ${intVal}.`);
       } else if (isNAChecked) {
@@ -90,9 +92,9 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
         addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã chuyển ${fieldLabel} môn ${course.name} sang trạng thái N/A.`);
       } else {
         const naField = field === 'attendanceRate' ? 'isAttendanceNA' : field === 'passRate' ? 'isPassNA' : field === 'passResitRate' ? 'isPassResitNA' : 'isSubmitNA';
-        const valDecimal = val / 100;
+        const valDecimal = numVal / 100;
         updateCourseValue(course.id, { [field]: valDecimal, [naField]: false });
-        addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã cập nhật trực tiếp điểm môn ${course.name} (${fieldLabel}): ${isNA ? 'N/A' : currentValue + '%'} -> ${val}%.`);
+        addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã cập nhật trực tiếp điểm môn ${course.name} (${fieldLabel}): ${isNA ? 'N/A' : currentValue + '%'} -> ${numVal}%.`);
       }
       onDone();
     } else {
@@ -106,7 +108,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
         field,
         fieldLabel: `${course.name} — ${fieldLabel}`,
         oldValue: isNA ? 'N/A' : currentValue,
-        newValue: isNAChecked ? 'N/A' : isCountField ? Math.max(0, Math.floor(val)) : val,
+        newValue: isNAChecked ? 'N/A' : isCountField ? Math.max(0, Math.floor(numVal)) : numVal,
         isNA: isNAChecked,
         reason: reason.trim()
       });
@@ -164,21 +166,45 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
                   {isCountField ? 'Giá trị mới (Số lượng)' : 'Giá trị mới (%)'}
                 </div>
                 <input 
-                  type="number" 
-                  min="0" 
-                  max={isCountField ? undefined : 100}
-                  step={isCountField ? 1 : 0.1}
+                  type="text" 
+                  inputMode="decimal"
                   disabled={isNAChecked}
                   value={isNAChecked ? '' : val} 
                   placeholder={isNAChecked ? 'N/A' : '0'}
-                  onChange={e => setVal(parseFloat(e.target.value) || 0)}
+                  onChange={e => {
+                    const raw = e.target.value;
+                    if (raw === '') {
+                      setVal('');
+                      return;
+                    }
+                    const clean = isCountField ? raw.replace(/\D/g, '') : raw.replace(/[^0-9.]/g, '');
+                    if (clean === '') {
+                      setVal('');
+                      return;
+                    }
+                    if (clean.startsWith('0') && clean.length > 1 && !clean.startsWith('0.')) {
+                      setVal(clean.replace(/^0+/, '') || '0');
+                    } else {
+                      setVal(clean);
+                    }
+                  }}
+                  onBlur={e => {
+                    e.target.style.borderColor = 'var(--gray-200)';
+                    if (val === '') setVal(0);
+                    else {
+                      const parsed = parseFloat(String(val));
+                      setVal(isNaN(parsed) ? 0 : parsed);
+                    }
+                  }}
+                  onFocus={e => {
+                    e.target.select();
+                    e.target.style.borderColor = 'var(--isme-red)';
+                  }}
                   style={{ 
                     width: 130, padding: '8px 12px', borderRadius: 8, 
                     border: '2px solid var(--gray-200)', fontSize: 13, fontWeight: 700, 
                     outline: 'none', background: isNAChecked ? 'var(--gray-100)' : 'white'
                   }}
-                  onFocus={e => e.target.style.borderColor = 'var(--isme-red)'} 
-                  onBlur={e => e.target.style.borderColor = 'var(--gray-200)'} 
                 />
               </div>
             </div>

@@ -55,11 +55,55 @@ function getScoreBg(s: number) { return s >= 90 ? '#D1FAE5' : s >= 75 ? '#FEF3C7
 
 // ── Custom Stepper & Auto-Expanding Textarea Components ──
 function ScoreStepper({ value, onChange }: { value: number; onChange: (val: number) => void }) {
+  const [text, setText] = useState<string>(String(value ?? 0));
+
+  useEffect(() => {
+    setText(String(value ?? 0));
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === '') {
+      setText('');
+      onChange(0);
+      return;
+    }
+    // Remove non-digit characters
+    const clean = raw.replace(/\D/g, '');
+    if (clean === '') {
+      setText('');
+      onChange(0);
+      return;
+    }
+    // Parse integer, automatically stripping any leading zero (e.g. "050" -> 50, "05" -> 5)
+    let num = parseInt(clean, 10);
+    if (isNaN(num)) num = 0;
+    num = Math.max(0, Math.min(100, num));
+    setText(String(num));
+    onChange(num);
+  };
+
+  const handleBlur = () => {
+    if (text === '') {
+      setText('0');
+      onChange(0);
+    } else {
+      const num = Math.max(0, Math.min(100, parseInt(text, 10) || 0));
+      setText(String(num));
+      onChange(num);
+    }
+  };
+
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', background: '#F8FAFC', borderRadius: 8, border: '1px solid var(--gray-300)', padding: 3 }}>
       <button 
         type="button"
-        onClick={() => onChange(Math.max(0, value - 1))}
+        onClick={() => {
+          const current = text === '' ? 0 : (parseInt(text, 10) || 0);
+          const next = Math.max(0, current - 1);
+          setText(String(next));
+          onChange(next);
+        }}
         style={{ 
           width: 30, height: 30, borderRadius: 6, border: '1px solid var(--gray-200)', background: 'white', 
           cursor: 'pointer', fontWeight: 700, fontSize: 15, color: 'var(--gray-700)', display: 'flex', 
@@ -70,9 +114,13 @@ function ScoreStepper({ value, onChange }: { value: number; onChange: (val: numb
         onMouseOut={e => e.currentTarget.style.background = 'white'}
       >-</button>
       <input 
-        type="number" min="0" max="100"
-        value={value}
-        onChange={e => onChange(Math.max(0, Math.min(100, parseInt(e.target.value) || 0)))}
+        type="text"
+        inputMode="numeric"
+        value={text}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onFocus={e => e.target.select()}
+        placeholder="0"
         style={{ 
           width: 48, border: 'none', background: 'transparent', textAlign: 'center', 
           fontSize: 14, fontWeight: 700, outline: 'none', color: 'var(--gray-900)'
@@ -80,7 +128,12 @@ function ScoreStepper({ value, onChange }: { value: number; onChange: (val: numb
       />
       <button 
         type="button"
-        onClick={() => onChange(Math.min(100, value + 1))}
+        onClick={() => {
+          const current = text === '' ? 0 : (parseInt(text, 10) || 0);
+          const next = Math.min(100, current + 1);
+          setText(String(next));
+          onChange(next);
+        }}
         style={{ 
           width: 30, height: 30, borderRadius: 6, border: '1px solid var(--gray-200)', background: 'white', 
           cursor: 'pointer', fontWeight: 700, fontSize: 15, color: 'var(--gray-700)', display: 'flex', 

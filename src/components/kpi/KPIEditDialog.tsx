@@ -19,8 +19,8 @@ interface Props {
 }
 
 export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitted }: Props) {
-  const [newNumerator, setNewNumerator] = useState(snapshot.rawNumerator);
-  const [newDenominator, setNewDenominator] = useState(snapshot.rawDenominator);
+  const [newNumerator, setNewNumerator] = useState<number | string>(snapshot.rawNumerator);
+  const [newDenominator, setNewDenominator] = useState<number | string>(snapshot.rawDenominator);
   const [reason, setReason] = useState('');
   const [error, setError] = useState('');
 
@@ -28,17 +28,20 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
   const pendingEdit = getPendingEditForSnapshot(snapshot.id);
   const isDirectEdit = submissionStatus === 'open';
 
-  const previewScore = newDenominator > 0 
-    ? Math.round((newNumerator / newDenominator) * 100) 
+  const numVal = typeof newNumerator === 'string' ? (parseInt(newNumerator, 10) || 0) : newNumerator;
+  const denVal = typeof newDenominator === 'string' ? (parseInt(newDenominator, 10) || 0) : newDenominator;
+
+  const previewScore = denVal > 0 
+    ? Math.round((numVal / denVal) * 100) 
     : 0;
   const newScore = previewScore;
-  const hasChanged = newNumerator !== snapshot.rawNumerator || newDenominator !== snapshot.rawDenominator;
+  const hasChanged = numVal !== snapshot.rawNumerator || denVal !== snapshot.rawDenominator;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (newDenominator <= 0) {
+    if (denVal <= 0) {
       setError('Mẫu số phải lớn hơn 0');
       return;
     }
@@ -50,12 +53,12 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
 
     if (isDirectEdit) {
       updateSnapshotValue(snapshot.id, {
-        rawNumerator: newNumerator,
-        rawDenominator: newDenominator,
-        actualValue: newNumerator,
+        rawNumerator: numVal,
+        rawDenominator: denVal,
+        actualValue: numVal,
         score: previewScore
       });
-      addAuditLog(snapshot.userId, 'Chỉnh sửa KPI trực tiếp', `Đã cập nhật chỉ tiêu ${definition.shortName} thành ${newNumerator}/${newDenominator} (${previewScore}%)`);
+      addAuditLog(snapshot.userId, 'Chỉnh sửa KPI trực tiếp', `Đã cập nhật chỉ tiêu ${definition.shortName} thành ${numVal}/${denVal} (${previewScore}%)`);
       onSubmitted();
       onClose();
     } else {
@@ -66,12 +69,12 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
         kpiDefinitionId: snapshot.kpiDefinitionId,
         oldNumerator: snapshot.rawNumerator,
         oldDenominator: snapshot.rawDenominator,
-        newNumerator,
-        newDenominator,
+        newNumerator: numVal,
+        newDenominator: denVal,
         oldScore: snapshot.score,
         newScore: previewScore,
         oldActualValue: snapshot.actualValue,
-        newActualValue: newNumerator,
+        newActualValue: numVal,
         reason: reason.trim(),
       });
       onSubmitted();
@@ -185,15 +188,38 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
                   <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 10 }}>Số lượng hoàn thành</label>
                   <div style={{ position: 'relative' }}>
                     <input
-                      type="number" min={0} value={newNumerator}
-                      onChange={e => setNewNumerator(Math.max(0, parseInt(e.target.value) || 0))}
+                      type="text"
+                      inputMode="numeric"
+                      value={newNumerator}
+                      placeholder="0"
+                      onChange={e => {
+                        const raw = e.target.value;
+                        if (raw === '') {
+                          setNewNumerator('');
+                          return;
+                        }
+                        const clean = raw.replace(/\D/g, '');
+                        if (clean === '') {
+                          setNewNumerator('');
+                          return;
+                        }
+                        setNewNumerator(parseInt(clean, 10));
+                      }}
+                      onBlur={e => {
+                        e.target.style.borderColor = 'white';
+                        e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)';
+                        if (newNumerator === '') setNewNumerator(0);
+                      }}
                       style={{
                         width: '100%', padding: '14px 18px', borderRadius: 14, border: '2px solid white',
                         fontSize: 16, fontWeight: 800, outline: 'none', transition: 'all 0.2s',
                         background: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
                       }}
-                      onFocus={e => { e.target.style.borderColor = '#3B82F6'; e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.1)'; }}
-                      onBlur={e => { e.target.style.borderColor = 'white'; e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)'; }}
+                      onFocus={e => {
+                        e.target.select();
+                        e.target.style.borderColor = '#3B82F6';
+                        e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.1)';
+                      }}
                     />
                   </div>
                 </div>
@@ -201,15 +227,38 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
                   <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--gray-700)', display: 'block', marginBottom: 10 }}>Tổng số lượng (Target)</label>
                   <div style={{ position: 'relative' }}>
                     <input
-                      type="number" min={1} value={newDenominator}
-                      onChange={e => setNewDenominator(Math.max(1, parseInt(e.target.value) || 1))}
+                      type="text"
+                      inputMode="numeric"
+                      value={newDenominator}
+                      placeholder="1"
+                      onChange={e => {
+                        const raw = e.target.value;
+                        if (raw === '') {
+                          setNewDenominator('');
+                          return;
+                        }
+                        const clean = raw.replace(/\D/g, '');
+                        if (clean === '') {
+                          setNewDenominator('');
+                          return;
+                        }
+                        setNewDenominator(parseInt(clean, 10));
+                      }}
+                      onBlur={e => {
+                        e.target.style.borderColor = 'white';
+                        e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)';
+                        if (newDenominator === '' || Number(newDenominator) <= 0) setNewDenominator(1);
+                      }}
                       style={{
                         width: '100%', padding: '14px 18px', borderRadius: 14, border: '2px solid white',
                         fontSize: 16, fontWeight: 800, outline: 'none', transition: 'all 0.2s',
                         background: 'white', boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
                       }}
-                      onFocus={e => { e.target.style.borderColor = '#3B82F6'; e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.1)'; }}
-                      onBlur={e => { e.target.style.borderColor = 'white'; e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)'; }}
+                      onFocus={e => {
+                        e.target.select();
+                        e.target.style.borderColor = '#3B82F6';
+                        e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.1)';
+                      }}
                     />
                   </div>
                 </div>

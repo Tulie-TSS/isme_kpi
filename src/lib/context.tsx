@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Role, UserRole } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
+import { syncFromDatabase } from '@/lib/mock-data';
 
 interface AppContextType {
   currentRole: Role;
@@ -37,12 +38,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
-  // Automatic web keep-alive ping: keeps database active whenever web is opened
+  // Automatic web keep-alive ping & DB data synchronization
   useEffect(() => {
+    // 1. Initial sync with Supabase PostgreSQL database
+    syncFromDatabase().catch(() => {});
+
+    // 2. Keep-alive ping once per 12 hours
     try {
       const lastPing = localStorage.getItem('isme_last_keepalive_ping');
       const now = Date.now();
-      // Ping once per 12 hours when anyone uses the app
       if (!lastPing || now - parseInt(lastPing, 10) > 12 * 60 * 60 * 1000) {
         fetch('/api/health').catch(() => {});
         localStorage.setItem('isme_last_keepalive_ping', String(now));

@@ -51,7 +51,7 @@ export const kpiGroups: KPIGroup[] = [
 // ==================== USERS ====================
 export const users: User[] = [
   { id: 'u1', name: 'Hồ Hoàng Lan', email: 'ho.lan@isneu.org', role: 'manager', roles: ['manager', 'institute_leader'], managerId: null, avatarUrl: '', active: true, position: 'Trưởng Ban Đào tạo đại học' },
-  { id: 'u14', name: 'Nguyễn Thùy Trinh', email: 'nguyen.trinh@isneu.org', role: 'manager', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Phó Ban' },
+  { id: 'u14', name: 'Nguyễn Thùy Chinh', email: 'nguyen.chinh@isneu.org', role: 'manager', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Phó Ban' },
   { id: 'u0', name: 'Admin System', email: 'admin@isneu.org', role: 'admin', roles: ['manager'], managerId: null, avatarUrl: '', active: true, position: 'Quản trị hệ thống' },
   
   // Leaders
@@ -4864,7 +4864,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u2",
     "kpiDefinitionId": "op5_as",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 70,
     "targetValue": 100,
     "actualValue": 100,
     "rawNumerator": 100,
@@ -4936,7 +4936,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u2",
     "kpiDefinitionId": "other11",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 32,
     "targetValue": 11,
     "actualValue": 11,
     "rawNumerator": 11,
@@ -4948,7 +4948,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u2",
     "kpiDefinitionId": "other12",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 32,
     "targetValue": 17,
     "actualValue": 17,
     "rawNumerator": 17,
@@ -4960,7 +4960,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u2",
     "kpiDefinitionId": "other13",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 32,
     "targetValue": 2,
     "actualValue": 2,
     "rawNumerator": 2,
@@ -5368,7 +5368,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u8",
     "kpiDefinitionId": "op5_as",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 10,
     "targetValue": 100,
     "actualValue": 100,
     "rawNumerator": 100,
@@ -5440,7 +5440,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u8",
     "kpiDefinitionId": "other11",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 32,
     "targetValue": 15,
     "actualValue": 15,
     "rawNumerator": 15,
@@ -5452,7 +5452,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u8",
     "kpiDefinitionId": "other12",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 32,
     "targetValue": 4,
     "actualValue": 4,
     "rawNumerator": 4,
@@ -5464,7 +5464,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u8",
     "kpiDefinitionId": "other13",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 32,
     "targetValue": 5,
     "actualValue": 5,
     "rawNumerator": 5,
@@ -5536,7 +5536,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u5",
     "kpiDefinitionId": "op5_as",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 80,
     "targetValue": 100,
     "actualValue": 100,
     "rawNumerator": 100,
@@ -5608,7 +5608,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u5",
     "kpiDefinitionId": "other11",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 62,
     "targetValue": 9,
     "actualValue": 9,
     "rawNumerator": 9,
@@ -5620,7 +5620,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u5",
     "kpiDefinitionId": "other12",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 62,
     "targetValue": 15,
     "actualValue": 15,
     "rawNumerator": 15,
@@ -5632,7 +5632,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u5",
     "kpiDefinitionId": "other13",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 62,
     "targetValue": 1,
     "actualValue": 1,
     "rawNumerator": 1,
@@ -5704,7 +5704,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u4",
     "kpiDefinitionId": "op5_as",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 20,
     "targetValue": 100,
     "actualValue": 100,
     "rawNumerator": 100,
@@ -5776,7 +5776,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u4",
     "kpiDefinitionId": "other11",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 58,
     "targetValue": 7,
     "actualValue": 7,
     "rawNumerator": 7,
@@ -5788,7 +5788,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u4",
     "kpiDefinitionId": "other12",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 58,
     "targetValue": 6,
     "actualValue": 6,
     "rawNumerator": 6,
@@ -5800,7 +5800,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u4",
     "kpiDefinitionId": "other13",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 58,
     "targetValue": 5,
     "actualValue": 5,
     "rawNumerator": 5,
@@ -5872,7 +5872,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u7",
     "kpiDefinitionId": "op5_as",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 60,
     "targetValue": 100,
     "actualValue": 100,
     "rawNumerator": 100,
@@ -5944,7 +5944,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u7",
     "kpiDefinitionId": "other11",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 59,
     "targetValue": 15,
     "actualValue": 15,
     "rawNumerator": 15,
@@ -5956,7 +5956,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u7",
     "kpiDefinitionId": "other12",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 59,
     "targetValue": 3,
     "actualValue": 3,
     "rawNumerator": 3,
@@ -5968,7 +5968,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
     "userId": "u7",
     "kpiDefinitionId": "other13",
     "period": "Kỳ 2 2025-2026",
-    "score": 100,
+    "score": 59,
     "targetValue": 5,
     "actualValue": 5,
     "rawNumerator": 5,
@@ -5978,7 +5978,7 @@ const initialKpiSnapshots: KPISnapshot[] = [
 ];
 
 export let kpiSnapshots: KPISnapshot[] = (() => {
-  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v8', initialKpiSnapshots);
+  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v10', initialKpiSnapshots);
   let hasChange = false;
   const migrated = loaded.map(s => {
     if (s.leaderScore !== undefined && s.score !== s.leaderScore) {
@@ -5992,7 +5992,7 @@ export let kpiSnapshots: KPISnapshot[] = (() => {
     return s;
   });
   if (hasChange && typeof window !== 'undefined') {
-    save('isme_kpi_snapshots_v8', migrated);
+    save('isme_kpi_snapshots_v10', migrated);
   }
   return migrated;
 })();
@@ -6005,7 +6005,7 @@ export function subscribeSnapshots(fn: () => void) {
 }
 
 function _notifySnapshots() {
-  save('isme_kpi_snapshots_v8', kpiSnapshots);
+  save('isme_kpi_snapshots_v10', kpiSnapshots);
   _snapshotListeners.forEach(fn => fn());
 }
 
@@ -6041,24 +6041,90 @@ export function batchUpdateSnapshots(updatesList: { id: string; updates: Partial
     return s;
   });
   _notifySnapshots();
+
+  // Async sync to Supabase PostgreSQL database
+  if (typeof window !== 'undefined') {
+    fetch('/api/kpi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'updateSnapshots', updatesList })
+    }).catch(err => console.warn('Could not sync snapshots to DB:', err));
+  }
 }
 
 // ==================== SUBMISSION STATUS ====================
 // Persistent status for coordinators' self assessments. format: [userId_period]: 'open' | 'submitted' | 'approved'
-export let submissionStatuses: Record<string, 'open' | 'submitted' | 'approved'> = getSaved<Record<string, 'open' | 'submitted' | 'approved'>>('isme_submission_statuses', {
-  'u7_Kỳ 2 2025-2026': 'open',
-  'u8_Kỳ 2 2025-2026': 'open'
+export let submissionStatuses: Record<string, 'open' | 'submitted' | 'approved'> = getSaved<Record<string, 'open' | 'submitted' | 'approved'>>('isme_submission_statuses_v10', {
+  'u11_Kỳ 2 2025-2026': 'open',
+  'u6_Kỳ 2 2025-2026': 'open',
+  'u10_Kỳ 2 2025-2026': 'open',
+  'u5_Kỳ 2 2025-2026': 'approved',
+  'u2_Kỳ 2 2025-2026': 'approved',
+  'u7_Kỳ 2 2025-2026': 'approved',
+  'u4_Kỳ 2 2025-2026': 'approved',
+  'u8_Kỳ 2 2025-2026': 'approved'
 });
 
 export function setSubmissionStatus(userId: string, period: string, status: 'open' | 'submitted' | 'approved') {
   const key = `${userId}_${period}`;
   submissionStatuses = { ...submissionStatuses, [key]: status };
-  save('isme_submission_statuses', submissionStatuses);
+  save('isme_submission_statuses_v10', submissionStatuses);
+
+  // Async sync to Supabase PostgreSQL database
+  if (typeof window !== 'undefined') {
+    fetch('/api/kpi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'setSubmissionStatus', userId, period, status })
+    }).catch(err => console.warn('Could not sync submission status to DB:', err));
+  }
 }
 
 export function getSubmissionStatus(userId: string, period: string): 'open' | 'submitted' | 'approved' {
   const key = `${userId}_${period}`;
   return submissionStatuses[key] || 'open';
+}
+
+let _isSyncingDb = false;
+export async function syncFromDatabase() {
+  if (typeof window === 'undefined' || _isSyncingDb) return;
+  _isSyncingDb = true;
+  try {
+    const res = await fetch('/api/kpi');
+    const data = await res.json();
+    if (data && data.success) {
+      let hasSnapChanges = false;
+      if (Array.isArray(data.snapshots) && data.snapshots.length > 0) {
+        const snapMap = new Map(data.snapshots.map((s: any) => [s.id, s]));
+        kpiSnapshots = kpiSnapshots.map(s => {
+          const dbSnap: any = snapMap.get(s.id);
+          if (dbSnap) {
+            hasSnapChanges = true;
+            return {
+              ...s,
+              score: dbSnap.score !== undefined ? dbSnap.score : s.score,
+              leaderScore: dbSnap.leaderScore !== undefined ? dbSnap.leaderScore : s.leaderScore,
+              actualValue: dbSnap.actualValue !== undefined ? dbSnap.actualValue : s.actualValue,
+              targetValue: dbSnap.targetValue !== undefined ? dbSnap.targetValue : s.targetValue,
+            };
+          }
+          return s;
+        });
+        if (hasSnapChanges) {
+          save('isme_kpi_snapshots_v10', kpiSnapshots);
+          _snapshotListeners.forEach(fn => fn());
+        }
+      }
+      if (data.submissions && Object.keys(data.submissions).length > 0) {
+        submissionStatuses = { ...submissionStatuses, ...data.submissions };
+        save('isme_submission_statuses_v10', submissionStatuses);
+      }
+    }
+  } catch (err) {
+    console.warn('Could not sync from PostgreSQL, using cached local data:', err);
+  } finally {
+    _isSyncingDb = false;
+  }
 }
 
 // ==================== OTHER ACTIVITIES RECORD (LEGACY COMPATIBILITY) ====================

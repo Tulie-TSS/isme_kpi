@@ -11,6 +11,8 @@ import {
 } from '@/lib/mock-data';
 import { X, Edit3, AlertTriangle, Info } from 'lucide-react';
 
+import { useToast } from '@/components/common/Toast';
+
 interface Props {
   snapshot: KPISnapshot;
   definition: KPIDefinition;
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitted }: Props) {
+  const { toast } = useToast();
   const [newNumerator, setNewNumerator] = useState<number | string>(snapshot.rawNumerator);
   const [newDenominator, setNewDenominator] = useState<number | string>(snapshot.rawDenominator);
   const [reason, setReason] = useState('');
@@ -59,6 +62,7 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
         score: previewScore
       });
       addAuditLog(snapshot.userId, 'Chỉnh sửa KPI trực tiếp', `Đã cập nhật chỉ tiêu ${definition.shortName} thành ${numVal}/${denVal} (${previewScore}%)`);
+      toast.success(`Đã cập nhật chỉ tiêu ${definition.shortName} thành công!`);
       onSubmitted();
       onClose();
     } else {
@@ -77,6 +81,7 @@ export default function KPIEditDialog({ snapshot, definition, onClose, onSubmitt
         newActualValue: numVal,
         reason: reason.trim(),
       });
+      toast.info(`Đã gửi yêu cầu chỉnh sửa chỉ tiêu ${definition.shortName} tới quản lý!`);
       onSubmitted();
       onClose();
     }

@@ -9,16 +9,14 @@ import {
   UserPlus, FolderPlus, Grid, ChevronRight, Check, Play, Info, LogIn
 } from 'lucide-react';
 import { User, Program, Course, KPIDefinition, KPIGroup, Role, UserRole, ProgramType } from '@/lib/types';
-
-// Toast structure
-interface Toast {
-  type: 'success' | 'error';
-  message: string;
-}
+import { useConfirm } from '@/components/common/ConfirmModal';
+import { useToast } from '@/components/common/Toast';
 
 export default function AdminPortal() {
   const { currentRole } = useApp();
   const { user: authUser, impersonate } = useAuth();
+  const confirm = useConfirm();
+  const { showToast } = useToast();
   
   // States
   const [users, setUsers] = useState<User[]>([]);
@@ -88,9 +86,6 @@ export default function AdminPortal() {
     unit: '%', weight: 5
   });
 
-  // Toasts / Notifications
-  const [toast, setToast] = useState<Toast | null>(null);
-
   // Fetch data from database
   const fetchData = async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
@@ -131,11 +126,6 @@ export default function AdminPortal() {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const showToast = (type: 'success' | 'error', message: string) => {
-    setToast({ type, message });
-    setTimeout(() => setToast(null), 4000);
-  };
 
   // Perform API CRUD Action
   const handleAction = async (action: string, data: any) => {
@@ -238,7 +228,13 @@ export default function AdminPortal() {
   };
 
   const deleteUser = async (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa thành viên "${name}"? Hành động này sẽ xóa toàn bộ KPI và các dữ liệu liên quan!`)) {
+    const ok = await confirm({
+      title: 'Xác nhận xóa thành viên',
+      message: `Bạn có chắc chắn muốn xóa thành viên "${name}"? Hành động này sẽ xóa toàn bộ KPI và các dữ liệu liên quan!`,
+      confirmText: 'Xóa thành viên',
+      confirmVariant: 'danger'
+    });
+    if (ok) {
       await handleAction('deleteUser', { id });
     }
   };
@@ -275,7 +271,13 @@ export default function AdminPortal() {
   };
 
   const deleteProgram = async (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa chương trình "${name}"? Hành động này cũng sẽ xóa toàn bộ các môn học thuộc chương trình này!`)) {
+    const ok = await confirm({
+      title: 'Xác nhận xóa chương trình',
+      message: `Bạn có chắc chắn muốn xóa chương trình "${name}"? Hành động này cũng sẽ xóa toàn bộ các môn học thuộc chương trình này!`,
+      confirmText: 'Xóa chương trình',
+      confirmVariant: 'danger'
+    });
+    if (ok) {
       await handleAction('deleteProgram', { id });
     }
   };
@@ -316,7 +318,13 @@ export default function AdminPortal() {
   };
 
   const deleteCourse = async (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa môn học "${name}"?`)) {
+    const ok = await confirm({
+      title: 'Xác nhận xóa môn học',
+      message: `Bạn có chắc chắn muốn xóa môn học "${name}"?`,
+      confirmText: 'Xóa môn học',
+      confirmVariant: 'danger'
+    });
+    if (ok) {
       await handleAction('deleteCourse', { id });
     }
   };
@@ -371,7 +379,13 @@ export default function AdminPortal() {
   };
 
   const deleteDef = async (id: string, name: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa tiêu chí KPI "${name}"? Điều này có thể làm thay đổi các bảng điểm KPI snapshots đang hoạt động!`)) {
+    const ok = await confirm({
+      title: 'Xác nhận xóa tiêu chí KPI',
+      message: `Bạn có chắc chắn muốn xóa tiêu chí KPI "${name}"? Điều này có thể làm thay đổi các bảng điểm KPI snapshots đang hoạt động!`,
+      confirmText: 'Xóa tiêu chí',
+      confirmVariant: 'danger'
+    });
+    if (ok) {
       await handleAction('deleteKPIDefinition', { id });
     }
   };
@@ -423,21 +437,6 @@ export default function AdminPortal() {
 
   return (
     <div style={{ padding: '24px 32px', minHeight: '100vh', background: 'var(--gray-50)', color: 'var(--gray-800)' }}>
-      {/* Toast Alert */}
-      {toast && (
-        <div style={{
-          position: 'fixed', top: 24, right: 32, zIndex: 9999,
-          background: toast.type === 'success' ? '#10B981' : '#EF4444',
-          color: 'white', padding: '16px 24px', borderRadius: 16,
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          display: 'flex', alignItems: 'center', gap: 12, fontWeight: 700,
-          animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)', fontSize: 13,
-        }}>
-          {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertTriangle size={20} />}
-          {toast.message}
-        </div>
-      )}
-
       {/* Header */}
       <div style={{ 
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
@@ -746,8 +745,14 @@ export default function AdminPortal() {
                           <td style={{ padding: '16px 20px', textAlign: 'center' }}>
                             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
                               {u.id !== authUser?.id && (
-                                <button onClick={() => {
-                                  if (window.confirm(`Bạn có chắc chắn muốn đăng nhập giả lập dưới danh nghĩa "${u.name}"?`)) {
+                                <button onClick={async () => {
+                                  const ok = await confirm({
+                                    title: 'Xác nhận giả lập đăng nhập',
+                                    message: `Bạn có chắc chắn muốn đăng nhập giả lập dưới danh nghĩa "${u.name}"?`,
+                                    confirmText: 'Đăng nhập giả lập',
+                                    confirmVariant: 'primary'
+                                  });
+                                  if (ok) {
                                     impersonate(u.id);
                                     showToast('success', `Đang chuyển hướng sang tài khoản ${u.name}...`);
                                     setTimeout(() => { window.location.href = '/'; }, 1000);
@@ -1839,27 +1844,7 @@ export default function AdminPortal() {
           </div>
       </PortalModal>
 
-      {/* Toast Notification Container */}
-      {toast && (
-        <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 9999 }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 10, padding: '12px 20px', borderRadius: 10,
-            background: toast.type === 'success' ? '#064E3B' : '#7F1D1D',
-            color: 'white', fontSize: 13, fontWeight: 600,
-            boxShadow: '0 10px 25px rgba(0,0,0,0.25)', border: toast.type === 'success' ? '1px solid #059669' : '1px solid #DC2626',
-            animation: 'fadeInUp 0.3s ease'
-          }}>
-            {toast.type === 'success' ? <CheckCircle2 size={18} color="#34D399" /> : <AlertTriangle size={18} color="#FCA5A5" />}
-            <span>{toast.message}</span>
-            <button 
-              onClick={() => setToast(null)} 
-              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)', cursor: 'pointer', padding: 2, marginLeft: 8, display: 'flex' }}
-            >
-              <X size={14} />
-            </button>
-          </div>
-        </div>
-      )}
+
 
     </div>
   );

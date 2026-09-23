@@ -1,6 +1,7 @@
-'use client';
 import { useState, useEffect } from 'react';
 import PortalModal from '@/components/common/PortalModal';
+import { useConfirm } from '@/components/common/ConfirmModal';
+import { useToast } from '@/components/common/Toast';
 import { 
   users, 
   kpiSnapshots, 
@@ -233,6 +234,9 @@ export default function ManagerDashboard() {
   const [submits, setSubmits] = useState<Record<string, 'open' | 'submitted' | 'approved'>>({});
   const [, forceUpdate] = useState(0);
 
+  const confirm = useConfirm();
+  const { toast } = useToast();
+
   // Detail staff review state
   const [selectedStaffId, setSelectedStaffId] = useState<string | null>(null);
   const [tempScores, setTempScores] = useState<Record<string, number>>({});
@@ -310,7 +314,17 @@ export default function ManagerDashboard() {
     setSelectedStaffId(staffId);
   };
 
-  const handleSaveAndApprove = (staffId: string) => {
+  const handleSaveAndApprove = async (staffId: string) => {
+    const staffName = getUserById(staffId)?.name || 'nhân sự';
+    const confirmed = await confirm({
+      title: 'Xác nhận phê duyệt & Lưu đánh giá',
+      message: `Bạn có chắc chắn muốn lưu kết quả đánh giá và phê duyệt KPI kì ${period} của nhân sự ${staffName}?`,
+      confirmText: 'Xác nhận & Lưu',
+      cancelText: 'Hủy',
+      confirmVariant: 'success'
+    });
+    if (!confirmed) return;
+
     const snaps = kpiSnapshots.filter(s => s.userId === staffId && s.period === period);
     
     // Save to snapshots with preserved selfScore and updated score
@@ -333,22 +347,29 @@ export default function ManagerDashboard() {
     setSubmissionStatus(staffId, period, 'approved');
     setSubmits(prev => ({ ...prev, [staffId]: 'approved' }));
     
-    const staffName = getUserById(staffId)?.name;
     addAuditLog(currentUserId, 'Phê duyệt & Đánh giá chi tiết', `Đã đánh giá chi tiết và phê duyệt KPI kì ${period} của nhân sự ${staffName}.`);
     
-    alert(`Đã lưu đánh giá và phê duyệt thành công KPI của ${staffName}!`);
+    toast.success(`Đã lưu đánh giá và phê duyệt thành công KPI của ${staffName}!`);
     setSelectedStaffId(null);
     forceUpdate(n => n + 1);
   };
 
-  const handleApproveSubmission = (staffId: string) => {
+  const handleApproveSubmission = async (staffId: string) => {
     const staff = getUserById(staffId);
-    if (confirm(`Bạn có chắc muốn phê duyệt bản tự đánh giá KPI kì này của ${staff?.name}?`)) {
-      setSubmissionStatus(staffId, period, 'approved');
-      setSubmits(prev => ({ ...prev, [staffId]: 'approved' }));
-      addAuditLog(currentUserId, 'Phê duyệt tự đánh giá', `Đã phê duyệt bản tự đánh giá KPI kì ${period} của nhân sự ${staff?.name}. Trạng thái chuyển sang Đã phê duyệt.`);
-      forceUpdate(n => n + 1);
-    }
+    const confirmed = await confirm({
+      title: 'Xác nhận phê duyệt nhanh',
+      message: `Bạn có chắc muốn phê duyệt bản tự đánh giá KPI kì này của ${staff?.name}?`,
+      confirmText: 'Phê duyệt',
+      cancelText: 'Hủy',
+      confirmVariant: 'success'
+    });
+    if (!confirmed) return;
+
+    setSubmissionStatus(staffId, period, 'approved');
+    setSubmits(prev => ({ ...prev, [staffId]: 'approved' }));
+    addAuditLog(currentUserId, 'Phê duyệt tự đánh giá', `Đã phê duyệt bản tự đánh giá KPI kì ${period} của nhân sự ${staff?.name}. Trạng thái chuyển sang Đã phê duyệt.`);
+    toast.success(`Đã phê duyệt bản tự đánh giá KPI của ${staff?.name}!`);
+    forceUpdate(n => n + 1);
   };
 
   const rankingData = staffUsers.map(u => {

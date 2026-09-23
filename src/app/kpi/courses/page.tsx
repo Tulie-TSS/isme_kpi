@@ -22,6 +22,7 @@ import {
 import { CourseEditRequest, CourseEditField, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
 import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award, Info, FileSpreadsheet } from 'lucide-react';
+import { useToast } from '@/components/common/Toast';
 
 function getScoreColor(val: number) {
   if (val >= 100) return '#059669'; // Clean Emerald
@@ -56,6 +57,7 @@ interface EditCellProps {
 }
 
 function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false, userId, isDirectEdit, onDone }: EditCellProps) {
+  const { toast } = useToast();
   const isCountField = field === 'numLecturers' || field === 'numStudents';
   const [val, setVal] = useState<number | string>(currentValue);
   const [isNAChecked, setIsNAChecked] = useState<boolean>(isNA);
@@ -96,6 +98,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
         updateCourseValue(course.id, { [field]: valDecimal, [naField]: false });
         addAuditLog(userId, 'Cập nhật Điểm môn học', `Đã cập nhật trực tiếp điểm môn ${course.name} (${fieldLabel}): ${isNA ? 'N/A' : currentValue + '%'} -> ${numVal}%.`);
       }
+      toast.success(`Đã cập nhật ${fieldLabel} môn ${course.name} thành công!`);
       onDone();
     } else {
       if (!reason.trim() || reason.trim().length < 10) {
@@ -112,6 +115,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
         isNA: isNAChecked,
         reason: reason.trim()
       });
+      toast.info(`Đã gửi yêu cầu chỉnh sửa ${fieldLabel} tới quản lý!`);
       onDone();
     }
   };
@@ -268,6 +272,7 @@ function EditCellDialog({ course, field, fieldLabel, currentValue, isNA = false,
 
 // ── Course Approval Panel ──
 function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManager: boolean; userId: string; selectedProgramId: string }) {
+  const { toast } = useToast();
   const [reqs, setReqs] = useState<CourseEditRequest[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -338,11 +343,21 @@ function CourseApprovalPanel({ isManager, userId, selectedProgramId }: { isManag
                       <textarea placeholder="Nhập ghi chú phản hồi (bắt buộc khi từ chối)..." value={notes[r.id] || ''} onChange={e => setNotes(p => ({ ...p, [r.id]: e.target.value }))} rows={2}
                         style={{ width: '100%', padding: '6px 10px', borderRadius: 6, border: '1px solid var(--gray-200)', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', marginBottom: 8 }} />
                       <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                        <button onClick={() => { if (!notes[r.id]?.trim()) { alert('Nhập lý do từ chối'); return; } rejectCourseEditRequest(r.id, userId, notes[r.id]); }}
+                        <button onClick={() => { 
+                          if (!notes[r.id]?.trim()) { 
+                            toast.warning('Vui lòng nhập lý do từ chối'); 
+                            return; 
+                          } 
+                          rejectCourseEditRequest(r.id, userId, notes[r.id]);
+                          toast.info('Đã từ chối yêu cầu chỉnh sửa điểm môn học.');
+                        }}
                           style={{ padding: '6px 14px', borderRadius: 6, border: '1px solid #FCA5A5', background: '#FEE2E2', color: '#DC2626', fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
                           <XCircle size={12} /> Từ chối
                         </button>
-                        <button onClick={() => approveCourseEditRequest(r.id, userId, notes[r.id] || 'Phê duyệt.')}
+                        <button onClick={() => {
+                          approveCourseEditRequest(r.id, userId, notes[r.id] || 'Phê duyệt.');
+                          toast.success('Đã phê duyệt yêu cầu chỉnh sửa môn học!');
+                        }}
                           style={{ padding: '6px 14px', borderRadius: 6, border: 'none', background: 'linear-gradient(135deg, #10B981, #059669)', color: 'white', fontSize: 11, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3 }}>
                           <CheckCircle size={12} /> Phê duyệt
                         </button>

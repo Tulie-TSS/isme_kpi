@@ -6,6 +6,9 @@ import { useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 
+import { ToastProvider } from '@/components/common/Toast';
+import { ConfirmProvider } from '@/components/common/ConfirmModal';
+
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, isImpersonating, stopImpersonating, user } = useAuth();
   const router = useRouter();
@@ -44,11 +47,15 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   // Authenticated - show full layout
   return (
     <AppProvider>
-      <Sidebar />
-      <Header />
-      <main className="main-content">
-        {children}
-      </main>
+      <ConfirmProvider>
+        <ToastProvider>
+          <Sidebar />
+          <Header />
+          <main className="main-content">
+            {children}
+          </main>
+        </ToastProvider>
+      </ConfirmProvider>
     </AppProvider>
   );
 }

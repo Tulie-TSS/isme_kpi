@@ -5,6 +5,8 @@ import { getKPIEditRequests, getUserById, kpiDefinitions, approveKPIEditRequest,
 import { useApp } from '@/lib/context';
 import { CheckCircle, XCircle, Clock, FileText, ChevronDown, ChevronRight, User } from 'lucide-react';
 
+import { useToast } from '@/components/common/Toast';
+
 function getStatusStyle(status: KPIEditRequest['status']) {
   switch (status) {
     case 'pending': return { bg: '#FEF3C7', color: '#92400E', label: 'Chờ duyệt', icon: Clock };
@@ -15,6 +17,7 @@ function getStatusStyle(status: KPIEditRequest['status']) {
 
 export default function KPIApprovalPanel() {
   const { currentUserId, currentRole } = useApp();
+  const { toast } = useToast();
   const [requests, setRequests] = useState<KPIEditRequest[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [reviewNote, setReviewNote] = useState<Record<string, string>>({});
@@ -42,16 +45,18 @@ export default function KPIApprovalPanel() {
 
   const handleApprove = (reqId: string) => {
     approveKPIEditRequest(reqId, currentUserId, reviewNote[reqId] || 'Đồng ý cập nhật.');
+    toast.success('Đã phê duyệt yêu cầu chỉnh sửa KPI!');
     setReviewNote(prev => ({ ...prev, [reqId]: '' }));
   };
 
   const handleReject = (reqId: string) => {
     const note = reviewNote[reqId]?.trim();
     if (!note) {
-      alert('Vui lòng nhập lý do từ chối');
+      toast.warning('Vui lòng nhập lý do từ chối!');
       return;
     }
     rejectKPIEditRequest(reqId, currentUserId, note);
+    toast.info('Đã từ chối yêu cầu chỉnh sửa KPI.');
     setReviewNote(prev => ({ ...prev, [reqId]: '' }));
   };
 

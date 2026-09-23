@@ -40,6 +40,8 @@ import {
   FileCheck2
 } from 'lucide-react';
 import Link from 'next/link';
+import { useConfirm } from '@/components/common/ConfirmModal';
+import { useToast } from '@/components/common/Toast';
 
 function CircularProgress({ value, size = 72, strokeWidth = 6, color }: { value: number; size?: number; strokeWidth?: number; color: string }) {
   const radius = (size - strokeWidth) / 2;
@@ -76,6 +78,8 @@ export default function StaffDashboard() {
   const [answerText, setAnswerText] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<'open' | 'submitted' | 'approved'>('open');
   const [, forceUpdate] = useState(0);
+  const confirm = useConfirm();
+  const { toast } = useToast();
 
   useEffect(() => {
     setMyQuestions(getQuestionsForUser(currentUserId));
@@ -140,13 +144,21 @@ export default function StaffDashboard() {
     return { ...s, name: def?.shortName || '', fullName: def?.name || '' };
   });
 
-  const handleSubmitting = () => {
-    if (confirm('Bạn có chắc chắn muốn nộp bản tự đánh giá KPI kỳ này lên quản lý phê duyệt? Thao tác này sẽ khoá các quyền sửa đổi trực tiếp.')) {
-      setSubmissionStatus(currentUserId, period, 'submitted');
-      setStatus('submitted');
-      addAuditLog(currentUserId, 'Nộp tự đánh giá', `Đã nộp tự đánh giá KPI kì ${period} lên quản lý phê duyệt. Điểm tổng hợp tự đánh giá: ${overall}%.`);
-      forceUpdate(n => n + 1);
-    }
+  const handleSubmitting = async () => {
+    const confirmed = await confirm({
+      title: 'Xác nhận nộp bản tự đánh giá',
+      message: 'Bạn có chắc chắn muốn nộp bản tự đánh giá KPI kỳ này lên quản lý phê duyệt? Thao tác này sẽ khoá các quyền sửa đổi trực tiếp.',
+      confirmText: 'Xác nhận nộp',
+      cancelText: 'Hủy',
+      confirmVariant: 'primary'
+    });
+    if (!confirmed) return;
+
+    setSubmissionStatus(currentUserId, period, 'submitted');
+    setStatus('submitted');
+    addAuditLog(currentUserId, 'Nộp tự đánh giá', `Đã nộp tự đánh giá KPI kì ${period} lên quản lý phê duyệt. Điểm tổng hợp tự đánh giá: ${overall}%.`);
+    toast.success('Đã nộp bản tự đánh giá KPI thành công!', 'Hệ thống đang chờ lãnh đạo phê duyệt.');
+    forceUpdate(n => n + 1);
   };
 
   const hour = new Date().getHours();

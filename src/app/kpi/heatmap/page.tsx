@@ -10,9 +10,11 @@ import {
   otherActivityRecords,
   laborDisciplineRecords,
   courses,
-  calculateCoursesKPI
+  calculateCoursesKPI,
+  semesterData,
+  subscribeSnapshots
 } from '@/lib/mock-data';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/lib/context';
 import { ShieldCheck, ShieldAlert, Target, Users as UsersIcon, Award, BookOpen, ShieldCheck as LaborIcon } from 'lucide-react';
 
@@ -21,7 +23,13 @@ function getScoreBg(s: number) { return s >= 85 ? '#D1FAE5' : s >= 60 ? '#FEF3C7
 
 export default function HeatmapPage() {
   const { selectedProgramId, hasAnyRole } = useApp();
-  const period = 'Kỳ 2 2024-2025';
+  const [period, setPeriod] = useState<string>(semesterData.currentSemester || 'Kỳ 2 2025-2026');
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const unsub = subscribeSnapshots(() => setTick(t => t + 1));
+    return () => unsub();
+  }, []);
 
   const isAuthorized = hasAnyRole('manager', 'institute_leader', 'admin');
 
@@ -57,7 +65,7 @@ export default function HeatmapPage() {
     }
 
     if (groupId === 'student_results') {
-      const userProg = programs.find(p => p.managerId === userId);
+      const userProg = programs.find(p => p.managerId === userId || p.secondaryManagerId === userId);
       if (!userProg) return 100;
       return calculateCoursesKPI(userProg.id, 'current');
     }
@@ -90,13 +98,34 @@ export default function HeatmapPage() {
     <div className="animate-fade-in">
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)', margin: 0, marginBottom: 4 }}>Bảng Tổng hợp KPI Nhân sự</h1>
-          <p style={{ fontSize: 11, color: 'var(--gray-500)', margin: 0 }}>{period} · So sánh hiệu suất giữa các phòng ban/cá nhân</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)', margin: 0 }}>Bảng Tổng hợp KPI Nhân sự</h1>
+            <select
+              value={period}
+              onChange={e => setPeriod(e.target.value)}
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                padding: '4px 10px',
+                borderRadius: 6,
+                border: '1px solid var(--gray-300)',
+                background: 'white',
+                color: 'var(--gray-800)',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value="Kỳ 2 2025-2026">Kỳ 2 2025-2026 (Hiện tại)</option>
+              <option value="Kỳ 1 2025-2026">Kỳ 1 2025-2026</option>
+              <option value="Kỳ 2 2024-2025">Kỳ 2 2024-2025</option>
+            </select>
+          </div>
+          <p style={{ fontSize: 11, color: 'var(--gray-500)', margin: '4px 0 0 0' }}>{period} · So sánh hiệu suất giữa các phòng ban/cá nhân</p>
         </div>
         <div style={{ display: 'flex', gap: 16, fontSize: 11, color: 'var(--gray-600)', fontWeight: 500 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: '#D1FAE5', border: '1px solid #A7F3D0' }} /> ≥85 Tốt</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: '#FEF3C7', border: '1px solid #FDE68A' }} /> 60–84 Cần cải thiện</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: '#FEE2E2', border: '1px solid #FECACA' }} /> &lt;60 Cảnh báo</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: '#D1FAE5', border: '1px solid #A7F3D0' }} /> ≥85% Tốt</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: '#FEF3C7', border: '1px solid #FDE68A' }} /> 60–84% Cần cải thiện</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 10, height: 10, borderRadius: 3, background: '#FEE2E2', border: '1px solid #FECACA' }} /> &lt;60% Cảnh báo</div>
         </div>
       </div>
 
@@ -149,7 +178,7 @@ export default function HeatmapPage() {
                           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
                           onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                         >
-                          {score}
+                          {score}%
                         </div>
                       </td>
                     );
@@ -167,7 +196,7 @@ export default function HeatmapPage() {
                       color: getScoreColor(overall),
                       border: '1px solid currentColor'
                     }}>
-                      {overall}
+                      {overall}%
                     </div>
                   </td>
                 </tr>
@@ -183,7 +212,7 @@ export default function HeatmapPage() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div>
               <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gray-900)' }}>
-                Chi tiết: {kpiGroups.find(g => g.id === selectedCell.groupId)?.name}
+                Chi tiết: {kpiGroups.find(g => g.id === selectedCell.groupId)?.name} ({period})
               </div>
               <div style={{ fontSize: 11, color: 'var(--gray-500)', marginTop: 2 }}>
                 Nhân sự: {users.find(u => u.id === selectedCell.userId)?.name}
@@ -203,7 +232,7 @@ export default function HeatmapPage() {
                     <th style={{ padding: '8px 16px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Chỉ tiêu</th>
                     <th style={{ padding: '8px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Kế hoạch</th>
                     <th style={{ padding: '8px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Thực hiện</th>
-                    <th style={{ padding: '8px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Điểm</th>
+                    <th style={{ padding: '8px 16px', textAlign: 'center', fontSize: 11, fontWeight: 600, color: 'var(--gray-600)' }}>Điểm đánh giá</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -211,12 +240,13 @@ export default function HeatmapPage() {
                     .filter(s => s.userId === selectedCell.userId && s.period === period && kpiDefinitions.find(d => d.id === s.kpiDefinitionId)?.groupId === selectedCell.groupId)
                     .map(snap => {
                       const def = kpiDefinitions.find(d => d.id === snap.kpiDefinitionId);
+                      const displayScore = snap.leaderScore !== undefined ? snap.leaderScore : snap.score;
                       return (
                         <tr key={snap.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                           <td style={{ padding: '8px 16px', fontSize: 13, fontWeight: 500 }}>{def?.name}</td>
                           <td style={{ padding: '8px 16px', textAlign: 'center', fontSize: 13 }}>{snap.targetValue}</td>
                           <td style={{ padding: '8px 16px', textAlign: 'center', fontSize: 13 }}>{snap.actualValue}</td>
-                          <td style={{ padding: '8px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: getScoreColor(snap.score) }}>{snap.score}</td>
+                          <td style={{ padding: '8px 16px', textAlign: 'center', fontSize: 13, fontWeight: 600, color: getScoreColor(displayScore) }}>{displayScore}%</td>
                         </tr>
                       );
                     })}

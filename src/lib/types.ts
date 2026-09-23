@@ -93,6 +93,7 @@ export interface KPISnapshot {
   actualValue: number;        // Số lượng hoàn thành
   rawNumerator: number;       // For drill-down detail (e.g. 6 in 6/7)
   rawDenominator: number;     // For drill-down detail (e.g. 7 in 6/7)
+  selfScore?: number;         // Tự chấm ban đầu của nhân sự
   managerScore?: number;      // Đánh giá của line manager
   leaderScore?: number;       // Đánh giá của trưởng ban
   leaderNote?: string;        // Nhận xét chi tiết của trưởng ban

@@ -5879,11 +5879,70 @@ const initialKpiSnapshots: KPISnapshot[] = [
   }
 ];
 
-export let kpiSnapshots: KPISnapshot[] = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v7', initialKpiSnapshots);
+export let kpiSnapshots: KPISnapshot[] = (() => {
+  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v7', initialKpiSnapshots);
+  let hasChange = false;
+  const migrated = loaded.map(s => {
+    if (s.leaderScore !== undefined && s.score !== s.leaderScore) {
+      hasChange = true;
+      return {
+        ...s,
+        selfScore: s.selfScore !== undefined ? s.selfScore : s.score,
+        score: s.leaderScore
+      };
+    }
+    return s;
+  });
+  if (hasChange && typeof window !== 'undefined') {
+    save('isme_kpi_snapshots_v7', migrated);
+  }
+  return migrated;
+})();
+
+let _snapshotListeners: (() => void)[] = [];
+
+export function subscribeSnapshots(fn: () => void) {
+  _snapshotListeners.push(fn);
+  return () => { _snapshotListeners = _snapshotListeners.filter(f => f !== fn); };
+}
+
+function _notifySnapshots() {
+  save('isme_kpi_snapshots_v7', kpiSnapshots);
+  _snapshotListeners.forEach(fn => fn());
+}
+
+export function getSnapshotScore(s: KPISnapshot): number {
+  return s.leaderScore !== undefined ? s.leaderScore : s.score;
+}
 
 export function updateSnapshotValue(snapshotId: string, updates: Partial<KPISnapshot>) {
-  kpiSnapshots = kpiSnapshots.map(s => s.id === snapshotId ? { ...s, ...updates } : s);
-  save('isme_kpi_snapshots_v7', kpiSnapshots);
+  kpiSnapshots = kpiSnapshots.map(s => {
+    if (s.id === snapshotId) {
+      const merged = { ...s, ...updates };
+      if (updates.leaderScore !== undefined && updates.score === undefined) {
+        merged.score = updates.leaderScore;
+      }
+      return merged;
+    }
+    return s;
+  });
+  _notifySnapshots();
+}
+
+export function batchUpdateSnapshots(updatesList: { id: string; updates: Partial<KPISnapshot> }[]) {
+  const updateMap = new Map(updatesList.map(u => [u.id, u.updates]));
+  kpiSnapshots = kpiSnapshots.map(s => {
+    const up = updateMap.get(s.id);
+    if (up) {
+      const merged = { ...s, ...up };
+      if (up.leaderScore !== undefined && up.score === undefined) {
+        merged.score = up.leaderScore;
+      }
+      return merged;
+    }
+    return s;
+  });
+  _notifySnapshots();
 }
 
 // ==================== SUBMISSION STATUS ====================
@@ -5976,7 +6035,7 @@ export function calculateOperationsKPI(userId: string, period: string): number {
     return def?.groupId === 'operations';
   });
   // Calculate average of the scores for op1-op10
-  return opSnaps.length > 0 ? Math.round(opSnaps.reduce((sum, s) => sum + s.score, 0) / opSnaps.length) : 0;
+  return opSnaps.length > 0 ? Math.round(opSnaps.reduce((sum, s) => sum + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / opSnaps.length) : 0;
 }
 
 export function getKPIDetailsBySnapshot(snapshotId: string): KPIDetailItem[] {
@@ -6084,7 +6143,7 @@ export function calculateOverallKPI(userId: string, period: string): number {
   // Shared KPI: Linked directly to op5_as (Hoạt động ngoại khóa - Học tập) or fallback to op1
   const snapshots = getKPISnapshotsByUser(userId, period);
   const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as') || snapshots.find(s => s.kpiDefinitionId === 'op1');
-  const asScore = op5AsSnap ? op5AsSnap.score : 100;
+  const asScore = op5AsSnap ? (op5AsSnap.leaderScore !== undefined ? op5AsSnap.leaderScore : op5AsSnap.score) : 100;
 
   // 3. Kết quả học tập & Kỷ luật - Student Results (20%)
   // Find which program this user manages
@@ -6092,13 +6151,22 @@ export function calculateOverallKPI(userId: string, period: string): number {
   const studentResultsScore = userProg ? calculateCoursesKPI(userProg.id, 'current') : 100;
 
   // 4. Các hoạt động khác - Other Activities (10%)
-  const otherSnaps = snapshots.filter(s => {
-    const def = kpiDefinitions.find(d => d.id === s.kpiDefinitionId);
-    return def?.groupId === 'other_activities';
-  });
-  const otherScore = otherSnaps.length > 0 
-    ? otherSnaps.reduce((sum, s) => sum + s.score, 0) / otherSnaps.length 
-    : 0;
+  const otherDefs = kpiDefinitions.filter(d => d.groupId === 'other_activities');
+  const otherSnaps = snapshots.filter(s => otherDefs.some(d => d.id === s.kpiDefinitionId));
+  const totalOtherWeight = otherDefs.reduce((sum, d) => sum + d.weight, 0);
+  let otherScore = 0;
+  if (otherSnaps.length > 0) {
+    if (totalOtherWeight > 0) {
+      const weightedSum = otherSnaps.reduce((sum, s) => {
+        const def = otherDefs.find(d => d.id === s.kpiDefinitionId);
+        const score = s.leaderScore !== undefined ? s.leaderScore : s.score;
+        return sum + score * (def?.weight || 1);
+      }, 0);
+      otherScore = weightedSum / totalOtherWeight;
+    } else {
+      otherScore = otherSnaps.reduce((sum, s) => sum + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / otherSnaps.length;
+    }
+  }
 
   // Final Overall formula
   const final = (opScore * 0.5) + (asScore * 0.2) + (studentResultsScore * 0.2) + (otherScore * 0.1);

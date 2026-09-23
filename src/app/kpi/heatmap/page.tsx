@@ -9,7 +9,8 @@ import {
   kpiGroups,
   otherActivityRecords,
   laborDisciplineRecords,
-  courses
+  courses,
+  calculateCoursesKPI
 } from '@/lib/mock-data';
 import { useState } from 'react';
 import { useApp } from '@/lib/context';
@@ -26,15 +27,10 @@ export default function HeatmapPage() {
 
   if (!isAuthorized) {
     return (
-      <div className="flex-center" style={{ minHeight: '60vh', flexDirection: 'column', textAlign: 'center' }}>
-        <div style={{ background: 'var(--isme-red-50)', padding: 32, borderRadius: 24, maxWidth: 480 }}>
-          <ShieldAlert size={64} color="var(--isme-red)" style={{ marginBottom: 16 }} />
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--gray-900)', marginBottom: 12 }}>Truy cập bị hạn chế</h2>
-          <p style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.6 }}>
-            Báo cáo tổng hợp KPI (Heatmap) chứa dữ liệu bảo mật giữa các nhân sự. 
-            Chỉ **Quản lý** hoặc **Lãnh đạo Viện** mới có quyền xem bảng tổng hợp này.
-          </p>
-        </div>
+      <div className="card text-center py-12">
+        <ShieldAlert size={48} className="mx-auto mb-4 text-warning" />
+        <h2 className="text-xl font-bold mb-2">Không có quyền truy cập</h2>
+        <p className="text-muted">Trang Heatmap KPI chỉ dành cho Quản lý, Lãnh đạo Viện và Quản trị viên.</p>
       </div>
     );
   }
@@ -46,26 +42,40 @@ export default function HeatmapPage() {
     const group = kpiGroups.find(g => g.id === groupId);
     if (!group) return 0;
 
-    if (groupId === 'operations' || groupId === 'academic_support') {
+    if (groupId === 'operations') {
       const groupDefs = kpiDefinitions.filter(d => d.groupId === groupId);
       const groupSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && groupDefs.some(d => d.id === s.kpiDefinitionId));
-      if (groupSnaps.length === 0) return groupId === 'academic_support' ? 100 : 0;
-      const avg = groupSnaps.reduce((acc, s) => acc + s.score, 0) / groupSnaps.length;
-      return Math.round(avg);
+      if (groupSnaps.length === 0) return 0;
+      return Math.round(groupSnaps.reduce((acc, s) => acc + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / groupSnaps.length);
+    }
+
+    if (groupId === 'academic_support') {
+      const op5AsSnap = kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op5_as')
+        || kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op1');
+      if (!op5AsSnap) return 100;
+      return Math.round(op5AsSnap.leaderScore !== undefined ? op5AsSnap.leaderScore : op5AsSnap.score);
     }
 
     if (groupId === 'student_results') {
-      // Mock calculation for heatmap
-      const userCourses = courses; // In real app filter by user
-      if (userCourses.length === 0) return 100;
-      const avg = userCourses.reduce((acc, c) => acc + ((c.attendanceRate / c.attendanceTarget + c.passRate / c.passTarget) / 2), 0) / userCourses.length;
-      return Math.round(avg * 100);
+      const userProg = programs.find(p => p.managerId === userId);
+      if (!userProg) return 100;
+      return calculateCoursesKPI(userProg.id, 'current');
     }
 
     if (groupId === 'other_activities') {
-      const rec = otherActivityRecords.find(r => r.userId === userId && r.period === period);
-      if (!rec) return 0;
-      return [rec.admission, rec.studyAbroad, rec.exchange, rec.otherInstitute].filter(Boolean).length * 25;
+      const otherDefs = kpiDefinitions.filter(d => d.groupId === 'other_activities');
+      const otherSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && otherDefs.some(d => d.id === s.kpiDefinitionId));
+      if (otherSnaps.length === 0) return 0;
+      const totalWeight = otherDefs.reduce((sum, d) => sum + d.weight, 0);
+      if (totalWeight > 0) {
+        const weightedSum = otherSnaps.reduce((acc, s) => {
+          const def = otherDefs.find(d => d.id === s.kpiDefinitionId);
+          const score = s.leaderScore !== undefined ? s.leaderScore : s.score;
+          return acc + score * (def?.weight || 1);
+        }, 0);
+        return Math.round(weightedSum / totalWeight);
+      }
+      return Math.round(otherSnaps.reduce((acc, s) => acc + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / otherSnaps.length);
     }
 
     if (groupId === 'labor_discipline') {

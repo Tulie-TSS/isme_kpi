@@ -21,7 +21,7 @@ import {
 } from '@/lib/mock-data';
 import { CourseEditRequest, CourseEditField, Course } from '@/lib/types';
 import { useState, useEffect } from 'react';
-import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award, Info } from 'lucide-react';
+import { Download, Edit3, X, Clock, CheckCircle, XCircle, ChevronDown, ChevronRight, User, Settings, ShieldCheck, HelpCircle, BookOpen, Award, Info, FileSpreadsheet } from 'lucide-react';
 
 function getScoreColor(val: number) {
   if (val >= 100) return '#059669'; // Clean Emerald
@@ -792,6 +792,16 @@ export default function KPICoursePage() {
               <option key={coh} value={coh}>{coh}</option>
             ))}
           </select>
+
+          <a 
+            href="/Mau_Nhap_Lieu_KPI_Va_Mon_Hoc_ISME_2026.xlsx" 
+            download="Mau_Nhap_Lieu_KPI_Va_Mon_Hoc_ISME_2026.xlsx"
+            className="btn btn-secondary" 
+            style={{ fontSize: 13, padding: '6px 12px', height: 32, gap: 5, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', background: '#F0FDF4', color: '#166534', border: '1px solid #BBF7D0' }}
+            title="Tải file Excel mẫu chuẩn nạp dữ liệu KPI và Môn học"
+          >
+            <FileSpreadsheet size={13} /> Tải mẫu chuẩn
+          </a>
 
           <button className="btn btn-secondary" onClick={exportToExcel} style={{ fontSize: 13, padding: '6px 12px', height: 32, gap: 5 }}>
             <Download size={13} /> Xuất Excel

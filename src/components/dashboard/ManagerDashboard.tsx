@@ -270,13 +270,13 @@ export default function ManagerDashboard() {
       const opDefs = kpiDefinitions.filter(d => d.groupId === 'operations');
       const opSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && opDefs.some(d => d.id === s.kpiDefinitionId));
       if (opSnaps.length === 0) return 0;
-      return Math.round(opSnaps.reduce((acc, s) => acc + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / opSnaps.length);
+      return Math.round(opSnaps.reduce((acc, s) => acc + (s.leaderScore != null ? s.leaderScore : s.score), 0) / opSnaps.length);
     }
     if (groupId === 'academic_support') {
       const op5AsSnap = kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op5_as')
         || kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op1');
       if (!op5AsSnap) return 100;
-      return Math.round(op5AsSnap.leaderScore !== undefined ? op5AsSnap.leaderScore : op5AsSnap.score);
+      return Math.round(op5AsSnap.leaderScore != null ? op5AsSnap.leaderScore : op5AsSnap.score);
     }
     if (groupId === 'student_results') {
       const userProg = programs.find(p => p.managerId === userId);
@@ -291,12 +291,12 @@ export default function ManagerDashboard() {
       if (totalWeight > 0) {
         const weightedSum = otherSnaps.reduce((acc, s) => {
           const def = otherDefs.find(d => d.id === s.kpiDefinitionId);
-          const score = s.leaderScore !== undefined ? s.leaderScore : s.score;
+          const score = s.leaderScore != null ? s.leaderScore : s.score;
           return acc + score * (def?.weight || 1);
         }, 0);
         return Math.round(weightedSum / totalWeight);
       }
-      return Math.round(otherSnaps.reduce((acc, s) => acc + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / otherSnaps.length);
+      return Math.round(otherSnaps.reduce((acc, s) => acc + (s.leaderScore != null ? s.leaderScore : s.score), 0) / otherSnaps.length);
     }
     return 0;
   };
@@ -306,7 +306,7 @@ export default function ManagerDashboard() {
     const scoreMap: Record<string, number> = {};
     const noteMap: Record<string, string> = {};
     snaps.forEach(s => {
-      scoreMap[s.kpiDefinitionId] = s.leaderScore !== undefined ? s.leaderScore : s.score;
+      scoreMap[s.kpiDefinitionId] = s.leaderScore != null ? s.leaderScore : s.score;
       noteMap[s.kpiDefinitionId] = s.leaderNote || '';
     });
     setTempScores(scoreMap);
@@ -331,11 +331,11 @@ export default function ManagerDashboard() {
     const updatesList = snaps.map(s => {
       const lScore = tempScores[s.kpiDefinitionId];
       const lNote = tempNotes[s.kpiDefinitionId];
-      const finalScore = lScore !== undefined ? lScore : (s.leaderScore !== undefined ? s.leaderScore : s.score);
+      const finalScore = lScore != null ? lScore : (s.leaderScore != null ? s.leaderScore : s.score);
       return {
         id: s.id,
         updates: {
-          selfScore: s.selfScore !== undefined ? s.selfScore : s.score,
+          selfScore: s.selfScore != null ? s.selfScore : s.score,
           leaderScore: finalScore,
           score: finalScore,
           leaderNote: lNote || ''
@@ -491,12 +491,12 @@ export default function ManagerDashboard() {
                         <div style={{ color: 'var(--gray-400)', fontSize: 10, marginTop: 4 }}>Thực tế: <b>{snap.actualValue}</b> / <b>{snap.targetValue}</b></div>
                       </td>
                       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-500)' }}>{def.unit}</td>
-                      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: getScoreColor(snap.selfScore !== undefined ? snap.selfScore : snap.score) }}>{snap.selfScore !== undefined ? snap.selfScore : snap.score}%</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: getScoreColor(snap.selfScore != null ? snap.selfScore : snap.score) }}>{snap.selfScore != null ? snap.selfScore : snap.score}%</td>
                       
                       {/* Leader Score Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                         <ScoreStepper 
-                          value={tempScores[snap.kpiDefinitionId] !== undefined ? tempScores[snap.kpiDefinitionId] : (snap.leaderScore !== undefined ? snap.leaderScore : snap.score)}
+                          value={tempScores[snap.kpiDefinitionId] != null ? tempScores[snap.kpiDefinitionId] : (snap.leaderScore != null ? snap.leaderScore : snap.score)}
                           onChange={val => setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                         />
                       </td>
@@ -558,12 +558,12 @@ export default function ManagerDashboard() {
                         {def.criteria}
                       </td>
                       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-500)' }}>{def.unit}</td>
-                      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: getScoreColor(snap.selfScore !== undefined ? snap.selfScore : snap.score) }}>{snap.selfScore !== undefined ? snap.selfScore : snap.score}%</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: getScoreColor(snap.selfScore != null ? snap.selfScore : snap.score) }}>{snap.selfScore != null ? snap.selfScore : snap.score}%</td>
                       
                       {/* Leader Score Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                         <ScoreStepper 
-                          value={tempScores[snap.kpiDefinitionId] !== undefined ? tempScores[snap.kpiDefinitionId] : (snap.leaderScore !== undefined ? snap.leaderScore : snap.score)}
+                          value={tempScores[snap.kpiDefinitionId] != null ? tempScores[snap.kpiDefinitionId] : (snap.leaderScore != null ? snap.leaderScore : snap.score)}
                           onChange={val => setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                         />
                       </td>
@@ -626,12 +626,12 @@ export default function ManagerDashboard() {
                         <div style={{ color: 'var(--gray-400)', fontSize: 10, marginTop: 4 }}>Thực tế: <b>{snap.actualValue}</b> / <b>{snap.targetValue}</b></div>
                       </td>
                       <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 11, color: 'var(--gray-500)' }}>{def.unit}</td>
-                      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: getScoreColor(snap.selfScore !== undefined ? snap.selfScore : snap.score) }}>{snap.selfScore !== undefined ? snap.selfScore : snap.score}%</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: 12, fontWeight: 700, color: getScoreColor(snap.selfScore != null ? snap.selfScore : snap.score) }}>{snap.selfScore != null ? snap.selfScore : snap.score}%</td>
                       
                       {/* Leader Score Input */}
                       <td style={{ padding: '12px 16px', textAlign: 'center' }}>
                         <ScoreStepper 
-                          value={tempScores[snap.kpiDefinitionId] !== undefined ? tempScores[snap.kpiDefinitionId] : (snap.leaderScore !== undefined ? snap.leaderScore : snap.score)}
+                          value={tempScores[snap.kpiDefinitionId] != null ? tempScores[snap.kpiDefinitionId] : (snap.leaderScore != null ? snap.leaderScore : snap.score)}
                           onChange={val => setTempScores(prev => ({ ...prev, [snap.kpiDefinitionId]: val }))}
                         />
                       </td>

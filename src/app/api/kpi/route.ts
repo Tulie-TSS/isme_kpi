@@ -29,7 +29,16 @@ export async function GET() {
       subsRes = { rows: [] };
     }
 
-    const snapshots = snapsRes.rows.map(toCamelCase);
+    const snapshots = snapsRes.rows.map(r => {
+      const c = toCamelCase(r);
+      const score = c.score != null ? Number(c.score) : 100;
+      const leaderScore = c.leaderScore != null ? Number(c.leaderScore) : score;
+      return {
+        ...c,
+        score,
+        leaderScore
+      };
+    });
     const submissions: Record<string, string> = {};
     subsRes.rows.forEach(r => {
       submissions[`${r.user_id}_${r.period}`] = r.status;

@@ -81,17 +81,20 @@ async function run() {
   console.log('Total snapshots to sync:', snaps.length);
 
   for (const ks of snaps) {
+    const leaderScore = ks.leaderScore !== undefined ? ks.leaderScore : ks.score;
     await client.query(`
-      INSERT INTO kpi_snapshots (id, user_id, kpi_definition_id, period, score, target_value, actual_value, raw_numerator, raw_denominator, calculated_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO kpi_snapshots (id, user_id, kpi_definition_id, period, score, leader_score, target_value, actual_value, raw_numerator, raw_denominator, calculated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       ON CONFLICT (id) DO UPDATE SET
+        period = $4,
         score = $5,
-        target_value = $6,
-        actual_value = $7,
-        raw_numerator = $8,
-        raw_denominator = $9,
-        calculated_at = $10
-    `, [ks.id, ks.userId, ks.kpiDefinitionId, ks.period, ks.score, ks.targetValue, ks.actualValue, ks.rawNumerator, ks.rawDenominator, ks.calculatedAt]);
+        leader_score = $6,
+        target_value = $7,
+        actual_value = $8,
+        raw_numerator = $9,
+        raw_denominator = $10,
+        calculated_at = $11
+    `, [ks.id, ks.userId, ks.kpiDefinitionId, ks.period, ks.score, leaderScore, ks.targetValue, ks.actualValue, ks.rawNumerator, ks.rawDenominator, ks.calculatedAt]);
   }
   console.log('✅ Successfully inserted/updated all 112 snapshots in Supabase PostgreSQL!');
 

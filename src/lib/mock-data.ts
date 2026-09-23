@@ -5978,21 +5978,21 @@ const initialKpiSnapshots: KPISnapshot[] = [
 ];
 
 export let kpiSnapshots: KPISnapshot[] = (() => {
-  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v10', initialKpiSnapshots);
+  const loaded = getSaved<KPISnapshot[]>('isme_kpi_snapshots_v11', initialKpiSnapshots);
   let hasChange = false;
   const migrated = loaded.map(s => {
-    if (s.leaderScore !== undefined && s.score !== s.leaderScore) {
+    if (s.leaderScore != null && s.score !== s.leaderScore) {
       hasChange = true;
       return {
         ...s,
-        selfScore: s.selfScore !== undefined ? s.selfScore : s.score,
+        selfScore: s.selfScore != null ? s.selfScore : s.score,
         score: s.leaderScore
       };
     }
     return s;
   });
   if (hasChange && typeof window !== 'undefined') {
-    save('isme_kpi_snapshots_v10', migrated);
+    save('isme_kpi_snapshots_v11', migrated);
   }
   return migrated;
 })();
@@ -6005,19 +6005,19 @@ export function subscribeSnapshots(fn: () => void) {
 }
 
 function _notifySnapshots() {
-  save('isme_kpi_snapshots_v10', kpiSnapshots);
+  save('isme_kpi_snapshots_v11', kpiSnapshots);
   _snapshotListeners.forEach(fn => fn());
 }
 
 export function getSnapshotScore(s: KPISnapshot): number {
-  return s.leaderScore !== undefined ? s.leaderScore : s.score;
+  return s.leaderScore != null ? s.leaderScore : s.score;
 }
 
 export function updateSnapshotValue(snapshotId: string, updates: Partial<KPISnapshot>) {
   kpiSnapshots = kpiSnapshots.map(s => {
     if (s.id === snapshotId) {
       const merged = { ...s, ...updates };
-      if (updates.leaderScore !== undefined && updates.score === undefined) {
+      if (updates.leaderScore != null && updates.score === undefined) {
         merged.score = updates.leaderScore;
       }
       return merged;
@@ -6033,7 +6033,7 @@ export function batchUpdateSnapshots(updatesList: { id: string; updates: Partial
     const up = updateMap.get(s.id);
     if (up) {
       const merged = { ...s, ...up };
-      if (up.leaderScore !== undefined && up.score === undefined) {
+      if (up.leaderScore != null && up.score === undefined) {
         merged.score = up.leaderScore;
       }
       return merged;
@@ -6054,7 +6054,7 @@ export function batchUpdateSnapshots(updatesList: { id: string; updates: Partial
 
 // ==================== SUBMISSION STATUS ====================
 // Persistent status for coordinators' self assessments. format: [userId_period]: 'open' | 'submitted' | 'approved'
-export let submissionStatuses: Record<string, 'open' | 'submitted' | 'approved'> = getSaved<Record<string, 'open' | 'submitted' | 'approved'>>('isme_submission_statuses_v10', {
+export let submissionStatuses: Record<string, 'open' | 'submitted' | 'approved'> = getSaved<Record<string, 'open' | 'submitted' | 'approved'>>('isme_submission_statuses_v11', {
   'u11_Kỳ 2 2025-2026': 'open',
   'u6_Kỳ 2 2025-2026': 'open',
   'u10_Kỳ 2 2025-2026': 'open',
@@ -6068,7 +6068,7 @@ export let submissionStatuses: Record<string, 'open' | 'submitted' | 'approved'>
 export function setSubmissionStatus(userId: string, period: string, status: 'open' | 'submitted' | 'approved') {
   const key = `${userId}_${period}`;
   submissionStatuses = { ...submissionStatuses, [key]: status };
-  save('isme_submission_statuses_v10', submissionStatuses);
+  save('isme_submission_statuses_v11', submissionStatuses);
 
   // Async sync to Supabase PostgreSQL database
   if (typeof window !== 'undefined') {
@@ -6100,24 +6100,26 @@ export async function syncFromDatabase() {
           const dbSnap: any = snapMap.get(s.id);
           if (dbSnap) {
             hasSnapChanges = true;
+            const scoreVal = dbSnap.score != null ? Number(dbSnap.score) : s.score;
+            const leaderVal = dbSnap.leaderScore != null ? Number(dbSnap.leaderScore) : (s.leaderScore != null ? s.leaderScore : scoreVal);
             return {
               ...s,
-              score: dbSnap.score !== undefined ? dbSnap.score : s.score,
-              leaderScore: dbSnap.leaderScore !== undefined ? dbSnap.leaderScore : s.leaderScore,
-              actualValue: dbSnap.actualValue !== undefined ? dbSnap.actualValue : s.actualValue,
-              targetValue: dbSnap.targetValue !== undefined ? dbSnap.targetValue : s.targetValue,
+              score: scoreVal,
+              leaderScore: leaderVal,
+              actualValue: dbSnap.actualValue != null ? Number(dbSnap.actualValue) : s.actualValue,
+              targetValue: dbSnap.targetValue != null ? Number(dbSnap.targetValue) : s.targetValue,
             };
           }
           return s;
         });
         if (hasSnapChanges) {
-          save('isme_kpi_snapshots_v10', kpiSnapshots);
+          save('isme_kpi_snapshots_v11', kpiSnapshots);
           _snapshotListeners.forEach(fn => fn());
         }
       }
       if (data.submissions && Object.keys(data.submissions).length > 0) {
         submissionStatuses = { ...submissionStatuses, ...data.submissions };
-        save('isme_submission_statuses_v10', submissionStatuses);
+        save('isme_submission_statuses_v11', submissionStatuses);
       }
     }
     // Also sync audit logs from database
@@ -6253,7 +6255,7 @@ export function calculateOperationsKPI(userId: string, period: string): number {
     return def?.groupId === 'operations';
   });
   // Calculate average of the scores for op1-op10
-  return opSnaps.length > 0 ? Math.round(opSnaps.reduce((sum, s) => sum + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / opSnaps.length) : 0;
+  return opSnaps.length > 0 ? Math.round(opSnaps.reduce((sum, s) => sum + (s.leaderScore != null ? s.leaderScore : s.score), 0) / opSnaps.length) : 0;
 }
 
 export function getKPIDetailsBySnapshot(snapshotId: string): KPIDetailItem[] {
@@ -6361,7 +6363,7 @@ export function calculateOverallKPI(userId: string, period: string): number {
   // Shared KPI: Linked directly to op5_as (Hoạt động ngoại khóa - Học tập) or fallback to op1
   const snapshots = getKPISnapshotsByUser(userId, period);
   const op5AsSnap = snapshots.find(s => s.kpiDefinitionId === 'op5_as') || snapshots.find(s => s.kpiDefinitionId === 'op1');
-  const asScore = op5AsSnap ? (op5AsSnap.leaderScore !== undefined ? op5AsSnap.leaderScore : op5AsSnap.score) : 100;
+  const asScore = op5AsSnap ? (op5AsSnap.leaderScore != null ? op5AsSnap.leaderScore : op5AsSnap.score) : 100;
 
   // 3. Kết quả học tập & Kỷ luật - Student Results (20%)
   // Find which program this user manages
@@ -6377,12 +6379,12 @@ export function calculateOverallKPI(userId: string, period: string): number {
     if (totalOtherWeight > 0) {
       const weightedSum = otherSnaps.reduce((sum, s) => {
         const def = otherDefs.find(d => d.id === s.kpiDefinitionId);
-        const score = s.leaderScore !== undefined ? s.leaderScore : s.score;
+        const score = s.leaderScore != null ? s.leaderScore : s.score;
         return sum + score * (def?.weight || 1);
       }, 0);
       otherScore = weightedSum / totalOtherWeight;
     } else {
-      otherScore = otherSnaps.reduce((sum, s) => sum + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / otherSnaps.length;
+      otherScore = otherSnaps.reduce((sum, s) => sum + (s.leaderScore != null ? s.leaderScore : s.score), 0) / otherSnaps.length;
     }
   }
 

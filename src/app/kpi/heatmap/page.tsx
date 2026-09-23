@@ -54,14 +54,14 @@ export default function HeatmapPage() {
       const groupDefs = kpiDefinitions.filter(d => d.groupId === groupId);
       const groupSnaps = kpiSnapshots.filter(s => s.userId === userId && s.period === period && groupDefs.some(d => d.id === s.kpiDefinitionId));
       if (groupSnaps.length === 0) return 0;
-      return Math.round(groupSnaps.reduce((acc, s) => acc + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / groupSnaps.length);
+      return Math.round(groupSnaps.reduce((acc, s) => acc + (s.leaderScore != null ? s.leaderScore : s.score), 0) / groupSnaps.length);
     }
 
     if (groupId === 'academic_support') {
       const op5AsSnap = kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op5_as')
         || kpiSnapshots.find(s => s.userId === userId && s.period === period && s.kpiDefinitionId === 'op1');
       if (!op5AsSnap) return 100;
-      return Math.round(op5AsSnap.leaderScore !== undefined ? op5AsSnap.leaderScore : op5AsSnap.score);
+      return Math.round(op5AsSnap.leaderScore != null ? op5AsSnap.leaderScore : op5AsSnap.score);
     }
 
     if (groupId === 'student_results') {
@@ -78,12 +78,12 @@ export default function HeatmapPage() {
       if (totalWeight > 0) {
         const weightedSum = otherSnaps.reduce((acc, s) => {
           const def = otherDefs.find(d => d.id === s.kpiDefinitionId);
-          const score = s.leaderScore !== undefined ? s.leaderScore : s.score;
+          const score = s.leaderScore != null ? s.leaderScore : s.score;
           return acc + score * (def?.weight || 1);
         }, 0);
         return Math.round(weightedSum / totalWeight);
       }
-      return Math.round(otherSnaps.reduce((acc, s) => acc + (s.leaderScore !== undefined ? s.leaderScore : s.score), 0) / otherSnaps.length);
+      return Math.round(otherSnaps.reduce((acc, s) => acc + (s.leaderScore != null ? s.leaderScore : s.score), 0) / otherSnaps.length);
     }
 
     if (groupId === 'labor_discipline') {
